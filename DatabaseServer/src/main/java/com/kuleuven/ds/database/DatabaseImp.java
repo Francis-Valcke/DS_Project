@@ -5,7 +5,11 @@ import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.DatabaseInterface;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
@@ -16,7 +20,12 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     public DatabaseImp(String name) throws RemoteException{
 
         //Connectie met de DB opzetten
-        String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\DatabaseServer\\" +  name +".db";
+        //String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\DatabaseServer\\" +  name +".db";
+        String url = "jdbc:sqlite:" + FileSystems.getDefault().getPath("").toAbsolutePath().toString() + "\\" + name +".db";
+
+        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+        System.out.println(jarDir.getAbsolutePath());
+
         try{
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
@@ -113,7 +122,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             return false;
         }
     }
-
 
     private boolean userExists(String username){
         String sql = "SELECT * FROM users WHERE username = ?";
