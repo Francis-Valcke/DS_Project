@@ -1,11 +1,15 @@
+package com.kuleuven.ds.database;
+
 import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+@SpringBootApplication
 public class Main {
 
     private static final String DISPATCH_IP = "localhost";

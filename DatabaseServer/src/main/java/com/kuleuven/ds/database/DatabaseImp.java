@@ -1,3 +1,5 @@
+package com.kuleuven.ds.database;
+
 import com.google.common.hash.Hashing;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;

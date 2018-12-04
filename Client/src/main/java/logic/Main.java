@@ -2,7 +2,9 @@ package logic;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class Main extends Application{
 
     public static final String DISPATCH_IP = "localhost";
