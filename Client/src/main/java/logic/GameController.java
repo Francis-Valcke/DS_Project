@@ -57,7 +57,7 @@ public class GameController implements Initializable, GameControllerInterface {
 
     public void showTile(Coordinate c, int value) {
         Tile tile = tiles.get(c);
-        tile.open(Integer.toString(value));
+        tile.open(value);
     }
 
     public void hideTile(Coordinate c, int delay) {

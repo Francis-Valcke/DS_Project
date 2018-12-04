@@ -3,6 +3,7 @@ import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.DatabaseInterface;
 
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -90,6 +91,9 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             return false;
         }
 
+
+
+
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException{
@@ -130,11 +134,53 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return false;
     }
 
+    public byte[] getTheme(int id) throws RemoteException {
+        String sql = "SELECT zip FROM themes WHERE id=?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, Integer.toString(id));
+            ResultSet rs = pstmt.executeQuery();
+
+            Blob themeBlob = rs.getBlob("zip");
+            byte[] themeAsBytes = themeBlob.getBytes(1, (int) themeBlob.length());
+            themeBlob.free();
+            return themeAsBytes;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public void newTheme() {
+        String sql = "INSERT INTO themes(id, name, size) VALUES(?,?,?)";
+    }
+
     private static String hash(String password, String salt){
         return Hashing.sha256().hashString((password + salt),StandardCharsets.UTF_8).toString();
     }
 
     private static String hash(String password){
         return Hashing.sha256().hashString((password),StandardCharsets.UTF_8).toString();
+    }
+
+
+    //TIJDELIJK, om files op te zetten naar byte arrays
+    private byte[] readFile(String file) {
+        ByteArrayOutputStream bos = null;
+        try {
+            File f = new File(file);
+            FileInputStream fis = new FileInputStream(f);
+            byte[] buffer = new byte[1024];
+            bos = new ByteArrayOutputStream();
+            for (int len; (len = fis.read(buffer)) != -1; ) {
+                bos.write(buffer, 0, len);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e2) {
+            System.err.println(e2.getMessage());
+        }
+        return bos != null ? bos.toByteArray() : null;
     }
 }

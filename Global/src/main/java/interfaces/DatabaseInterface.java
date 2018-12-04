@@ -16,6 +16,7 @@ public interface DatabaseInterface extends Remote {
 
     public boolean isTokenValid(String username, String token) throws RemoteException;
 
+    public byte[] getTheme(int id) throws RemoteException;
 
 
 }
