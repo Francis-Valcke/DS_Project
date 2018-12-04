@@ -16,7 +16,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     public DatabaseImp(String name) throws RemoteException{
 
         //Connectie met de DB opzetten
-        String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\" +  name +".db";
+        String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\DatabaseServer\\" +  name +".db";
         try{
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
