@@ -1,11 +1,30 @@
-plugins{
-    id 'java'
-    id 'application'
-    id 'idea'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
+    }
 }
 
-mainClassName = 'logic.Main'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+bootJar {
+    baseName = 'Client'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
-    implementation project(':Global')
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile project(':Global')
+    testCompile("junit:junit")
 }
