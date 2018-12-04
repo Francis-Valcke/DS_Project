@@ -1,0 +1,11 @@
+plugins{
+    id 'java'
+    id 'application'
+    id 'idea'
+}
+
+mainClassName = 'logic.Main'
+
+dependencies {
+    implementation project(':Global')
+}

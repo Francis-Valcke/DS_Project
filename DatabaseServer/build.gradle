@@ -1,0 +1,17 @@
+plugins{
+    id 'java'
+    id 'application'
+    id 'idea'
+}
+
+mainClassName = 'Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies{
+    compile('org.xerial:sqlite-jdbc:3.25.2')
+    compile('com.google.guava:guava:27.0-jre')
+    compile project(':Global')
+}
