@@ -7,7 +7,7 @@ group 'com.kuleuven.ds'
 version '1.0'
 
 sourceCompatibility = 1.8
-def outputDir = "$rootDir/build/jars"
+def outputDir = "$rootDir/jars"
 
 allprojects {
     repositories {
