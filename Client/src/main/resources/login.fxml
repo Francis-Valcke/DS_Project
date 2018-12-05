@@ -8,10 +8,10 @@
    <children>
       <Pane layoutX="23.0" layoutY="55.0" prefHeight="306.0" prefWidth="248.0">
          <children>
-            <TextField fx:name="input_username" layoutY="47.0" prefHeight="31.0" prefWidth="248.0" promptText="Username" />
-            <PasswordField fx:name="input_password" layoutY="99.0" prefHeight="31.0" prefWidth="248.0" promptText="Password" />
-            <Button fx:name="button_signin" onAction="#login" layoutX="30.0" layoutY="177.0" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Sign in" textFill="WHITE" />
-            <Button fx:name="button_register" onAction="#register" layoutX="145.0" layoutY="177.0" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Register" textFill="WHITE" />
+            <TextField fx:id="input_username" layoutY="47.0" prefHeight="31.0" prefWidth="248.0" promptText="Username" />
+            <PasswordField fx:id="input_password" layoutY="99.0" prefHeight="31.0" prefWidth="248.0" promptText="Password" />
+            <Button fx:id="button_signin" onAction="#login" layoutX="30.0" layoutY="177.0" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Sign in" textFill="WHITE" />
+            <Button fx:id="button_register" onAction="#register" layoutX="145.0" layoutY="177.0" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Register" textFill="WHITE" />
          </children>
       </Pane>
       <Label alignment="CENTER" layoutX="-2.0" layoutY="14.0" prefHeight="51.0" prefWidth="292.0" text="Memory" textAlignment="CENTER">

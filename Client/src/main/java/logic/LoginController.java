@@ -5,6 +5,7 @@ import interfaces.AppLoginInterface;
 import interfaces.DispatcherInterface;
 import interfaces.LobbyInterface;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -17,9 +18,13 @@ import java.rmi.registry.Registry;
 
 public class LoginController {
 
+    @FXML
     public TextField input_username;
+    @FXML
     public PasswordField input_password;
+    @FXML
     public Button button_signin;
+    @FXML
     public Button button_register;
 
 

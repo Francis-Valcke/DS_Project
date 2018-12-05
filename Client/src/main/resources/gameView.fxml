@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane fx:name="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="757.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="757.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <GridPane fx:name="tileGrid" prefHeight="589.0" prefWidth="637.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="tileGrid" prefHeight="589.0" prefWidth="637.0" BorderPane.alignment="CENTER">
       </GridPane>
    </center>
    <top>
@@ -34,11 +34,11 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                   <Button fx:name="leavegamebutton" layoutX="14.0" layoutY="125.0" mnemonicParsing="false"
+                   <Button fx:id="leavegamebutton" layoutX="14.0" layoutY="125.0" mnemonicParsing="false"
                            prefHeight="31.0" prefWidth="129.0"
                            text="Leave"/>
-                  <Label fx:name="infolabel" alignment="CENTER" layoutX="14.0" layoutY="63.0" prefHeight="45.0" prefWidth="129.0" />
-                  <CheckBox fx:name="readycheckbox" layoutX="22.0" layoutY="21.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="114.0" text="Ready">
+                  <Label fx:id="infolabel" alignment="CENTER" layoutX="14.0" layoutY="63.0" prefHeight="45.0" prefWidth="129.0" />
+                  <CheckBox fx:id="readycheckbox" layoutX="22.0" layoutY="21.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="114.0" text="Ready">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -47,8 +47,8 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <ListView fx:name="playerslist" layoutY="25.0" prefHeight="550.0" prefWidth="160.0" />
-                  <Label fx:name="playerslabel" alignment="CENTER" contentDisplay="CENTER" layoutY="-5.0" prefHeight="30.0" prefWidth="159.0" text="Players" textAlignment="CENTER" />
+                  <ListView fx:id="playerslist" layoutY="25.0" prefHeight="550.0" prefWidth="160.0" />
+                  <Label fx:id="playerslabel" alignment="CENTER" contentDisplay="CENTER" layoutY="-5.0" prefHeight="30.0" prefWidth="159.0" text="Players" textAlignment="CENTER" />
                </children>
             </AnchorPane>
         </items>
