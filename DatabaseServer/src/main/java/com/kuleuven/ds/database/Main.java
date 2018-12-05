@@ -1,16 +1,20 @@
+package com.kuleuven.ds.database;
+
 import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+@SpringBootApplication
 public class Main {
 
     private static final String DISPATCH_IP = "localhost";
     private static final int DISPATCH_PORT = 1000;
-    private static String serverName;
+    private static String dbFilePath;
     private static int serverPort;
 
     private static DispatcherInterface dispatcherImp;
@@ -21,15 +25,14 @@ public class Main {
      */
     public static void main(String[] args) {
         if (args.length != 0) {
-            serverName = args[0];
+            dbFilePath = args[0];
             serverPort = Integer.parseInt(args[1]);
         } else {
-            serverName = "db_alpha";
+            dbFilePath = "db_alpha";
             serverPort = 1100;
         }
         databaseImp = startRMI(dbFilePath, serverPort);
         dispatcherImp = registerDispatcher(dbFilePath, serverPort);
-
     }
 
     public static DispatcherInterface registerDispatcher(String serverName, int port){
