@@ -7,12 +7,15 @@ import interfaces.DatabaseInterface;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
     private Connection conn;
@@ -96,9 +99,13 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             return false;
         }
 
+
+
+
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException{
+        //TODO: tokens hashen
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
         try{
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -135,11 +142,77 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return false;
     }
 
+    public List<byte[]> getTheme(int id) throws RemoteException {
+        String sql = "SELECT picture FROM pictures WHERE theme_id=?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, Integer.toString(id));
+            ResultSet rs = pstmt.executeQuery();
+
+            List<byte[]> toReturn = new ArrayList<>();
+            while(rs.next()) {
+                Blob pictureBlob = rs.getBlob("picture");
+                byte[] themeAsBytes = pictureBlob.getBytes(1, (int) pictureBlob.length());
+                pictureBlob.free();
+                toReturn.add(themeAsBytes);
+            }
+            return toReturn;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public void insertPhoto(int id) throws RemoteException {
+        //System.out.println(System.getProperty("user.dir"));
+        byte[] picture = readFile("src/main/resources/Colors/"+id+".jpg");
+        String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
+
+        try{
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            // set parameters
+            pstmt.setBytes(1, picture);
+            pstmt.setInt(2, 0);
+
+            //execute query
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void newTheme() {
+        String sql = "INSERT INTO themes(id, name, size) VALUES(?,?,?)";
+    }
+
     private static String hash(String password, String salt){
         return Hashing.sha256().hashString((password + salt),StandardCharsets.UTF_8).toString();
     }
 
     private static String hash(String password){
         return Hashing.sha256().hashString((password),StandardCharsets.UTF_8).toString();
+    }
+
+
+    //TIJDELIJK, om files op te zetten naar byte arrays
+    private byte[] readFile(String file) {
+        ByteArrayOutputStream bos = null;
+        try {
+            File f = new File(file);
+            FileInputStream fis = new FileInputStream(f);
+            byte[] buffer = new byte[1024];
+            bos = new ByteArrayOutputStream();
+            for (int len; (len = fis.read(buffer)) != -1; ) {
+                bos.write(buffer, 0, len);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e2) {
+            System.err.println(e2.getMessage());
+        }
+        return bos != null ? bos.toByteArray() : null;
     }
 }

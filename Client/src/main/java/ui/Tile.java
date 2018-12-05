@@ -5,12 +5,12 @@ import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import logic.Client;
 
@@ -19,16 +19,12 @@ public class Tile extends StackPane {
 
     private static boolean yourTurn = false;
 
-    private StackPane front;
-    private StackPane back;
     private Rectangle frontRectangle;
     private Rectangle backRectangle;
     private ScaleTransition open;
     private ScaleTransition close;
     private PauseTransition pause;
     boolean flipped;
-    private Text backText;
-    private Text frontText;
     private Coordinate coordinate;
     private int value;
 
@@ -36,8 +32,6 @@ public class Tile extends StackPane {
     public Tile(Coordinate coordinate, int size){
         this.coordinate = coordinate;
         pause = new PauseTransition(Duration.seconds(2));
-        front = new StackPane();
-        back = new StackPane();
 
         frontRectangle = new Rectangle();
         frontRectangle.widthProperty().bind(this.widthProperty().subtract(20));
@@ -56,29 +50,18 @@ public class Tile extends StackPane {
         backRectangle.setStroke(Color.BLACK);
 
 
-        front.getChildren().add(frontRectangle);
-        back.getChildren().add(backRectangle);
+        //front.getChildren().add(frontText);
+        //back.getChildren().add(backText);
 
-        frontText = new Text();
-        frontText.setText("front");
-        frontText.setFont(Font.font(30));
-        frontText.maxHeight(Double.MAX_VALUE);
-        backText = new Text();
-        backText.setText("back");
-        backText.setFont(Font.font(30));
-
-        front.getChildren().add(frontText);
-        back.getChildren().add(backText);
-
-        open = makeFlipAnimation(back, front, 200);
-        close = makeFlipAnimation(front, back, 200);
+        open = makeFlipAnimation(backRectangle, frontRectangle, 200);
+        close = makeFlipAnimation(frontRectangle, backRectangle, 200);
 
         pause.setOnFinished(e -> close.play());
         //close.setOnFinished(e -> backText.setText(""));
 
         flipped = false;
 
-        makeFlipAnimation(front,back,1).play();
+        makeFlipAnimation(frontRectangle, backRectangle, 1).play();
 
         setOnMouseClicked(this::handleMouseClick);
 
@@ -90,22 +73,21 @@ public class Tile extends StackPane {
             Client.getInstance().setNextMove(coordinate);
         }
     }
-    public synchronized void open(String value) {
+
+    public synchronized void open(int value) {
+        this.value = value;
         //System.out.println("open");
         flipped = true;
-        backText.setText(value);
+        System.out.println(System.getProperty("user.dir"));
+        Image img = new Image("themes/Colors/" + value + ".jpg");
+        backRectangle.setFill(new ImagePattern(img));
         open.play();
     }
 
     public synchronized void close(int ms) {
-        //backText.setText("");
         flipped = false;
 
         pause.play();
-    }
-
-    public boolean hasSameValue(Tile other) {
-        return backText.getText().equals(other.backText.getText());
     }
 
     public static boolean isYourTurn() {
@@ -116,15 +98,7 @@ public class Tile extends StackPane {
         Tile.yourTurn = yourTurn;
     }
 
-    public Text getBackText() {
-        return backText;
-    }
-
-    public void setBackText(Text backText) {
-        this.backText = backText;
-    }
-
-    private ScaleTransition makeFlipAnimation(StackPane show, StackPane hide, int duration){
+    private ScaleTransition makeFlipAnimation(Rectangle show, Rectangle hide, int duration) {
         ScaleTransition st = new ScaleTransition(Duration.millis(duration), hide);
         st.setFromX(1);
         st.setToX(0);
