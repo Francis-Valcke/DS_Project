@@ -2,9 +2,10 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
 <TabPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
          prefHeight="400.0" prefWidth="368.0" tabClosingPolicy="UNAVAILABLE"
-         xmlns="http://javafx.com/javafx/8.0.171" fx:controller="logic.LobbyController">
+         xmlns="http://javafx.com/javafx/8" fx:controller="logic.LobbyController">
     <tabs>
         <Tab text="Make new game">
             <content>
@@ -14,19 +15,22 @@
                                     AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0"
                                     AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
                             <children>
-                                <Button fx:name="create" layoutX="60.0" layoutY="235.0" mnemonicParsing="false"
+                                <Button fx:id="create" layoutX="60.0" layoutY="235.0" mnemonicParsing="false"
                                         onAction="#makeGame" prefHeight="31.0" prefWidth="188.0" text="Create and join"
                                         AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
-                                <TextField fx:name="name" layoutX="60.0" layoutY="14.0" promptText="Name"
+                                <TextField fx:id="name" layoutX="60.0" layoutY="14.0" promptText="Name"
                                            AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
-                                <TextField fx:name="height" layoutX="60.0" layoutY="61.0" promptText="Height"
+                                <TextField fx:id="height" layoutX="60.0" layoutY="61.0" promptText="Height"
                                            AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
-                                <TextField fx:name="width" layoutX="60.0" layoutY="113.0" promptText="Width"
+                                <TextField fx:id="width" layoutX="60.0" layoutY="113.0" promptText="Width"
                                            AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
-                                <TextField fx:name="playercount" layoutX="60.0" layoutY="161.0" promptText="Playercount"
+                                <TextField fx:id="playercount" layoutX="60.0" layoutY="161.0" promptText="Playercount"
                                            AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
                             </children>
                         </AnchorPane>
+                        <Text fx:id="serverName" layoutX="88.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              textAlignment="CENTER" wrappingWidth="192.5078125" AnchorPane.leftAnchor="88.0"
+                              AnchorPane.rightAnchor="87.0" AnchorPane.topAnchor="10.0"/>
                     </children>
                 </AnchorPane>
             </content>
@@ -35,13 +39,13 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <ListView fx:name="gameslist" layoutX="22.0" layoutY="14.0" prefHeight="327.0" prefWidth="200.0"
+                        <ListView fx:id="gameslist" layoutX="22.0" layoutY="14.0" prefHeight="327.0" prefWidth="200.0"
                                   AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
                                   AnchorPane.topAnchor="20.0"/>
-                        <Button fx:name="joinbutton" layoutX="241.0" layoutY="20.0" mnemonicParsing="false"
+                        <Button fx:id="joinbutton" layoutX="241.0" layoutY="20.0" mnemonicParsing="false"
                                 prefHeight="31.0" prefWidth="77.0" text="Join" AnchorPane.leftAnchor="241.0"
                                 AnchorPane.topAnchor="20.0"/>
-                        <Button fx:name="spectatebutton" layoutX="241.0" layoutY="62.0" mnemonicParsing="false"
+                        <Button fx:id="spectatebutton" layoutX="241.0" layoutY="62.0" mnemonicParsing="false"
                                 text="Spectate" AnchorPane.leftAnchor="241.0" AnchorPane.topAnchor="62.0"/>
                     </children>
                 </AnchorPane>

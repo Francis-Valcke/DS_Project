@@ -153,8 +153,11 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
         //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Game uit de live_games list halen
         pushInfoLabel("Game finished");
-        lobby.terminateGame(this);
-
+        try {
+            lobby.terminateGame(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void requestMove() throws LeftGameException {

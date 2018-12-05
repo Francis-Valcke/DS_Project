@@ -2,6 +2,7 @@
   <configuration default="false" name="Client1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" singleton="false">
     <module name="Client_main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="logic.Main" />
+    <option name="PROGRAM_PARAMETERS" value="1 1" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />

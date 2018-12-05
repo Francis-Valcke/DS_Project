@@ -56,6 +56,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         new_game.addPlayer(firstPlayer);
         live_games.put(id, new_game);
         System.out.println("INFO: new game initialised [id:" + id + "]");
+
+        dispatch.broadCastLobby(this);
         return new_game;
     }
 
@@ -102,8 +104,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return liveGames;
     }
 
-    public void terminateGame(Game game) {
+    public void terminateGame(Game game) throws RemoteException {
         live_games.remove(game.getId());
+        dispatch.broadCastLobby(this);
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
     }
 

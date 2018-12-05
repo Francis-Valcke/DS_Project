@@ -9,15 +9,15 @@
     <children>
         <Pane layoutX="20.0" layoutY="55.0" prefHeight="306.0" prefWidth="248.0">
             <children>
-                <TextField fx:name="input_username" layoutX="1.0" layoutY="51.0" prefHeight="31.0" prefWidth="252.0"
+                <TextField fx:id="input_username" layoutX="1.0" layoutY="51.0" prefHeight="31.0" prefWidth="252.0"
                            promptText="Username"/>
-                <PasswordField fx:name="input_password" layoutY="106.0" prefHeight="31.0" prefWidth="252.0"
+                <PasswordField fx:id="input_password" layoutY="106.0" prefHeight="31.0" prefWidth="252.0"
                                promptText="Password"/>
-                <PasswordField fx:name="input_confirm" layoutY="169.0" prefHeight="31.0" prefWidth="252.0"
+                <PasswordField fx:id="input_confirm" layoutY="169.0" prefHeight="31.0" prefWidth="252.0"
                                promptText="Confirm"/>
-                <Button fx:name="button_register" layoutX="14.0" layoutY="229.0" onAction="#register" prefHeight="31.0"
+                <Button fx:id="button_register" layoutX="14.0" layoutY="229.0" onAction="#register" prefHeight="31.0"
                         prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Register" textFill="WHITE"/>
-                <Button fx:name="button_back" layoutX="156.0" layoutY="229.0" onAction="#goBack" prefHeight="31.0"
+                <Button fx:id="button_back" layoutX="156.0" layoutY="229.0" onAction="#goBack" prefHeight="31.0"
                         prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Back" textFill="WHITE"/>
             </children>
         </Pane>

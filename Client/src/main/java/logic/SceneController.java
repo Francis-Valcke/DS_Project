@@ -46,8 +46,10 @@ public class SceneController {
 
     public void showLoginScene() {
         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
+            Parent root = loader.load();
+            LoginController loginController = loader.getController();
             Scene scene = new Scene(root, 288, 400);
             stage.setTitle("Sign in");
             stage.setResizable(false);
