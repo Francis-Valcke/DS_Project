@@ -50,14 +50,10 @@ public class Tile extends StackPane {
         backRectangle.setStroke(Color.BLACK);
 
 
-        //front.getChildren().add(frontText);
-        //back.getChildren().add(backText);
-
         open = makeFlipAnimation(backRectangle, frontRectangle, 200);
         close = makeFlipAnimation(frontRectangle, backRectangle, 200);
 
         pause.setOnFinished(e -> close.play());
-        //close.setOnFinished(e -> backText.setText(""));
 
         flipped = false;
 
@@ -74,13 +70,9 @@ public class Tile extends StackPane {
         }
     }
 
-    public synchronized void open(int value) {
-        this.value = value;
-        //System.out.println("open");
+    public synchronized void open(Image image) {
         flipped = true;
-        System.out.println(System.getProperty("user.dir"));
-        Image img = new Image("themes/Colors/" + value + ".jpg");
-        backRectangle.setFill(new ImagePattern(img));
+        backRectangle.setFill(new ImagePattern(image));
         open.play();
     }
 

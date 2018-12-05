@@ -4,6 +4,7 @@ import com.google.common.hash.Hashing;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.DatabaseInterface;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -151,14 +152,13 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
             List<byte[]> toReturn = new ArrayList<>();
             while(rs.next()) {
-                Blob pictureBlob = rs.getBlob("picture");
-                byte[] themeAsBytes = pictureBlob.getBytes(1, (int) pictureBlob.length());
-                pictureBlob.free();
+                InputStream is = rs.getBinaryStream("picture");
+                byte[] themeAsBytes = IOUtils.toByteArray(is);
                 toReturn.add(themeAsBytes);
             }
             return toReturn;
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -166,7 +166,8 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     public void insertPhoto(int id) throws RemoteException {
         //System.out.println(System.getProperty("user.dir"));
-        byte[] picture = readFile("src/main/resources/Colors/"+id+".jpg");
+        byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/"+id+".png").getPath());
+
         String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
 
         try{
@@ -174,7 +175,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
             // set parameters
             pstmt.setBytes(1, picture);
-            pstmt.setInt(2, 0);
+            pstmt.setInt(2, 1);
 
             //execute query
             pstmt.executeUpdate();

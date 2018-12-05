@@ -60,7 +60,7 @@ public class LobbyController implements Initializable {
     }
 
     public void makeGame() throws AlreadyPresentException {
-        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()));
+        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), 1);
     }
 
     public void joinGame() throws AlreadyPresentException {

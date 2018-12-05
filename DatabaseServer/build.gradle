@@ -34,6 +34,7 @@ dependencies {
     compile('org.xerial:sqlite-jdbc:3.25.2')
     compile('com.google.guava:guava:27.0-jre')
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile project(':Global')
     testCompile("junit:junit")
 }

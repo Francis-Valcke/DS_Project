@@ -27,4 +27,6 @@ public interface GameInterface extends Remote {
     public List<PlayerInfo> getPlayerlist() throws RemoteException;
 
     public HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException;
+
+    public int getThemeId() throws RemoteException;
 }
