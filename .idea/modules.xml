@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer.iml" filepath="$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer.iml" group="ApplicationServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer_main.iml" group="ApplicationServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ApplicationServer/ApplicationServer_test.iml" group="ApplicationServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Client/Client.iml" filepath="$PROJECT_DIR$/.idea/modules/Client/Client.iml" group="Client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Client/Client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Client/Client_main.iml" group="Client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Client/Client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Client/Client_test.iml" group="Client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer.iml" filepath="$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer.iml" group="DatabaseServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer_main.iml" filepath="$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer_main.iml" group="DatabaseServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer_test.iml" filepath="$PROJECT_DIR$/.idea/modules/DatabaseServer/DatabaseServer_test.iml" group="DatabaseServer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher.iml" filepath="$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher.iml" group="Dispatcher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher_main.iml" group="Dispatcher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Dispatcher/Dispatcher_test.iml" group="Dispatcher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Global/Global.iml" filepath="$PROJECT_DIR$/.idea/modules/Global/Global.iml" group="Global" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Global/Global_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Global/Global_main.iml" group="Global" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Global/Global_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Global/Global_test.iml" group="Global" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/memory.iml" filepath="$PROJECT_DIR$/.idea/modules/memory.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/memory_main.iml" filepath="$PROJECT_DIR$/.idea/modules/memory_main.iml" group="memory" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/memory_test.iml" filepath="$PROJECT_DIR$/.idea/modules/memory_test.iml" group="memory" />
+    </modules>
+  </component>
+</project>

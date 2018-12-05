@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
     private Connection conn;
@@ -97,6 +99,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException{
+        //TODO: tokens hashen
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
         try{
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -134,22 +137,46 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return false;
     }
 
-    public byte[] getTheme(int id) throws RemoteException {
-        String sql = "SELECT zip FROM themes WHERE id=?";
+    public List<byte[]> getTheme(int id) throws RemoteException {
+        String sql = "SELECT picture FROM pictures WHERE theme_id=?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, Integer.toString(id));
             ResultSet rs = pstmt.executeQuery();
 
-            Blob themeBlob = rs.getBlob("zip");
-            byte[] themeAsBytes = themeBlob.getBytes(1, (int) themeBlob.length());
-            themeBlob.free();
-            return themeAsBytes;
+            List<byte[]> toReturn = new ArrayList<>();
+            while(rs.next()) {
+                Blob pictureBlob = rs.getBlob("picture");
+                byte[] themeAsBytes = pictureBlob.getBytes(1, (int) pictureBlob.length());
+                pictureBlob.free();
+                toReturn.add(themeAsBytes);
+            }
+            return toReturn;
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public void insertPhoto(int id) throws RemoteException {
+        //System.out.println(System.getProperty("user.dir"));
+        byte[] picture = readFile("src/main/resources/Colors/"+id+".jpg");
+        String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
+
+        try{
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            // set parameters
+            pstmt.setBytes(1, picture);
+            pstmt.setInt(2, 0);
+
+            //execute query
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void newTheme() {

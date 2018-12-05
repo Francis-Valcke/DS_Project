@@ -28,7 +28,21 @@ public class Main {
             serverPort = 1100;
         }
         databaseImp = startRMI(serverName, serverPort);
-        dispatcherImp = registerDispatcher(serverName, serverPort);
+        //dispatcherImp = registerDispatcher(serverName, serverPort);
+
+        try {
+            databaseImp.insertPhoto(0);
+            databaseImp.insertPhoto(1);
+            databaseImp.insertPhoto(2);
+            databaseImp.insertPhoto(3);
+            databaseImp.insertPhoto(4);
+            databaseImp.insertPhoto(5);
+            databaseImp.insertPhoto(6);
+            databaseImp.insertPhoto(7);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static DispatcherInterface registerDispatcher(String serverName, int port){

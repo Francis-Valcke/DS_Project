@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="ApplicationServer_main" target="1.8" />
+      <module name="ApplicationServer_test" target="1.8" />
+      <module name="Client_main" target="1.8" />
+      <module name="Client_test" target="1.8" />
+      <module name="DatabaseServer_main" target="1.8" />
+      <module name="DatabaseServer_test" target="1.8" />
+      <module name="Dispatcher_main" target="1.8" />
+      <module name="Dispatcher_test" target="1.8" />
+      <module name="Global_main" target="1.8" />
+      <module name="Global_test" target="1.8" />
+      <module name="memory_main" target="1.8" />
+      <module name="memory_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
