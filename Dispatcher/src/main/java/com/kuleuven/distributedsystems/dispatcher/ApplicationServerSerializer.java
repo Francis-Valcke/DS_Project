@@ -21,7 +21,7 @@ public class ApplicationServerSerializer extends StdSerializer<ApplicationServer
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("id", applicationServer.getName());
         jsonGenerator.writeStringField("ip", applicationServer.getIp());
-        jsonGenerator.writeNumberField("rmiPort", applicationServer.getRmiPort());
+        jsonGenerator.writeNumberField("rmiPort", applicationServer.getPort());
         jsonGenerator.writeNumberField("restPort", applicationServer.getRestPort());
         jsonGenerator.writeEndObject();
     }

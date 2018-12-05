@@ -66,7 +66,7 @@ public class DispatcherImpRestController {
     public ResponseMessage getApplicationServer() throws RemoteException, JsonProcessingException {
         System.out.println("INFO: new client connected");
         ResponseMessage responseMessage = null;
-        ApplicationServer appServer = dispatcherImp.getApplicationServers().get(0);
+        ApplicationServer appServer = new ApplicationServer(dispatcherImp.getApplicationServer());
         responseMessage = new ResponseMessage(ResponseType.OK, "Application servers available.", appServer);
         return responseMessage;
     }

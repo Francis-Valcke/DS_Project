@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="StartAll Barebones" type="Multirun" factoryName="Multirun" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
+    <runConfiguration name="Dispatcher" type="Spring Boot" />
+    <runConfiguration name="DatabaseServer 0" type="Spring Boot" />
+    <runConfiguration name="ApplicationServer 0" type="Spring Boot" />
+    <runConfiguration name="Client1" type="Spring Boot" />
+    <method v="2" />
+  </configuration>
+</component>

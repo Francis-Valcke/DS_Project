@@ -1,17 +1,47 @@
 package interfaces;
 
-public interface ApplicationServerInterface {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.Collection;
+import java.util.List;
 
-    String getIp();
-    void setIp(String ip);
-    int getRmiPort();
-    void setRmiPort(int rmiPort);
-    AppLoginInterface getApp_login();
-    void setApp_login(AppLoginInterface app_login);
-    String getName();
-    int getRestPort();
+public interface ApplicationServerInterface extends Remote {
 
-    void setBackupServer(ApplicationServerInterface server);
-    ApplicationServerInterface getBackupServer();
+    void startLogin() throws RemoteException;
 
+    void registerWithDispatcher() throws RemoteException;
+
+    String getName() throws RemoteException;
+
+    String getIp() throws RemoteException;
+
+    int getPort() throws RemoteException;
+
+    int getRestPort() throws RemoteException;
+
+    int getDispatcherPort() throws RemoteException;
+
+    String getDispatcherIp() throws RemoteException;
+
+    DatabaseInterface getDb() throws RemoteException;
+
+    void setDb(DatabaseInterface db) throws RemoteException;
+
+    AppLoginInterface getAppLogin() throws RemoteException;
+
+    void setAppLogin(AppLoginInterface appLogin) throws RemoteException;
+
+    LobbyInterface getLobby() throws RemoteException;
+
+    void setLobby(LobbyInterface lobby) throws RemoteException;
+
+    ApplicationServerInterface getBackupServer() throws RemoteException;
+
+    void setBackupServer(ApplicationServerInterface backupServer) throws RemoteException;
+
+    boolean isFull() throws RemoteException;
+
+    List<ClientInterface> getConnectedClients() throws RemoteException;
+
+    void addConnectedClient(ClientInterface client) throws RemoteException;
 }

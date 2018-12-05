@@ -21,7 +21,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         }
     }
 
-    private Lobby lobby;
+    private LobbyInterface lobby;
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
 
@@ -42,7 +42,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         throw new InvalidCredentialsException("Wrong credentials.");
     }
 
-    public Lobby getLobby() {
+    public LobbyInterface getLobby() {
         return lobby;
     }
 
@@ -64,6 +64,11 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
 
     public void setDispatch(DispatcherInterface dispatch) {
         this.dispatch = dispatch;
+    }
+
+    @Override
+    public void setLobby(LobbyInterface lobbyInterface) {
+        this.lobby = lobbyInterface;
     }
 
     public static AppLogin getInstance() {

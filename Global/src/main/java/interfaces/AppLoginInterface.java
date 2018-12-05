@@ -7,5 +7,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface AppLoginInterface extends Remote {
-    public LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException;
+
+    LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException;
+    void setDb(DatabaseInterface db)  throws RemoteException;
+    void setDispatch(DispatcherInterface dispatcherInterface)  throws RemoteException;
+    void setLobby(LobbyInterface lobbyInterface)  throws RemoteException;
 }

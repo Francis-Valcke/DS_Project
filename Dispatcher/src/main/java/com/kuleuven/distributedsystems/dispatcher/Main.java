@@ -42,8 +42,7 @@ public class Main {
     private static final int appRestPortOffset = 100;
 
 
-    private static List<Runtime> runtimes = new ArrayList<>();
-
+    private static Runtime runtime = Runtime.getRuntime();
 
     public static void main(String[] args) {
         if (args.length != 0) {
@@ -66,28 +65,40 @@ public class Main {
         * Bij het opstarten van de dispatch worden 2 App servers aangemaakt en 4 database server
         * */
 
-        Runtime rt1 = Runtime.getRuntime();
+        startDatabaseServers(DB_SERVER_COUNT);
+        startApplicationServers(APP_SERVER_COUNT);
+    }
 
-        try {
-            for (int i = 0; i < DB_SERVER_COUNT; i++) {
-                int serverCount = dbPortCounter;
-                int newPort = port + dbPortOffset + dbPortCounter++;
-                System.out.println("Starting new DB server with port " + newPort);
-                rt1.exec("cmd /c start cmd.exe /K \"java -jar "+pathToJars+"/DatabaseServer-0.1.0.jar %cd%/DBServer"+serverCount+".db "+ newPort);
+    public static void startDatabaseServers(int amount){
+        for (int i = 0; i < amount; i++) {
+            int serverCount = dbPortCounter;
+            int newPort = port + dbPortOffset + dbPortCounter++;
+            System.out.println("Starting new DB server with port " + newPort);
+            try {
+                System.out.println("Looking for jar at " + pathToJars+"/DatabaseServer-0.1.0.jar %cd%/DBServer"+serverCount+".db "+ newPort);
+                runtime.exec("cmd /c start cmd.exe /K \"java -jar "+pathToJars+"/DatabaseServer-0.1.0.jar %cd%/DBServer"+serverCount+".db "+ newPort);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            for (int i = 0; i < APP_SERVER_COUNT; i++) {
-                int serverCount = appPortCounter;
-                int newPort = port + appPortOffset + appPortCounter++;
-                int newRestPort = restPort + appRestPortOffset + appRestPortCounter++;
-                System.out.println("Starting new APP server with port " + newPort + " and API port " + newRestPort);
-                rt1.exec("cmd /c start cmd.exe /K \"java -jar "+pathToJars+"/ApplicationServer-0.1.0.jar AppServer"+serverCount + " " + newPort + " " + newRestPort);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
+
+    public static void startApplicationServers(int amount){
+        for (int i = 0; i < amount; i++) {
+            int serverCount = appPortCounter;
+            int newPort = port + appPortOffset + appPortCounter++;
+            int newRestPort = restPort + appRestPortOffset + appRestPortCounter++;
+            System.out.println("Starting new APP server with port " + newPort + " and API port " + newRestPort);
+            try {
+                System.out.println("Looking for jar at " + pathToJars+"/ApplicationServer-0.1.0.jar AppServer"+serverCount + " " + newPort + " " + newRestPort);
+                runtime.exec("cmd /c start cmd.exe /K \"java -jar "+pathToJars+"/ApplicationServer-0.1.0.jar AppServer"+serverCount + " " + newPort + " " + newRestPort);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 
     public static DispatcherImp startDispatcher(int port){
         try{

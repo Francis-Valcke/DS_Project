@@ -2,6 +2,7 @@ package logic;
 
 import exceptions.InvalidCredentialsException;
 import interfaces.AppLoginInterface;
+import interfaces.ApplicationServerInterface;
 import interfaces.DispatcherInterface;
 import interfaces.LobbyInterface;
 import javafx.event.ActionEvent;
@@ -51,14 +52,15 @@ public class LoginController {
 
             Client client = Client.getInstance();
 
-            AppLoginInterface app_login = dispatch.getApplicationServer();
-
-            LobbyInterface lobby = app_login.clientLogin(username, token);
+            ApplicationServerInterface appServer = dispatch.getApplicationServer();
+            LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
+            appServer.addConnectedClient(client);
+            client.setApplicationServer(appServer);
 
             client.setUsername(username);
             client.setToken(token);
             client.setDispatch(dispatch);
-            client.setApp_login(app_login);
+            client.setApp_login(appServer.getAppLogin());
             client.setLobby(lobby);
 
             //Naar lobby scherm gaan

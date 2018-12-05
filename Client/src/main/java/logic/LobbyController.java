@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -33,6 +34,8 @@ public class LobbyController implements Initializable {
     Button joinbutton;
     @FXML
     Button spectatebutton;
+    @FXML
+    Text serverName;
 
     HashMap<Label, GameInfo> labelMap = new HashMap<>();
 
@@ -48,6 +51,12 @@ public class LobbyController implements Initializable {
             }
         });
         spectatebutton.setOnAction(e ->{spectateGame();});
+
+        try {
+            serverName.setText(client.getApplicationServer().getName());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void makeGame() throws AlreadyPresentException {

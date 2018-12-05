@@ -26,6 +26,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
     //Remote Objects
+    private ApplicationServerInterface applicationServer;
     private GameInterface game;
     private DispatcherInterface dispatch;
     private AppLoginInterface app_login;
@@ -171,6 +172,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         return game;
     }
 
+    public ApplicationServerInterface getApplicationServer() {
+        return applicationServer;
+    }
+
+    public void setApplicationServer(ApplicationServerInterface applicationServer) {
+        this.applicationServer = applicationServer;
+    }
+
     public void setGame(GameInterface game) {
         this.game = game;
     }
@@ -215,7 +224,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public static Client getInstance() {
         return instance;
     }
-
 
     public void setUsername(String username) {
         this.username = username;

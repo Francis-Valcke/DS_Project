@@ -2,7 +2,7 @@ package com.kuleuven.distributedsystems.dispatcher;
 
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
-import interfaces.AppLoginInterface;
+import interfaces.ApplicationServerInterface;
 import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
 
@@ -11,8 +11,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class DispatcherImp extends UnicastRemoteObject implements DispatcherInterface {
 
@@ -27,54 +29,52 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
     }
 
     private List<DatabaseServer> databaseServers = new LinkedList<>();
-    private List<ApplicationServer> applicationServers = new LinkedList<>();
-    private List<ApplicationServer> unPairedServers = new LinkedList<>();
+    private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
+    private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
 
-    public DispatcherImp() throws RemoteException{
+    public DispatcherImp() throws RemoteException {
     }
 
     public static DispatcherImp getInstance() {
         return instance;
     }
 
-    public void registerDatabaseServer(String name, int port) throws RemoteException{
-        try{
+    public void registerDatabaseServer(String name, int port) throws RemoteException {
+        try {
             //Verbinden met de RMI van de database
             Registry registry = LocateRegistry.getRegistry(RemoteServer.getClientHost(), port);
             DatabaseInterface databaseImp = (DatabaseInterface) registry.lookup("database_service");
             DatabaseServer newServer = new DatabaseServer(name, RemoteServer.getClientHost(), port, databaseImp);
             //Nieuwe database toevoegen aan pool
             databaseServers.add(newServer);
-            System.out.println("INFO: new database server registered: "+name+" ["+newServer.getIp()+":"+newServer.getPort()+"]");
-        }
-        catch (Exception e){
+            System.out.println("INFO: new database server registered: " + name + " [" + newServer.getIp() + ":" + newServer.getPort() + "]");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public DatabaseInterface registerApplicationServer(String name, int port) throws RemoteException{
-        try{
-            Registry registry = LocateRegistry.getRegistry(RemoteServer.getClientHost(), port);
-            AppLoginInterface app_login = (AppLoginInterface) registry.lookup("login_service");
-            ApplicationServer newServer = new ApplicationServer(name, RemoteServer.getClientHost(), port, app_login);
-            applicationServers.add(newServer);
-            System.out.println("INFO: New application server registered: " + name + " [" + newServer.getIp() + ":" + newServer.getRmiPort() + "]");
+    public synchronized DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException {
+        try {
 
-
+            applicationServers.add(server);
+            System.out.println("INFO: New application server registered: " + server.getName() + " [" + server.getIp() + ":" + server.getPort() + "]");
             //Voeg de appserver toe aan de unpaired server lijst
-            unPairedServers.add(newServer);
+            unPairedServers.add(server);
             //Als er 2 servers aanwezig zijn in de unpaired list kunnen we ze paren aan elkaar
-            if (unPairedServers.size()==2){
-                ApplicationServer a = unPairedServers.remove(0);
-                ApplicationServer b = unPairedServers.remove(0);
-
+            if (unPairedServers.size() == 2) {
+                ApplicationServerInterface a = unPairedServers.remove(0);
+                ApplicationServerInterface b = unPairedServers.remove(0);
                 a.setBackupServer(b);
+                System.out.println("Server " + b.getName() + " is a backup server of server " + a.getName());
                 b.setBackupServer(a);
+                System.out.println("Server " + a.getName() + " is a backup server of server " + b.getName());
             }
 
+            //Notify waiting users that a new server is available
+            notifyAll();
+
             return databaseServers.get(0).getDatabaseImp();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -95,9 +95,46 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
         return databaseServers.get(0).getDatabaseImp().isTokenValid(username, token);
     }
 
-    public AppLoginInterface getApplicationServer() throws RemoteException{
+    public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
         System.out.println("INFO: new client connected");
-        return applicationServers.get(0).getApp_login();
+
+        Optional<ApplicationServerInterface> oServer = applicationServers.stream()
+                .filter(s -> {
+                    boolean result = true;
+                    try {
+                        result = !s.isFull();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    return result;
+                }).min(new Comparator<ApplicationServerInterface>() {
+                    @Override
+                    public int compare(ApplicationServerInterface o1, ApplicationServerInterface o2) {
+                        int result = 0;
+
+                        try {
+                            result = o1.getConnectedClients().size() - o2.getConnectedClients().size();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+
+                        return result;
+                    }
+                });
+
+        if (oServer.isPresent()) return oServer.get();
+        else {
+            System.out.println("Starting new servers");
+
+            //Een nieuw paar servers opstarten.
+            Main.startApplicationServers(2);
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return getApplicationServer();
+        }
     }
 
     public List<DatabaseServer> getDatabaseServers() {
@@ -108,11 +145,11 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
         this.databaseServers = databaseServers;
     }
 
-    public List<ApplicationServer> getApplicationServers() {
+    public List<ApplicationServerInterface> getApplicationServers() {
         return applicationServers;
     }
 
-    public void setApplicationServers(List<ApplicationServer> applicationServers) {
+    public void setApplicationServers(List<ApplicationServerInterface> applicationServers) {
         this.applicationServers = applicationServers;
     }
 }
