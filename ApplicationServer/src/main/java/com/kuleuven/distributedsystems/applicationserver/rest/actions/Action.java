@@ -2,6 +2,10 @@ package com.kuleuven.distributedsystems.applicationserver.rest.actions;
 
 import java.io.Serializable;
 
+enum ActionType {
+    INITIALISE, SHOW_TILE, HIDE_TILE, START_GAME, UPDATE_INFO_LABEL, UPDATE_PLAYER_INFO, YOUR_TURN, READY_UP, LEAVE_GAME
+}
+
 /*
  * An action is something that happens that must be made aware to the mobile client
  * */
@@ -26,8 +30,4 @@ public abstract class Action implements Serializable {
     public ActionType getType() {
         return type;
     }
-}
-
-enum ActionType {
-    INITIALISE, SHOW_TILE, HIDE_TILE, START_GAME, UPDATE_INFO_LABEL, UPDATE_PLAYER_INFO, YOUR_TURN, READY_UP, LEAVE_GAME
 }

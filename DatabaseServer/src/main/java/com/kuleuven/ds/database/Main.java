@@ -43,29 +43,28 @@ public class Main {
         }*/
     }
 
-    public static DispatcherInterface registerDispatcher(String serverName, int port){
+    public static DispatcherInterface registerDispatcher(String serverName, int port) {
 
         //Registreren bij dispatcher
-        try{
+        try {
             Registry registry = LocateRegistry.getRegistry(DISPATCH_IP, DISPATCH_PORT);
             DispatcherInterface dispatcherImp = (DispatcherInterface) registry.lookup("dispatcher_service");
             dispatcherImp.registerDatabaseServer(serverName, port);
-            System.out.println("INFO: "+ serverName+" up and running on port: "+port);
+            System.out.println("INFO: " + serverName + " up and running on port: " + port);
             return dispatcherImp;
-        }
-        catch(NotBoundException | RemoteException e){
+        } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
         return null;
     }
-    public static DatabaseInterface startRMI(String server_name, int port){
-        try{
+
+    public static DatabaseInterface startRMI(String server_name, int port) {
+        try {
             databaseImp = new DatabaseImp(server_name);
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind("database_service", databaseImp);
             return databaseImp;
-        }
-        catch(RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
         return null;

@@ -1,6 +1,6 @@
 package exceptions;
 
-public class GameFullException extends Exception{
+public class GameFullException extends Exception {
 
     public GameFullException() {
         super("Game already full.");

@@ -14,6 +14,7 @@ import java.util.Map;
 public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     private static Lobby instance;
+    private static int idCounter = 0;
 
     static {
         try {
@@ -23,12 +24,19 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         }
     }
 
-    private static int idCounter = 0;
     private Map<Integer, Game> live_games = new HashMap<>();
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
 
     private Lobby() throws RemoteException {
+    }
+
+    private static synchronized int createID() {
+        return idCounter++;
+    }
+
+    public static Lobby getInstance() {
+        return instance;
     }
 
     public Lobby init(DatabaseInterface db, DispatcherInterface dispatch) {
@@ -40,86 +48,78 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id)
             throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
         //validate username and token in gameclientinterface
-        if(!isValidPlayer(firstPlayer)){
+        if (!isValidPlayer(firstPlayer)) {
             throw new InvalidCredentialsException();
         }
 
         int id = createID();
-        Game new_game = new Game(name,x,y, max_players,id, this, theme_id);
+        Game new_game = new Game(name, x, y, max_players, id, this, theme_id);
         new_game.addPlayer(firstPlayer);
         live_games.put(id, new_game);
-        System.out.println("INFO: new game initialised [id:"+id+"]");
+        System.out.println("INFO: new game initialised [id:" + id + "]");
         return new_game;
     }
+
+    //TODO: add spectator
 
     public synchronized GameInterface joinGame(int gameId, ClientInterface client)
             throws GameFullException, GameStartedException, RemoteException, InvalidCredentialsException, GameNotFoundException, AlreadyPresentException {
         //validate username and token in gameclientinterface
-        if(!isValidPlayer(client)){
+        if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
         }
 
         Game game = live_games.get(gameId);
-        if(game == null){
+        if (game == null) {
             throw new GameNotFoundException();
         }
-        if(game.isStarted()){
+        if (game.isStarted()) {
             throw new GameStartedException();
         }
-        if(game.getMax_players() > game.getPlayerQueue().size()){
+        if (game.getMax_players() > game.getPlayerQueue().size()) {
             game.addPlayer(client);
             return game;
         } else throw new GameFullException();
     }
 
     public GameInterface spectateGame(int gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException {
-        if(!isValidPlayer(client)){
+        if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
         }
 
         Game game = live_games.get(gameId);
-        if(game == null){
+        if (game == null) {
             throw new GameNotFoundException();
         }
         game.addSpectator(client);
         return game;
     }
 
-    //TODO: add spectator
-
-    public ArrayList<GameInfo> getLiveGames() throws RemoteException{
+    public ArrayList<GameInfo> getLiveGames() throws RemoteException {
         ArrayList<GameInfo> liveGames = new ArrayList<>();
-        for(Game g: live_games.values()){
+        for (Game g : live_games.values()) {
             liveGames.add(g.getGameInfo());
         }
         return liveGames;
     }
 
-    public void terminateGame(Game game){
+    public void terminateGame(Game game) {
         live_games.remove(game.getId());
-        System.out.println("INFO: game [id:"+game.getId()+"] was finished");
+        System.out.println("INFO: game [id:" + game.getId() + "] was finished");
     }
 
-    public List<byte[]> getTheme(int id) throws RemoteException{
+    public List<byte[]> getTheme(int id) throws RemoteException {
         return db.getTheme(id);
     }
 
-    private static synchronized int createID(){
-        return idCounter++;
-    }
-
     public boolean isValidPlayer(ClientInterface client) {
-        try{
+        try {
             return dispatch.isTokenValid(client.getUsername(), client.getToken());
-        } catch(RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
         return false;
 
-    }
-
-    public static Lobby getInstance() {
-        return instance;
     }
 
     public Game getGame(int gameId) throws NoSuchGameExistsException {

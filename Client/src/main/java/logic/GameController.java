@@ -72,24 +72,24 @@ public class GameController implements Initializable, GameControllerInterface {
         readycheckbox.setDisable(true);
     }
 
-    public void leaveGame(){
+    public void leaveGame() {
         Client.getInstance().leaveGame();
     }
 
-    public void updatePlayerList(List<PlayerInfo> playerInfoList){
+    public void updatePlayerList(List<PlayerInfo> playerInfoList) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 playerslist.getItems().clear();
                 int readyCount = 0;
-                for(PlayerInfo pi: playerInfoList){
-                    if(pi.isReady()) readyCount++;
+                for (PlayerInfo pi : playerInfoList) {
+                    if (pi.isReady()) readyCount++;
                     Label label = new Label();
-                    label.setText(pi.getUsername() +"\t\t"+pi.getScore());
+                    label.setText(pi.getUsername() + "\t\t" + pi.getScore());
                     playerslist.getItems().add(label);
                 }
-                if(!gameStarted){
-                    infolabel.setText("players ready: "+readyCount+"/"+playerInfoList.size());
+                if (!gameStarted) {
+                    infolabel.setText("players ready: " + readyCount + "/" + playerInfoList.size());
                 }
                 //Todo: persoon aan de beurt int vet zetten ofzo;
             }
@@ -100,12 +100,12 @@ public class GameController implements Initializable, GameControllerInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         readycheckbox.setOnAction(event -> {
-            if(readycheckbox.isSelected()) {
+            if (readycheckbox.isSelected()) {
                 ready();
             }
         });
 
-        if(spectatorMode){
+        if (spectatorMode) {
             readycheckbox.setDisable(true);
         }
 
@@ -140,7 +140,7 @@ public class GameController implements Initializable, GameControllerInterface {
         updateInfoLabel("Game started");
     }
 
-    public void updateInfoLabel(String s){
+    public void updateInfoLabel(String s) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

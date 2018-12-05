@@ -73,6 +73,10 @@ public class ApplicationServer implements ApplicationServerInterface {
         return restPort;
     }
 
+    public void setRestPort(int restPort) {
+        this.restPort = restPort;
+    }
+
     @Override
     public int getDispatcherPort() throws RemoteException {
         return 0;
@@ -91,10 +95,6 @@ public class ApplicationServer implements ApplicationServerInterface {
     @Override
     public void setDb(DatabaseInterface db) throws RemoteException {
 
-    }
-
-    public void setRestPort(int restPort) {
-        this.restPort = restPort;
     }
 
     @Override

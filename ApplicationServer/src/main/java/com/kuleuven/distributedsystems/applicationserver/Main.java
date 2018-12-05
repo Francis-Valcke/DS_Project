@@ -1,16 +1,10 @@
 package com.kuleuven.distributedsystems.applicationserver;
 
-import interfaces.DatabaseInterface;
-import interfaces.DispatcherInterface;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 @SpringBootApplication
 public class Main {
@@ -29,8 +23,7 @@ public class Main {
             server_name = args[0];
             port = Integer.parseInt(args[1]);
             restPort = Integer.parseInt(args[2]);
-        }
-        else {
+        } else {
             server_name = "Application server Alpha";
             port = 1200;
             restPort = 1600;

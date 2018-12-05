@@ -6,14 +6,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class SceneController {
 
     private static final SceneController instance = new SceneController();
     private Stage prevStage = null;
 
-    private SceneController(){}
+    private SceneController() {
+    }
+
+    public static SceneController getInstance() {
+        return instance;
+    }
 
     public Stage getPrevStage() {
         return prevStage;
@@ -23,8 +27,7 @@ public class SceneController {
         this.prevStage = prevStage;
     }
 
-
-    public void showRegisterScene(){
+    public void showRegisterScene() {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/register.fxml"));
@@ -36,13 +39,12 @@ public class SceneController {
 
             prevStage.close();
             prevStage = stage;
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public void showLoginScene(){
+    public void showLoginScene() {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
@@ -52,10 +54,9 @@ public class SceneController {
             stage.setScene(scene);
             stage.show();
 
-            if(prevStage != null) prevStage.close();
+            if (prevStage != null) prevStage.close();
             prevStage = stage;
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
@@ -80,14 +81,13 @@ public class SceneController {
             });
             prevStage.close();
             prevStage = stage;
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
     }
 
-    public void showLobbyScene(){
+    public void showLobbyScene() {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/lobby.fxml"));
@@ -99,13 +99,8 @@ public class SceneController {
 
             prevStage.close();
             prevStage = stage;
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-    }
-
-    public static SceneController getInstance() {
-        return instance;
     }
 }

@@ -18,18 +18,17 @@ import logic.Client;
 public class Tile extends StackPane {
 
     private static boolean yourTurn = false;
-
+    boolean flipped;
     private Rectangle frontRectangle;
     private Rectangle backRectangle;
     private ScaleTransition open;
     private ScaleTransition close;
     private PauseTransition pause;
-    boolean flipped;
     private Coordinate coordinate;
     private int value;
 
 
-    public Tile(Coordinate coordinate, int size){
+    public Tile(Coordinate coordinate, int size) {
         this.coordinate = coordinate;
         pause = new PauseTransition(Duration.seconds(2));
 
@@ -63,9 +62,17 @@ public class Tile extends StackPane {
 
     }
 
+    public static boolean isYourTurn() {
+        return yourTurn;
+    }
+
+    public static void setYourTurn(boolean yourTurn) {
+        Tile.yourTurn = yourTurn;
+    }
+
     public void handleMouseClick(MouseEvent event) {
         if (flipped) return;
-        if(yourTurn){
+        if (yourTurn) {
             Client.getInstance().setNextMove(coordinate);
         }
     }
@@ -80,14 +87,6 @@ public class Tile extends StackPane {
         flipped = false;
 
         pause.play();
-    }
-
-    public static boolean isYourTurn() {
-        return yourTurn;
-    }
-
-    public static void setYourTurn(boolean yourTurn) {
-        Tile.yourTurn = yourTurn;
     }
 
     private ScaleTransition makeFlipAnimation(Rectangle show, Rectangle hide, int duration) {

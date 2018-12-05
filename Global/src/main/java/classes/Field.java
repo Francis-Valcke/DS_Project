@@ -17,14 +17,13 @@ public class Field implements Serializable {
 
     //Copy constructor om info over speelveld door te geven aan de client
     //value wordt enkel meegegeven als het veld al omgedraaid is
-    public Field(Field toCopy){
+    public Field(Field toCopy) {
         this.x = toCopy.getX();
         this.y = toCopy.getY();
         this.flipped = toCopy.isFlipped();
-        if(isFlipped()){
+        if (isFlipped()) {
             this.value = toCopy.getValue();
-        }
-        else this.value = -1;
+        } else this.value = -1;
     }
 
     public int getX() {

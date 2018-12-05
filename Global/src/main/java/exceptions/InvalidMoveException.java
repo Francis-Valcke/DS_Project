@@ -5,7 +5,7 @@ public class InvalidMoveException extends Exception {
         super("That move is not valid.");
     }
 
-    public InvalidMoveException(String message){
+    public InvalidMoveException(String message) {
         super(message);
     }
 }

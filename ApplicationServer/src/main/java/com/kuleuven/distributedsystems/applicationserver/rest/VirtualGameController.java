@@ -1,10 +1,10 @@
 package com.kuleuven.distributedsystems.applicationserver.rest;
 
-import com.kuleuven.distributedsystems.applicationserver.rest.actions.*;
 import classes.Coordinate;
 import classes.PlayerInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kuleuven.distributedsystems.applicationserver.rest.actions.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,6 @@
 package logic;
 
 import exceptions.InvalidCredentialsException;
-import interfaces.AppLoginInterface;
 import interfaces.ApplicationServerInterface;
 import interfaces.DispatcherInterface;
 import interfaces.LobbyInterface;
@@ -29,11 +28,10 @@ public class LoginController {
     public Button button_register;
 
 
-
-    public LoginController(){
+    public LoginController() {
     }
 
-    public void login(ActionEvent actionEvent){
+    public void login(ActionEvent actionEvent) {
         Registry registry;
         try {
             String username = input_username.getText();
@@ -46,7 +44,7 @@ public class LoginController {
             //Token opvragen
             String token = "";
             //Nieuwe token opvragen als de oude ouder dan 24u is
-            if(!dispatch.isTokenValid(username, token)){
+            if (!dispatch.isTokenValid(username, token)) {
                 token = dispatch.requestNewToken(username, password);
             }
 
@@ -71,8 +69,7 @@ public class LoginController {
         } catch (RemoteException | NotBoundException re) {
             AlertBox.display("Connection problems", "Cannot contact dispatcher");
             re.printStackTrace();
-        }
-        catch(InvalidCredentialsException ice){
+        } catch (InvalidCredentialsException ice) {
             //ice.printStackTrace();
             AlertBox.display("Login not successful.", "Username and/or password are wrong.");
             //TODO: error op scherm laten verschijnen;

@@ -50,7 +50,9 @@ public class LobbyController implements Initializable {
                 System.out.println(e1.getMessage());
             }
         });
-        spectatebutton.setOnAction(e ->{spectateGame();});
+        spectatebutton.setOnAction(e -> {
+            spectateGame();
+        });
 
         try {
             serverName.setText(client.getApplicationServer().getName());
@@ -68,7 +70,8 @@ public class LobbyController implements Initializable {
         client.joinGame(selected);
 
     }
-    public void spectateGame(){
+
+    public void spectateGame() {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
         client.spectateGame(selected.getId());
         //TODO: implementeren
@@ -79,7 +82,7 @@ public class LobbyController implements Initializable {
             gameslist.getItems().clear();
             ArrayList<GameInfo> games = client.getLobby().getLiveGames();
             for (GameInfo gi : games) {
-                Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") "+(gi.isStarted() ? "(started)" : ""));
+                Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : ""));
                 labelMap.put(label, gi);
                 gameslist.getItems().add(label);
             }

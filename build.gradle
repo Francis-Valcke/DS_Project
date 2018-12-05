@@ -15,13 +15,13 @@ allprojects {
     }
 }
 
-project.ext.outDir=outputDir
+project.ext.outDir = outputDir
 
 subprojects {
     version = "1.0"
 
     apply plugin: 'java'
-    tasks.withType(Jar){
+    tasks.withType(Jar) {
         destinationDir = file(outputDir)
     }
 }

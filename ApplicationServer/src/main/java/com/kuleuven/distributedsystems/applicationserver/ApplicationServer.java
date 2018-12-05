@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
+    private static final int SERVER_CAPACITY = 2;
     private static ApplicationServer instance;
 
     static {
@@ -21,8 +22,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
             e.printStackTrace();
         }
     }
-
-    private static final int SERVER_CAPACITY = 1;
 
     private String name;
     private String ip;
@@ -40,7 +39,11 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private ApplicationServer() throws RemoteException {
     }
 
-    public void init(String name, String ip, int port, int restPort, String dispatcherIp, int dispatcherPort){
+    public static ApplicationServer getInstance() {
+        return instance;
+    }
+
+    public void init(String name, String ip, int port, int restPort, String dispatcherIp, int dispatcherPort) {
         this.name = name;
         this.ip = ip;
         this.port = port;
@@ -50,25 +53,25 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         connectedClients = new ArrayList<>();
 
         startLogin();
-        System.out.println("INFO: up and running on port: "+ port);
+        System.out.println("INFO: up and running on port: " + port);
         registerWithDispatcher();
         System.out.println("INFO: connection made to database and dispatch");
     }
 
     @Override
-    public void startLogin(){
-        try{
+    public void startLogin() {
+        try {
             appLogin = AppLogin.getInstance();
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind("login_service", appLogin);
-        } catch(RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
     }
 
     @Override
-    public void registerWithDispatcher(){
-        try{
+    public void registerWithDispatcher() {
+        try {
             Registry registry = LocateRegistry.getRegistry(dispatcherIp, dispatcherPort);
             DispatcherInterface dispatcherImpl = (DispatcherInterface) registry.lookup("dispatcher_service");
             //We krijgen een link naar de databank terug die deze server zal gebruiken
@@ -80,26 +83,22 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
             lobby = Lobby.getInstance().init(db, dispatcherImpl);
             appLogin.setLobby(lobby);
 
-        } catch(NotBoundException | RemoteException e){
+        } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    public static ApplicationServer getInstance() {
-        return instance;
-    }
-
-    public boolean isFull(){
+    public boolean isFull() {
         return connectedClients.size() >= SERVER_CAPACITY;
     }
 
-    public void addConnectedClient(ClientInterface client){
+    public void addConnectedClient(ClientInterface client) {
         connectedClients.add(client);
     }
 
     /*
-    * Getters & Setters
-    * */
+     * Getters & Setters
+     * */
 
     @Override
     public List<ClientInterface> getConnectedClients() {

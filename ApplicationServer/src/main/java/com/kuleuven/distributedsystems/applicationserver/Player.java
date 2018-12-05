@@ -5,13 +5,13 @@ import interfaces.ClientInterface;
 
 import java.util.Objects;
 
-public class Player{
+public class Player {
     private int score;
     private ClientInterface gameclient;
     private String username;
     private boolean ready;
 
-    public Player(ClientInterface gameclient, String username){
+    public Player(ClientInterface gameclient, String username) {
         this.gameclient = gameclient;
         this.username = username;
         score = 0;
@@ -22,7 +22,7 @@ public class Player{
         score += 1;
     }
 
-    public int getScore(){
+    public int getScore() {
         return score;
     }
 
@@ -38,7 +38,7 @@ public class Player{
         this.gameclient = gameclient;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
@@ -54,7 +54,7 @@ public class Player{
         this.ready = ready;
     }
 
-    public PlayerInfo convertToPlayerInfo(){
+    public PlayerInfo convertToPlayerInfo() {
         return new PlayerInfo(username, ready, score);
     }
 

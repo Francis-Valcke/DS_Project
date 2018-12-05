@@ -131,9 +131,21 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String getToken() throws RemoteException {
         return token;
+    }
+
+    /*
+     * Actions that need to go into the action queue
+     * */
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -141,10 +153,6 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         if (username.equals(c.getUsername()) && token.equals(c.getToken())) return true;
         return false;
     }
-
-    /*
-     * Actions that need to go into the action queue
-     * */
 
     @Override
     public void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException {
@@ -161,6 +169,10 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         gameController.showTile(c, value);
     }
 
+    /*
+     * Getters & Setters
+     * */
+
     @Override
     public void setGameStarted() throws RemoteException {
         gameController.startGame();
@@ -170,10 +182,6 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
     public void updateInfoLabel(String s) throws RemoteException {
         gameController.updateInfoLabel(s);
     }
-
-    /*
-     * Getters & Setters
-     * */
 
     public GameInterface getGame() {
         return game;
@@ -213,14 +221,6 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
 
     public void setGameController(VirtualGameController gameController) {
         this.gameController = gameController;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public Coordinate getNextMove() {

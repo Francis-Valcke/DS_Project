@@ -18,6 +18,7 @@ import java.util.List;
 public class Client extends UnicastRemoteObject implements ClientInterface {
     //Singleton
     private static Client instance;
+
     static {
         try {
             instance = new Client();
@@ -41,7 +42,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     private boolean inGame = false;
 
 
-    private Client() throws RemoteException{}
+    private Client() throws RemoteException {
+    }
+
+    public static Client getInstance() {
+        return instance;
+    }
 
     public synchronized Coordinate requestMove() throws RemoteException, LeftGameException {
         //System.out.println("Move requested");
@@ -49,10 +55,10 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         nextMove = null;
         gameController.updateInfoLabel("Flip a card!");
         //Zolang nextMove niet gegeven is moet de thread wachten;
-        while(nextMove == null){
+        while (nextMove == null) {
             try {
                 wait();
-                if(!inGame){
+                if (!inGame) {
                     throw new LeftGameException();
                 }
             } catch (InterruptedException e) {
@@ -65,7 +71,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         return nextMove;
     }
 
-
     public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException {
         try {
             game = lobby.makeNewGame(name, width, height, max_players, this, theme_id);
@@ -75,11 +80,11 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
             SceneController.getInstance().createGameScene(gameController);
 
         } catch (InvalidSizeException e) {
-            AlertBox.display("Cannot make game","Number of fields must be even");
+            AlertBox.display("Cannot make game", "Number of fields must be even");
 
         } catch (InvalidCredentialsException e) {
-            AlertBox.display("Cannot make game","Wrong credentials");
-        } catch (RemoteException e){
+            AlertBox.display("Cannot make game", "Wrong credentials");
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
@@ -104,7 +109,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
             gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId()));
             SceneController.getInstance().createGameScene(gameController);
             HashMap<Coordinate, Integer> flippedFields = game.getFlippedFields();
-            for(Coordinate c: flippedFields.keySet()){
+            for (Coordinate c : flippedFields.keySet()) {
                 gameController.showTile(c, flippedFields.get(c));
             }
 
@@ -116,13 +121,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    public Theme loadTheme(int theme_id){
+    public Theme loadTheme(int theme_id) {
         System.out.println(System.getProperty("user.dir"));
-        File themeDirectory = new File("Client/src/main/resources/themes/"+theme_id);
-        if(themeDirectory.isDirectory()){
+        File themeDirectory = new File("Client/src/main/resources/themes/" + theme_id);
+        if (themeDirectory.isDirectory()) {
             return new Theme(theme_id);
-        }
-        else{
+        } else {
             try {
                 List<byte[]> images = lobby.getTheme(theme_id);
                 Theme.saveNewTheme(theme_id, images);
@@ -134,17 +138,16 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         return null;
     }
 
-    public void readyUp(){
-        try{
+    public void readyUp() {
+        try {
             game.readyUp(this);
             //System.out.println("ik ben klaar");
-        }
-        catch(RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
     }
 
-    public synchronized void leaveGame(){
+    public synchronized void leaveGame() {
         try {
             //Eventuele thread die vastzit in requestmove losmaken
             inGame = false;
@@ -159,37 +162,36 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    public void showTile(Coordinate c, int value) throws RemoteException{
+    public void showTile(Coordinate c, int value) throws RemoteException {
         gameController.showTile(c, value);
     }
-    public void hideTile(Coordinate c, int delay) throws RemoteException{
+
+    public void hideTile(Coordinate c, int delay) throws RemoteException {
         gameController.hideTile(c, delay);
     }
 
-
-    public void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException{
+    public void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException {
         try {
             gameController.updatePlayerList(playerInfoList);
-        }catch (NullPointerException ne){
+        } catch (NullPointerException ne) {
             //Het kan zijn dat de gamecontroller nog niet is aangemaakt op het moment van de 1ste update
         }
     }
 
-    public void updateInfoLabel(String s) throws RemoteException{
+    public void updateInfoLabel(String s) throws RemoteException {
         gameController.updateInfoLabel(s);
     }
 
-    public void setGameStarted() throws RemoteException{
+    public void setGameStarted() throws RemoteException {
         gameController.startGame();
-    }
-
-    public synchronized void setNextMove(Coordinate nextMove) {
-        this.nextMove = nextMove;
-        notifyAll();
     }
 
     public GameInterface getGame() {
         return game;
+    }
+
+    public void setGame(GameInterface game) {
+        this.game = game;
     }
 
     public ApplicationServerInterface getApplicationServer() {
@@ -200,20 +202,24 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         this.applicationServer = applicationServer;
     }
 
-    public void setGame(GameInterface game) {
-        this.game = game;
-    }
-
-    public String getUsername() throws RemoteException{
+    public String getUsername() throws RemoteException {
         return username;
     }
 
-    public String getToken() throws RemoteException{
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getToken() throws RemoteException {
         return token;
     }
 
-    public boolean isSameClient(ClientInterface c) throws RemoteException{
-        if(username.equals(c.getUsername()) && token.equals(c.getToken())) return true;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public boolean isSameClient(ClientInterface c) throws RemoteException {
+        if (username.equals(c.getUsername()) && token.equals(c.getToken())) return true;
         return false;
     }
 
@@ -241,20 +247,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         this.lobby = lobby;
     }
 
-    public static Client getInstance() {
-        return instance;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public Coordinate getNextMove() {
         return nextMove;
+    }
+
+    public synchronized void setNextMove(Coordinate nextMove) {
+        this.nextMove = nextMove;
+        notifyAll();
     }
 
     public GameController getGameController() {

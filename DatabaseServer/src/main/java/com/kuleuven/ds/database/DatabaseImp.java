@@ -6,12 +6,8 @@ import exceptions.UserAlreadyExistsException;
 import interfaces.DatabaseInterface;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
@@ -21,120 +17,119 @@ import java.util.List;
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
     private Connection conn;
 
-    public DatabaseImp(String dbFilePath) throws RemoteException{
+    public DatabaseImp(String dbFilePath) throws RemoteException {
 
         //Connectie met de DB opzetten
         String url = "jdbc:sqlite:" + dbFilePath;
-        try{
+        try {
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
+    private static String hash(String password, String salt) {
+        return Hashing.sha256().hashString((password + salt), StandardCharsets.UTF_8).toString();
+    }
+
+    private static String hash(String password) {
+        return Hashing.sha256().hashString((password), StandardCharsets.UTF_8).toString();
+    }
+
     public void createNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        if(userExists(username)) throw new UserAlreadyExistsException();
+        if (userExists(username)) throw new UserAlreadyExistsException();
 
         // SQL statement for creating new user
         String sql = "INSERT INTO users(username, password, salt) VALUES(?,?,?)";
 
-        try{
+        try {
             String salt = Hashing.sha256().hashString((System.currentTimeMillis() + "WillekeurigeString"), StandardCharsets.UTF_8).toString();
             String hashedPassw = hash(password, salt);
-            try{
+            try {
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, username);
                 pstmt.setString(2, hashedPassw);
                 pstmt.setString(3, salt);
                 pstmt.executeUpdate();
-            }
-            catch(SQLException sqle){
+            } catch (SQLException sqle) {
                 sqle.printStackTrace();
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public String createToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        if(checkCredentials(username, password)){
+        if (checkCredentials(username, password)) {
             String sql = "UPDATE users SET token = ? , token_timestamp = ? WHERE username = ?;";
 
-            String token = hash(password+"MemoryGame"+System.currentTimeMillis());
-            try{
+            String token = hash(password + "MemoryGame" + System.currentTimeMillis());
+            try {
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, token);
                 pstmt.setLong(2, System.currentTimeMillis());
                 pstmt.setString(3, username);
                 pstmt.executeUpdate();
-            }
-            catch(SQLException se){
+            } catch (SQLException se) {
                 se.printStackTrace();
             }
             return token;
 
-        }
-        else throw new InvalidCredentialsException();
+        } else throw new InvalidCredentialsException();
     }
 
-    public boolean checkCredentials(String username, String password) throws RemoteException{
-        if(!userExists(username)){
+    public boolean checkCredentials(String username, String password) throws RemoteException {
+        if (!userExists(username)) {
             return false;
         }
         String sql = "SELECT password, salt FROM users WHERE username = ?";
-        try{
-            PreparedStatement pstmt  = conn.prepareStatement(sql);
-            pstmt.setString(1,username);
-            ResultSet rs  = pstmt.executeQuery();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
             //binnengekomen paswoord hashen met de salt uit de DB
             password = hash(password, rs.getString("salt"));
             //checken als beide hashen overeenkomen
-            if(password.equals(rs.getString("password"))){
+            if (password.equals(rs.getString("password"))) {
                 return true;
-            }
-            else return false;
-        }
-        catch(SQLException se){
+            } else return false;
+        } catch (SQLException se) {
             se.printStackTrace();
             return false;
         }
 
 
-
-
     }
 
-    public boolean isTokenValid(String username, String token) throws RemoteException{
+    public boolean isTokenValid(String username, String token) throws RemoteException {
         //TODO: tokens hashen
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
-        try{
+        try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1,username);
+            pstmt.setString(1, username);
             pstmt.setString(2, token);
             ResultSet rs = pstmt.executeQuery();
             long currentTime = System.currentTimeMillis();
-            while(rs.next()){
+            while (rs.next()) {
                 //Als de token minder dan 24u oud is
-                if(currentTime - rs.getLong(1) < 86400000) return true;
+                if (currentTime - rs.getLong(1) < 86400000) return true;
             }
             return false;
-        }
-        catch(SQLException se){
+        } catch (SQLException se) {
             //Als user niet bestaat of token klopt niet;
             return false;
         }
     }
 
-    private boolean userExists(String username){
+    private boolean userExists(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
-        try{
-            PreparedStatement pstmt  = conn.prepareStatement(sql);
-            pstmt.setString(1,username);
-            ResultSet rs  = pstmt.executeQuery();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
 
             //Kijken als er iets in de resultset zit
-            if(rs.next()) {
+            if (rs.next()) {
                 return true;
             }
         } catch (SQLException e) {
@@ -151,7 +146,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             ResultSet rs = pstmt.executeQuery();
 
             List<byte[]> toReturn = new ArrayList<>();
-            while(rs.next()) {
+            while (rs.next()) {
                 InputStream is = rs.getBinaryStream("picture");
                 byte[] themeAsBytes = IOUtils.toByteArray(is);
                 toReturn.add(themeAsBytes);
@@ -166,11 +161,11 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     public void insertPhoto(int id) throws RemoteException {
         //System.out.println(System.getProperty("user.dir"));
-        byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/"+id+".png").getPath());
+        byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
 
         String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
 
-        try{
+        try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
             // set parameters
@@ -188,15 +183,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     public void newTheme() {
         String sql = "INSERT INTO themes(id, name, size) VALUES(?,?,?)";
     }
-
-    private static String hash(String password, String salt){
-        return Hashing.sha256().hashString((password + salt),StandardCharsets.UTF_8).toString();
-    }
-
-    private static String hash(String password){
-        return Hashing.sha256().hashString((password),StandardCharsets.UTF_8).toString();
-    }
-
 
     //TIJDELIJK, om files op te zetten naar byte arrays
     private byte[] readFile(String file) {

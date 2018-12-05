@@ -1,6 +1,6 @@
 package exceptions;
 
-public class InvalidCredentialsException extends Exception{
+public class InvalidCredentialsException extends Exception {
     public InvalidCredentialsException() {
         super("Wrong credentials.");
     }

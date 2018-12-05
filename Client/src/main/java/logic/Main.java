@@ -5,12 +5,12 @@ import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Main extends Application{
+public class Main extends Application {
 
     public static final String DISPATCH_IP = "localhost";
     public static final int DISPATCH_PORT = 1000;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 

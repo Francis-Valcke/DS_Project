@@ -42,12 +42,12 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         this.theme_id = theme_id;
         //checken als het board een even aantal veldjes heeft
         board = new HashMap<>();
-        if((x_size*y_size) % 2 != 0){
+        if ((x_size * y_size) % 2 != 0) {
             throw new InvalidSizeException("Number of fields on board must be even");
         }
         //Elke combinatie 2x toevoegen aan een lijst;
         List<Integer> combinations = new LinkedList<>();
-        for(int i = 0; i<(x_size*y_size)/2; i++){
+        for (int i = 0; i < (x_size * y_size) / 2; i++) {
             combinations.add(i);
             combinations.add(i);
         }
@@ -55,7 +55,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         for (int x = 0; x < x_size; x++) {
             for (int y = 0; y < y_size; y++) {
                 int list_index = (int) Math.floor(Math.random() * combinations.size());
-                board.put(new Coordinate(x,y), new Field(x,y,combinations.get(list_index)));
+                board.put(new Coordinate(x, y), new Field(x, y, combinations.get(list_index)));
                 combinations.remove(list_index);
             }
         }
@@ -63,7 +63,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     public void addPlayer(ClientInterface newClient) throws AlreadyPresentException {
         try {
-            System.out.println("INFO: new player added: "+newClient.getUsername());
+            System.out.println("INFO: new player added: " + newClient.getUsername());
             Player newPlayer = new Player(newClient, newClient.getUsername());
             if (allPlayers.contains(newPlayer)) throw new AlreadyPresentException();
 
@@ -76,56 +76,56 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
     }
 
-    public void addSpectator(ClientInterface newClient){
-        try{
-            System.out.println("INFO: new spectator joined: "+newClient.getUsername());
+    public void addSpectator(ClientInterface newClient) {
+        try {
+            System.out.println("INFO: new spectator joined: " + newClient.getUsername());
             Player newPlayer = new Player(newClient, newClient.getUsername());
             allPlayers.add(newPlayer);
-        } catch (RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
     }
 
-    public void leaveGame(ClientInterface client) throws RemoteException{
+    public void leaveGame(ClientInterface client) throws RemoteException {
         Player toDelete = null;
-        for(Player p: allPlayers){
-            if(p.getGameclient().isSameClient(client)){
+        for (Player p : allPlayers) {
+            if (p.getGameclient().isSameClient(client)) {
                 toDelete = p;
             }
         }
-        if(toDelete != null){
+        if (toDelete != null) {
             allPlayers.remove(toDelete);
             playerQueue.remove(toDelete);
         }
         pushPlayerlist();
     }
 
-    public synchronized void readyUp(ClientInterface client) throws RemoteException{
+    public synchronized void readyUp(ClientInterface client) throws RemoteException {
         //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Player op ready zetten
-        for(Player p: playerQueue){
-            if(p.getGameclient().isSameClient(client)) p.setReady(true);
+        for (Player p : playerQueue) {
+            if (p.getGameclient().isSameClient(client)) p.setReady(true);
         }
 
         //Checken als alle spelers klaar zijn
         boolean allPlayersReady = true;
-        for(Player p: playerQueue){
-            if(!p.isReady()){
+        for (Player p : playerQueue) {
+            if (!p.isReady()) {
                 allPlayersReady = false;
                 break;
             }
         }
         //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Game starten als alle spelers klaar zijn
-        if(allPlayersReady) startGame();
+        if (allPlayersReady) startGame();
         pushPlayerlist();
 
     }
 
-    private void startGame(){
+    private void startGame() {
         //TODO een deftige thread hiervoor schrijven
-        System.out.println("Starting game "+id);
+        System.out.println("Starting game " + id);
         started = true;
         //Spelers laten weten dat de game begonnen is
-        for(Player p: allPlayers){
+        for (Player p : allPlayers) {
             try {
                 p.getGameclient().setGameStarted();
             } catch (RemoteException e) {
@@ -138,9 +138,9 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         gameThread.start();
     }
 
-    private void runGame(){
+    private void runGame() {
         //Zolang er nog spelers meedoen, en niet alle velden zijn omgedraait spelen we verder
-        while(!playerQueue.isEmpty() && !allFieldsFlipped()){
+        while (!playerQueue.isEmpty() && !allFieldsFlipped()) {
             try {
                 requestMove();
             } catch (LeftGameException lge) {
@@ -157,7 +157,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     }
 
-    private void requestMove() throws LeftGameException{
+    private void requestMove() throws LeftGameException {
         try {//1ste speler in queue opzoeken
             current_player = playerQueue.peek();
 
@@ -184,19 +184,19 @@ public class Game extends UnicastRemoteObject implements GameInterface {
                 pushHideTile(c_one);
                 pushHideTile(c_two);
             }
-        } catch(RemoteException re){
+        } catch (RemoteException re) {
             re.printStackTrace();
         }
 
     }
 
-    private synchronized boolean makeMove(Field one, Field two){
-        if(one.isFlipped() || two.isFlipped()){
+    private synchronized boolean makeMove(Field one, Field two) {
+        if (one.isFlipped() || two.isFlipped()) {
             return false;
         }
         boolean point = false;
 
-        if(one.getValue() == two.getValue()){
+        if (one.getValue() == two.getValue()) {
             //Valid Move
             one.setFlipped(true);
             two.setFlipped(true);
@@ -206,14 +206,14 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return point;
     }
 
-    public void pushPlayerlist(){
+    public void pushPlayerlist() {
 
         //pushen naar client
         List<PlayerInfo> playerInfoList = new ArrayList<>();
         for (Player p : playerQueue) {
             playerInfoList.add(p.convertToPlayerInfo());
         }
-        for(Player p: allPlayers) {
+        for (Player p : allPlayers) {
             try {
                 p.getGameclient().updatePlayerInfo(playerInfoList);
             } catch (RemoteException e) {
@@ -222,9 +222,9 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
     }
 
-    public void pushInfoLabel(String s){
+    public void pushInfoLabel(String s) {
         //pushen naar client
-        for(Player p: allPlayers) {
+        for (Player p : allPlayers) {
             try {
                 p.getGameclient().updateInfoLabel(s);
             } catch (RemoteException e) {
@@ -233,7 +233,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
     }
 
-    public List<PlayerInfo> getPlayerlist() throws RemoteException{
+    public List<PlayerInfo> getPlayerlist() throws RemoteException {
         List<PlayerInfo> playerInfoList = new ArrayList<>();
         for (Player p : playerQueue) {
             playerInfoList.add(p.convertToPlayerInfo());
@@ -241,17 +241,17 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return playerInfoList;
     }
 
-    public HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException{
+    public HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException {
         HashMap<Coordinate, Integer> toReturn = new HashMap<>();
-        for(Coordinate c: board.keySet()){
-            if(board.get(c).isFlipped()){
+        for (Coordinate c : board.keySet()) {
+            if (board.get(c).isFlipped()) {
                 toReturn.put(c, board.get(c).getValue());
             }
         }
         return toReturn;
     }
 
-    public int getThemeId() throws RemoteException{
+    public int getThemeId() throws RemoteException {
         return theme_id;
     }
 
@@ -259,8 +259,8 @@ public class Game extends UnicastRemoteObject implements GameInterface {
      * Deze methode pusht een bepaalde move van een speler naar alle clients;
      */
 
-    public void pushShowTile(Coordinate c){
-        for(Player p: allPlayers){
+    public void pushShowTile(Coordinate c) {
+        for (Player p : allPlayers) {
             try {
                 p.getGameclient().showTile(c, board.get(c).getValue());
             } catch (RemoteException e) {
@@ -269,8 +269,8 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
     }
 
-    public void pushHideTile(Coordinate c){
-        for(Player p: allPlayers){
+    public void pushHideTile(Coordinate c) {
+        for (Player p : allPlayers) {
             try {
                 p.getGameclient().hideTile(c, 1000);
             } catch (RemoteException e) {
@@ -294,8 +294,16 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return board;
     }
 
+    public void setBoard(Map<Coordinate, Field> board) {
+        this.board = board;
+    }
+
     public Queue<Player> getPlayerQueue() {
         return playerQueue;
+    }
+
+    public void setPlayerQueue(Queue<Player> playerQueue) {
+        this.playerQueue = playerQueue;
     }
 
     public String getName() {
@@ -304,14 +312,6 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setBoard(Map<Coordinate, Field> board) {
-        this.board = board;
-    }
-
-    public void setPlayerQueue(Queue<Player> playerQueue) {
-        this.playerQueue = playerQueue;
     }
 
     public int getMax_players() {
@@ -338,16 +338,16 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         this.started = started;
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return x_size;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return y_size;
     }
 
-    public GameInfo getGameInfo(){
-        return new GameInfo(name, id, x_size, y_size, max_players, playerQueue.size(), started ,theme_id);
+    public GameInfo getGameInfo() {
+        return new GameInfo(name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
     }
 
     public ArrayList<Player> getAllPlayers() {
@@ -406,9 +406,9 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         this.virtualClientManager = virtualClientManager;
     }
 
-    public boolean allFieldsFlipped(){
-        for(Field f: board.values()){
-            if(!f.isFlipped()){
+    public boolean allFieldsFlipped() {
+        for (Field f : board.values()) {
+            if (!f.isFlipped()) {
                 return false;
             }
         }

@@ -4,21 +4,28 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="288.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="logic.RegisterController">
-   <children>
-      <Pane layoutX="20.0" layoutY="55.0" prefHeight="306.0" prefWidth="248.0">
-         <children>
-            <TextField fx:id="input_username" layoutX="1.0" layoutY="51.0" prefHeight="31.0" prefWidth="252.0" promptText="Username" />
-            <PasswordField fx:id="input_password" layoutY="106.0" prefHeight="31.0" prefWidth="252.0" promptText="Password" />
-            <PasswordField fx:id="input_confirm" layoutY="169.0" prefHeight="31.0" prefWidth="252.0" promptText="Confirm" />
-            <Button fx:id="button_register" layoutX="14.0" layoutY="229.0" onAction="#register" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Register" textFill="WHITE" />
-            <Button fx:id="button_back" layoutX="156.0" layoutY="229.0" onAction="#goBack" prefHeight="31.0" prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Back" textFill="WHITE" />
-         </children>
-      </Pane>
-       <Label alignment="CENTER" layoutX="-2.0" layoutY="14.0" prefHeight="51.0" prefWidth="292.0" text="Memory" textAlignment="CENTER">
-           <font>
-               <Font name="System Bold" size="36.0" />
-           </font>
-       </Label>
-   </children>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="288.0"
+            xmlns="http://javafx.com/javafx/8.0.171" fx:controller="logic.RegisterController">
+    <children>
+        <Pane layoutX="20.0" layoutY="55.0" prefHeight="306.0" prefWidth="248.0">
+            <children>
+                <TextField fx:id="input_username" layoutX="1.0" layoutY="51.0" prefHeight="31.0" prefWidth="252.0"
+                           promptText="Username"/>
+                <PasswordField fx:id="input_password" layoutY="106.0" prefHeight="31.0" prefWidth="252.0"
+                               promptText="Password"/>
+                <PasswordField fx:id="input_confirm" layoutY="169.0" prefHeight="31.0" prefWidth="252.0"
+                               promptText="Confirm"/>
+                <Button fx:id="button_register" layoutX="14.0" layoutY="229.0" onAction="#register" prefHeight="31.0"
+                        prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Register" textFill="WHITE"/>
+                <Button fx:id="button_back" layoutX="156.0" layoutY="229.0" onAction="#goBack" prefHeight="31.0"
+                        prefWidth="78.0" style="-fx-background-color: #257EFF;" text="Back" textFill="WHITE"/>
+            </children>
+        </Pane>
+        <Label alignment="CENTER" layoutX="-2.0" layoutY="14.0" prefHeight="51.0" prefWidth="292.0" text="Memory"
+               textAlignment="CENTER">
+            <font>
+                <Font name="System Bold" size="36.0"/>
+            </font>
+        </Label>
+    </children>
 </AnchorPane>

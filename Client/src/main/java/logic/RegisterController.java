@@ -2,7 +2,6 @@ package logic;
 
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
-import interfaces.AppLoginInterface;
 import interfaces.ApplicationServerInterface;
 import interfaces.DispatcherInterface;
 import interfaces.LobbyInterface;
@@ -24,11 +23,10 @@ public class RegisterController {
     public Button button_back;
 
 
-
-    public RegisterController(){
+    public RegisterController() {
     }
 
-    public void register(){
+    public void register() {
         try {
             String username = input_username.getText();
             String password = input_password.getText();
@@ -59,7 +57,8 @@ public class RegisterController {
             e.printStackTrace();
         }
     }
-    public void goBack(){
+
+    public void goBack() {
         SceneController.getInstance().showLoginScene();
     }
 }
