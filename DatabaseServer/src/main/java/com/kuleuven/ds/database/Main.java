@@ -33,6 +33,14 @@ public class Main {
         }
         databaseImp = startRMI(dbFilePath, serverPort);
         dispatcherImp = registerDispatcher(dbFilePath, serverPort);
+
+        /*for(int i = 1; i< 152; i++){
+            try {
+                databaseImp.insertPhoto(i);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }*/
     }
 
     public static DispatcherInterface registerDispatcher(String serverName, int port){

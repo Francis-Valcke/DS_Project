@@ -37,15 +37,17 @@ public class GameController implements Initializable, GameControllerInterface {
     @FXML
     Label infolabel;
 
+    Theme theme;
     boolean gameStarted = false;
     boolean spectatorMode;
 
     HashMap<Coordinate, Tile> tiles = new HashMap<>();
     int height, width;
 
-    public GameController(int height, int width, boolean spectator) {
+    public GameController(int height, int width, boolean spectator, Theme theme) {
         this.height = height;
         this.width = width;
+        this.theme = theme;
         spectatorMode = spectator;
         //TODO: spectator gamecontroller anders aanmaken
         try {
@@ -57,7 +59,7 @@ public class GameController implements Initializable, GameControllerInterface {
 
     public void showTile(Coordinate c, int value) {
         Tile tile = tiles.get(c);
-        tile.open(value);
+        tile.open(theme.getPicture(value));
     }
 
     public void hideTile(Coordinate c, int delay) {

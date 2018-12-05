@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ApplicationServer 0" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="ApplicationServer_main" />
+    <module name="memory-ApplicationServer_main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.kuleuven.distributedsystems.applicationserver.Main" />
     <option name="PROGRAM_PARAMETERS" value="app_alpha 1200 1600" />
     <option name="ALTERNATIVE_JRE_PATH" />

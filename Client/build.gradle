@@ -25,6 +25,7 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile project(':Global')
     testCompile("junit:junit")
 }

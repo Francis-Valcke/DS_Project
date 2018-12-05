@@ -10,14 +10,16 @@ public class GameInfo implements Serializable {
     int height;
     int maxPlayers;
     int numberOfPlayersJoined;
+    int theme_id;
 
-    public GameInfo(String name, int id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started) {
+    public GameInfo(String name, int id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started, int theme_id) {
         this.name = name;
         this.id = id;
         this.width = width;
         this.height = height;
         this.maxPlayers = maxPlayers;
         this.numberOfPlayersJoined = numberOfPlayersJoined;
+        this.theme_id = theme_id;
     }
 
     public String getName() {
@@ -46,5 +48,13 @@ public class GameInfo implements Serializable {
 
     public int getNumberOfPlayersJoined() {
         return numberOfPlayersJoined;
+    }
+
+    public int getTheme_id() {
+        return theme_id;
+    }
+
+    public void setTheme_id(int theme_id) {
+        this.theme_id = theme_id;
     }
 }

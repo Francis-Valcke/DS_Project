@@ -22,6 +22,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private ArrayList<Player> allPlayers = new ArrayList<>();
     private Queue<Player> playerQueue = new LinkedList<>();
     private Set<Player> spectators;
+    private int theme_id = 0;
     private int max_players;
     private int x_size;
     private int y_size;
@@ -31,13 +32,14 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private Lobby lobby;
     private VirtualClientManager virtualClientManager;
 
-    public Game(String name, int x_size, int y_size, int max_players, int id, Lobby lobby) throws InvalidSizeException, RemoteException {
+    public Game(String name, int x_size, int y_size, int max_players, int id, Lobby lobby, int theme_id) throws InvalidSizeException, RemoteException {
         this.name = name;
         this.x_size = x_size;
         this.y_size = y_size;
         this.id = id;
         this.max_players = max_players;
         this.lobby = lobby;
+        this.theme_id = theme_id;
         //checken als het board een even aantal veldjes heeft
         board = new HashMap<>();
         if((x_size*y_size) % 2 != 0){
@@ -58,7 +60,6 @@ public class Game extends UnicastRemoteObject implements GameInterface {
             }
         }
     }
-
 
     public void addPlayer(ClientInterface newClient) throws AlreadyPresentException {
         try {
@@ -250,6 +251,10 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return toReturn;
     }
 
+    public int getThemeId() throws RemoteException{
+        return theme_id;
+    }
+
     /**
      * Deze methode pusht een bepaalde move van een speler naar alle clients;
      */
@@ -342,7 +347,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     }
 
     public GameInfo getGameInfo(){
-        return new GameInfo(name, id, x_size, y_size, max_players, playerQueue.size(), started);
+        return new GameInfo(name, id, x_size, y_size, max_players, playerQueue.size(), started ,theme_id);
     }
 
     public ArrayList<Player> getAllPlayers() {

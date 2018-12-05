@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Lobby extends UnicastRemoteObject implements LobbyInterface {
@@ -36,7 +37,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return this;
     }
 
-    public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer)
+    public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id)
             throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
         //validate username and token in gameclientinterface
         if(!isValidPlayer(firstPlayer)){
@@ -44,7 +45,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         }
 
         int id = createID();
-        Game new_game = new Game(name,x,y, max_players,id, this);
+        Game new_game = new Game(name,x,y, max_players,id, this, theme_id);
         new_game.addPlayer(firstPlayer);
         live_games.put(id, new_game);
         System.out.println("INFO: new game initialised [id:"+id+"]");
@@ -97,6 +98,10 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public void terminateGame(Game game){
         live_games.remove(game.getId());
         System.out.println("INFO: game [id:"+game.getId()+"] was finished");
+    }
+
+    public List<byte[]> getTheme(int id) throws RemoteException{
+        return db.getTheme(id);
     }
 
     private static synchronized int createID(){

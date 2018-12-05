@@ -8,6 +8,7 @@ import interfaces.*;
 import ui.AlertBox;
 import ui.Tile;
 
+import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -64,11 +65,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     }
 
 
-    public void makeGame(String name, int width, int height, int max_players) throws AlreadyPresentException {
+    public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException {
         try {
-            game = lobby.makeNewGame(name, width, height, max_players, this);
+            game = lobby.makeNewGame(name, width, height, max_players, this, theme_id);
+
             inGame = true;
-            gameController = new GameController(height, width, false);
+            gameController = new GameController(height, width, false, loadTheme(theme_id));
             SceneController.getInstance().createGameScene(gameController);
 
         } catch (InvalidSizeException e) {
@@ -85,7 +87,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         try {
             game = lobby.joinGame(selected.getId(), this);
             inGame = true;
-            gameController = new GameController(game.getHeight(), game.getWidth(), false);
+            gameController = new GameController(game.getHeight(), game.getWidth(), false, loadTheme(game.getThemeId()));
             SceneController.getInstance().createGameScene(gameController);
 
         } catch (GameFullException | GameNotFoundException | GameStartedException | InvalidCredentialsException e) {
@@ -98,7 +100,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     public void spectateGame(int gameId) {
         try {
             game = lobby.spectateGame(gameId, this);
-            gameController = new GameController(game.getHeight(), game.getWidth(), true);
+            gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId()));
             SceneController.getInstance().createGameScene(gameController);
             HashMap<Coordinate, Integer> flippedFields = game.getFlippedFields();
             for(Coordinate c: flippedFields.keySet()){
@@ -111,6 +113,24 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public Theme loadTheme(int theme_id){
+        System.out.println(System.getProperty("user.dir"));
+        File themeDirectory = new File("Client/src/main/resources/themes/"+theme_id);
+        if(themeDirectory.isDirectory()){
+            return new Theme(theme_id);
+        }
+        else{
+            try {
+                List<byte[]> images = lobby.getTheme(theme_id);
+                Theme.saveNewTheme(theme_id, images);
+                return new Theme(theme_id);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public void readyUp(){

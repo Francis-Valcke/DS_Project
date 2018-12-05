@@ -38,7 +38,8 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
     }
 
     public GameInfo makeGame(String name, int width, int height, int max_players) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
-        game = lobby.makeNewGame(name, width, height, max_players, this);
+        //TODO: themes implementeren nu wordt standaard theme 0 geladen
+        game = lobby.makeNewGame(name, width, height, max_players, this, 0);
         inGame = true;
         gameController = new VirtualGameController(this, height, width, false);
         return game.getGameInfo();
