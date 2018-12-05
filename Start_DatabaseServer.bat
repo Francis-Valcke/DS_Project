@@ -1,3 +1,1 @@
-
-SET p=%1
-java -jar %p%/DatabaseServer-0.1.0.jar %cd%/%p%/db_alpha.db 1100 1101
+java -jar %1/DatabaseServer-0.1.0.jar %2 %3 %4

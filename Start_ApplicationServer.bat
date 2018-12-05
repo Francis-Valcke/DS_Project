@@ -1,3 +1,1 @@
-
-SET p=%1
-java -jar %p%/ApplicationServer-0.1.0.jar
+java -jar %1/ApplicationServer-0.1.0.jar %2 %3 %4

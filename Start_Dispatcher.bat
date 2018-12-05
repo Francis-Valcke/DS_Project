@@ -1,3 +1,1 @@
-
-SET p=%1
-java -jar %p%/Dispatcher-0.1.0.jar dispatch 1000 1001
+java -jar %1/Dispatcher-0.1.0.jar %2 %3 %4
