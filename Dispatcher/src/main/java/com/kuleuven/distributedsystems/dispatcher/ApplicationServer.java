@@ -2,17 +2,19 @@ package com.kuleuven.distributedsystems.dispatcher;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import interfaces.AppLoginInterface;
+import interfaces.ApplicationServerInterface;
 
 @JsonSerialize(using = ApplicationServerSerializer.class)
-public class ApplicationServer {
-    private String id;
+public class ApplicationServer implements ApplicationServerInterface {
+    private String name;
     private String ip;
     private int rmiPort;
     private int restPort;
     private AppLoginInterface app_login;
+    private ApplicationServerInterface backupServer;
 
-    public ApplicationServer(String id, String ip, int rmiPort, AppLoginInterface app_login) {
-        this.id = id;
+    public ApplicationServer(String name, String ip, int rmiPort, AppLoginInterface app_login) {
+        this.name = name;
         this.ip = ip;
         this.rmiPort = rmiPort;
         this.restPort = rmiPort + 1;
@@ -43,12 +45,19 @@ public class ApplicationServer {
         this.app_login = app_login;
     }
 
-
-    public String getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public int getRestPort() {
         return restPort;
+    }
+
+    public void setBackupServer(ApplicationServerInterface server) {
+        backupServer = server;
+    }
+
+    public ApplicationServerInterface getBackupServer() {
+        return backupServer;
     }
 }

@@ -86,6 +86,7 @@ public class SceneController {
         }
 
     }
+
     public void showLobbyScene(){
         try {
             Stage stage = new Stage();

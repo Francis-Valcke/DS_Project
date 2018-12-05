@@ -50,7 +50,6 @@ public class LoginController {
 
             LobbyInterface lobby = app_login.clientLogin(username, token);
 
-
             client.setUsername(username);
             client.setToken(token);
             client.setDispatch(dispatch);

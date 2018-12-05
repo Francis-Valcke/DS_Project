@@ -19,7 +19,7 @@ public class ApplicationServerSerializer extends StdSerializer<ApplicationServer
     @Override
     public void serialize(ApplicationServer applicationServer, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("id", applicationServer.getId());
+        jsonGenerator.writeStringField("id", applicationServer.getName());
         jsonGenerator.writeStringField("ip", applicationServer.getIp());
         jsonGenerator.writeNumberField("rmiPort", applicationServer.getRmiPort());
         jsonGenerator.writeNumberField("restPort", applicationServer.getRestPort());
