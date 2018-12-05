@@ -1,8 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="StartAll" type="Multirun" factoryName="Multirun" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
     <runConfiguration name="Dispatcher" type="Spring Boot" />
-    <runConfiguration name="DatabaseServer" type="Spring Boot" />
-    <runConfiguration name="Application Server" type="Spring Boot" />
+    <runConfiguration name="DatabaseServer 0" type="Spring Boot" />
+    <runConfiguration name="DatabaseServer 1" type="Spring Boot" />
+    <runConfiguration name="DatabaseServer 2" type="Spring Boot" />
+    <runConfiguration name="DatabaseServer 3" type="Spring Boot" />
+    <runConfiguration name="ApplicationServer 0" type="Spring Boot" />
+    <runConfiguration name="ApplicationServer 1" type="Spring Boot" />
     <runConfiguration name="Client1" type="Spring Boot" />
     <runConfiguration name="Client2" type="Spring Boot" />
     <method v="2" />
