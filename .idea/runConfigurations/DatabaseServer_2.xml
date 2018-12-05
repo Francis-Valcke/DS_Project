@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="DatabaseServer 1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="DatabaseServer 2" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="DatabaseServer_main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.kuleuven.ds.database.Main" />
-    <option name="PROGRAM_PARAMETERS" value="D:\Development\DS_Project_gradle\jars\DBServer1.db 1101" />
+    <option name="PROGRAM_PARAMETERS" value="D:\Development\DS_Project_gradle\jars\DBServer2.db 1102" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />
