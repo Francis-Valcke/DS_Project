@@ -16,13 +16,13 @@ import java.rmi.RemoteException;
 @RequestMapping(value = "memory")
 public class DispatcherImpRestController {
 
-    private DispatcherImp dispatcherImp = DispatcherImp.getInstance();
+    private Dispatcher dispatcher = Dispatcher.getInstance();
 
     @RequestMapping(method = RequestMethod.POST, value = "/registerNewUser")
     public ResponseMessage registerNewUser(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
         ResponseMessage responseMessage = null;
         try {
-            dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().createNewUser(username, password);
+            dispatcher.getDatabaseServers().get(0).getDatabaseImp().createNewUser(username, password);
             responseMessage = new ResponseMessage(ResponseType.OK, "New user has been created.");
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
@@ -38,7 +38,7 @@ public class DispatcherImpRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            String token = dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().createToken(username, password);
+            String token = dispatcher.getDatabaseServers().get(0).getDatabaseImp().createToken(username, password);
             responseMessage = new ResponseMessage(ResponseType.OK, "Token created.", token);
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
@@ -53,7 +53,7 @@ public class DispatcherImpRestController {
     public ResponseMessage isTokenValid(@RequestParam(value = "username") String username, @RequestParam(value = "token") String token) {
         ResponseMessage responseMessage = null;
         try {
-            dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().isTokenValid(username, token);
+            dispatcher.getDatabaseServers().get(0).getDatabaseImp().isTokenValid(username, token);
             responseMessage = new ResponseMessage(ResponseType.OK, "Token is valid.");
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
@@ -66,7 +66,7 @@ public class DispatcherImpRestController {
     public ResponseMessage getApplicationServer() throws RemoteException, JsonProcessingException {
         System.out.println("INFO: new client connected");
         ResponseMessage responseMessage = null;
-        ApplicationServer appServer = new ApplicationServer(dispatcherImp.getApplicationServer());
+        ApplicationServer appServer = new ApplicationServer(dispatcher.getApplicationServer());
         responseMessage = new ResponseMessage(ResponseType.OK, "Application servers available.", appServer);
         return responseMessage;
     }

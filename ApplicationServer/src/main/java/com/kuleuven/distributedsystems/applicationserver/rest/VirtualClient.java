@@ -183,6 +183,16 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         gameController.updateInfoLabel(s);
     }
 
+    @Override
+    public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException {
+
+    }
+
+    @Override
+    public void refreshLobbies() throws RemoteException {
+
+    }
+
     public GameInterface getGame() {
         return game;
     }

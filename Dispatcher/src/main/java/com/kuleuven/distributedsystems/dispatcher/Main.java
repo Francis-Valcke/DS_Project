@@ -48,7 +48,7 @@ public class Main {
         }
 
         System.setProperty("server.port", String.valueOf(restPort));
-        DispatcherImp dispatcherImp = startDispatcher(port);
+        Dispatcher dispatcher = startDispatcher(port);
         SpringApplication.run(Main.class, args);
 
         /*
@@ -90,13 +90,13 @@ public class Main {
     }
 
 
-    public static DispatcherImp startDispatcher(int port) {
+    public static Dispatcher startDispatcher(int port) {
         try {
-            DispatcherImp dispatcherImp = DispatcherImp.getInstance();
+            Dispatcher dispatcher = Dispatcher.getInstance();
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("dispatcher_service", dispatcherImp);
+            registry.rebind("dispatcher_service", dispatcher);
             System.out.println("INFO: up and running on port: " + port);
-            return dispatcherImp;
+            return dispatcher;
         } catch (RemoteException re) {
             re.printStackTrace();
         }

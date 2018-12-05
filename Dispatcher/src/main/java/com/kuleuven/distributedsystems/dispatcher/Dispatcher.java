@@ -5,6 +5,7 @@ import exceptions.UserAlreadyExistsException;
 import interfaces.ApplicationServerInterface;
 import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
+import interfaces.LobbyInterface;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -16,13 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class DispatcherImp extends UnicastRemoteObject implements DispatcherInterface {
+public class Dispatcher extends UnicastRemoteObject implements DispatcherInterface {
 
-    private static DispatcherImp instance;
+    private static Dispatcher instance;
 
     static {
         try {
-            instance = new DispatcherImp();
+            instance = new Dispatcher();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -32,10 +33,10 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
 
-    public DispatcherImp() throws RemoteException {
+    public Dispatcher() throws RemoteException {
     }
 
-    public static DispatcherImp getInstance() {
+    public static Dispatcher getInstance() {
         return instance;
     }
 
@@ -134,6 +135,13 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
                 e.printStackTrace();
             }
             return getApplicationServer();
+        }
+    }
+
+    @Override
+    public void broadCastLobby(LobbyInterface lobby) throws RemoteException {
+        for (ApplicationServerInterface applicationServer : applicationServers) {
+            applicationServer.showLobby(lobby);
         }
     }
 

@@ -5,6 +5,7 @@ import exceptions.UserAlreadyExistsException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface DispatcherInterface extends Remote {
 
@@ -19,4 +20,10 @@ public interface DispatcherInterface extends Remote {
     public boolean isTokenValid(String username, String token) throws RemoteException;
 
     public ApplicationServerInterface getApplicationServer() throws RemoteException;
+
+    public void broadCastLobby(LobbyInterface lobby) throws RemoteException;
+
+
+
+
 }

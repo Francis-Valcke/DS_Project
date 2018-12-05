@@ -28,4 +28,7 @@ public interface ClientInterface extends Remote {
 
     public void updateInfoLabel(String s) throws RemoteException;
 
+    public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException;
+
+    void refreshLobbies() throws RemoteException;
 }

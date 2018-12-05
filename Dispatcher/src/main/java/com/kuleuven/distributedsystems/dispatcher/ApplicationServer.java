@@ -5,6 +5,7 @@ import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 @JsonSerialize(using = ApplicationServerSerializer.class)
 public class ApplicationServer implements ApplicationServerInterface {
@@ -140,5 +141,15 @@ public class ApplicationServer implements ApplicationServerInterface {
     @Override
     public void addConnectedClient(ClientInterface client) {
 
+    }
+
+    @Override
+    public void showLobby(LobbyInterface lobby) throws RemoteException {
+
+    }
+
+    @Override
+    public Set<LobbyInterface> getAllLobbies() throws RemoteException {
+        return null;
     }
 }

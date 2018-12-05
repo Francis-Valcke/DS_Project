@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class Client extends UnicastRemoteObject implements ClientInterface {
     //Singleton
@@ -40,6 +41,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     private Coordinate nextMove;
     private GameController gameController;
     private boolean inGame = false;
+    private LobbyController lobbyController;
 
 
     private Client() throws RemoteException {
@@ -182,6 +184,16 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         gameController.updateInfoLabel(s);
     }
 
+    @Override
+    public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException {
+
+    }
+
+    @Override
+    public void refreshLobbies() throws RemoteException {
+        lobbyController.refreshList();
+    }
+
     public void setGameStarted() throws RemoteException {
         gameController.startGame();
     }
@@ -262,5 +274,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
+    }
+
+    public LobbyController getLobbyController() {
+        return lobbyController;
+    }
+
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
     }
 }

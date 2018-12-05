@@ -7,8 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
@@ -32,8 +31,9 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private DatabaseInterface db;
     private AppLoginInterface appLogin;
     private LobbyInterface lobby;
+    private Set<LobbyInterface> allLobbies;
     private ApplicationServerInterface backupServer;
-
+    private DispatcherInterface dispatcher;
     private List<ClientInterface> connectedClients;
 
     private ApplicationServer() throws RemoteException {
@@ -51,6 +51,8 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         this.dispatcherPort = dispatcherPort;
         this.dispatcherIp = dispatcherIp;
         connectedClients = new ArrayList<>();
+
+        allLobbies = new HashSet<>();
 
         startLogin();
         System.out.println("INFO: up and running on port: " + port);
@@ -73,14 +75,15 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public void registerWithDispatcher() {
         try {
             Registry registry = LocateRegistry.getRegistry(dispatcherIp, dispatcherPort);
-            DispatcherInterface dispatcherImpl = (DispatcherInterface) registry.lookup("dispatcher_service");
+            dispatcher = (DispatcherInterface) registry.lookup("dispatcher_service");
             //We krijgen een link naar de databank terug die deze server zal gebruiken
-            db = dispatcherImpl.registerApplicationServer((ApplicationServerInterface) this);
+            db = dispatcher.registerApplicationServer((ApplicationServerInterface) this);
 
             //We maken de login en lobby klaar voor gebruik.
-            appLogin.setDispatch(dispatcherImpl);
+            appLogin.setDispatch(dispatcher);
             appLogin.setDb(db);
-            lobby = Lobby.getInstance().init(db, dispatcherImpl);
+            lobby = Lobby.getInstance().init(this, db, dispatcher);
+            allLobbies.add(lobby);
             appLogin.setLobby(lobby);
 
         } catch (NotBoundException | RemoteException e) {
@@ -96,9 +99,27 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         connectedClients.add(client);
     }
 
+    @Override
+    public void showLobby(LobbyInterface lobbyInterface) {
+        allLobbies.remove(lobbyInterface);
+        allLobbies.add(lobbyInterface);
+        for (ClientInterface client : connectedClients) {
+            try {
+                client.refreshLobbies();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /*
      * Getters & Setters
      * */
+
+    @Override
+    public Set<LobbyInterface> getAllLobbies() throws RemoteException {
+        return allLobbies;
+    }
 
     @Override
     public List<ClientInterface> getConnectedClients() {
@@ -203,5 +224,22 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public void setBackupServer(ApplicationServerInterface backupServer) {
         this.backupServer = backupServer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ApplicationServer)) return false;
+        if (!super.equals(o)) return false;
+        ApplicationServer that = (ApplicationServer) o;
+        return port == that.port &&
+                restPort == that.restPort &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(ip, that.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, ip, port, restPort);
     }
 }

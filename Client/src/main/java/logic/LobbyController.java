@@ -3,6 +3,7 @@ package logic;
 
 import classes.GameInfo;
 import exceptions.AlreadyPresentException;
+import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -59,6 +60,8 @@ public class LobbyController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        client.setLobbyController(this);
     }
 
     public void makeGame() throws AlreadyPresentException {
@@ -68,7 +71,6 @@ public class LobbyController implements Initializable {
     public void joinGame() throws AlreadyPresentException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
         client.joinGame(selected);
-
     }
 
     public void spectateGame() {
@@ -80,7 +82,12 @@ public class LobbyController implements Initializable {
     public void refreshList() {
         try {
             gameslist.getItems().clear();
-            ArrayList<GameInfo> games = client.getLobby().getLiveGames();
+            ArrayList<GameInfo> games = new ArrayList<>();
+
+            for (LobbyInterface lobby : client.getApplicationServer().getAllLobbies()) {
+                games.addAll(lobby.getLiveGames());
+            }
+
             for (GameInfo gi : games) {
                 Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : ""));
                 labelMap.put(label, gi);

@@ -3,6 +3,7 @@ package interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 public interface ApplicationServerInterface extends Remote {
 
@@ -43,4 +44,8 @@ public interface ApplicationServerInterface extends Remote {
     List<ClientInterface> getConnectedClients() throws RemoteException;
 
     void addConnectedClient(ClientInterface client) throws RemoteException;
+
+    void showLobby(LobbyInterface lobby) throws RemoteException;
+
+    Set<LobbyInterface> getAllLobbies() throws RemoteException;
 }

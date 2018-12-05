@@ -6,10 +6,7 @@ import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
@@ -25,6 +22,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     }
 
     private Map<Integer, Game> live_games = new HashMap<>();
+    private ApplicationServerInterface applicationServer;
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
 
@@ -39,7 +37,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return instance;
     }
 
-    public Lobby init(DatabaseInterface db, DispatcherInterface dispatch) {
+    public Lobby init(ApplicationServerInterface applicationServer, DatabaseInterface db, DispatcherInterface dispatch) {
+        this.applicationServer = applicationServer;
         this.db = db;
         this.dispatch = dispatch;
         return this;
@@ -125,5 +124,19 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public Game getGame(int gameId) throws NoSuchGameExistsException {
         if (!live_games.containsKey(gameId)) throw new NoSuchGameExistsException();
         return live_games.get(gameId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Lobby)) return false;
+        if (!super.equals(o)) return false;
+        Lobby lobby = (Lobby) o;
+        return Objects.equals(applicationServer, lobby.applicationServer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), applicationServer);
     }
 }
