@@ -17,15 +17,10 @@ import java.sql.*;
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
     private Connection conn;
 
-    public DatabaseImp(String name) throws RemoteException{
+    public DatabaseImp(String dbFilePath) throws RemoteException{
 
         //Connectie met de DB opzetten
-        //String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\DatabaseServer\\" +  name +".db";
-        String url = "jdbc:sqlite:" + FileSystems.getDefault().getPath("").toAbsolutePath().toString() + "\\" + name +".db";
-
-        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
-        System.out.println(jarDir.getAbsolutePath());
-
+        String url = "jdbc:sqlite:" + dbFilePath;
         try{
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {

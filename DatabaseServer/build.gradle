@@ -14,6 +14,13 @@ apply plugin: 'io.spring.dependency-management'
 bootJar {
     baseName = 'DatabaseServer'
     version =  '0.1.0'
+    dependsOn "copyDbFiles"
+}
+
+task ('copyDbFiles', type: Copy) {
+    from '.'
+    into rootProject.outDir
+    include('*.db')
 }
 
 repositories {

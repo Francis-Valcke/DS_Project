@@ -1,4 +1,4 @@
-SET pathToJars=build/jars/
+SET pathToJars=build/jars
 
 start Start_Dispatcher.bat %pathToJars%
 timeout /t 1

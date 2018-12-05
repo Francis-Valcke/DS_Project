@@ -2,7 +2,7 @@
   <configuration default="false" name="DatabaseServer" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="DatabaseServer_main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.kuleuven.ds.database.Main" />
-    <option name="PROGRAM_PARAMETERS" value="db_alpha 1100 1101" />
+    <option name="PROGRAM_PARAMETERS" value="D:\Development\DS_Project_gradle\DatabaseServer\db_alpha.db 1100 1101" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />

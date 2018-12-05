@@ -7,6 +7,7 @@ group 'com.kuleuven.ds'
 version '1.0'
 
 sourceCompatibility = 1.8
+def outputDir = "$rootDir/build/jars"
 
 allprojects {
     repositories {
@@ -14,12 +15,14 @@ allprojects {
     }
 }
 
+project.ext.outDir=outputDir
+
 subprojects {
     version = "1.0"
 
     apply plugin: 'java'
     tasks.withType(Jar){
-        destinationDir = file("$rootDir/build/jars")
+        destinationDir = file(outputDir)
     }
 }
 
