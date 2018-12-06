@@ -349,8 +349,8 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return y_size;
     }
 
-    public GameInfo getGameInfo() {
-        return new GameInfo(name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
+    public GameInfo getGameInfo() throws RemoteException {
+        return new GameInfo(lobby.getApplicationServer().getName(), name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
     }
 
     public ArrayList<Player> getAllPlayers() {

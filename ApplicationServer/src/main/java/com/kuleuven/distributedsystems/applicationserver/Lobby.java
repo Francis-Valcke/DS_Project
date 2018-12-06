@@ -44,21 +44,38 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return this;
     }
 
-    public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id)
+    public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface client, int theme_id)
             throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
-        //validate username and token in gameclientinterface
-        if (!isValidPlayer(firstPlayer)) {
-            throw new InvalidCredentialsException();
+
+        GameInterface newGameInterface = null;
+        Game newGame = null;
+        /*
+        * Bij het aanmaken van een new game moet eerst gechecked worden of de gevraagde game bij de server kan.
+        * Zo niet wordt een nieuwe app server opgestart
+        * */
+        if (!applicationServer.canFit(max_players)){
+            //Vraag een appserver op die wel plaats heeft voor de game.
+            //De dispatcher start als nodig een nieuwe appserver op.
+            ApplicationServerInterface newAppServer = dispatch.getApplicationServerByFreeSlots(max_players);
+            newAppServer.transferClient(client);
+            newGameInterface = newAppServer.getLobby().makeNewGame(name, x, y, max_players, client, theme_id);
+        } else {
+            //validate username and token in gameclientinterface
+            if (!isValidPlayer(client)) {
+                throw new InvalidCredentialsException();
+            }
+
+            int id = createID();
+            newGame = new Game(name, x, y, max_players, id, this, theme_id);
+            newGame.addPlayer(client);
+            live_games.put(id, newGame);
+            System.out.println("INFO: new game initialised [id:" + id + "]");
+            ((ApplicationServer)applicationServer).reduceFreeSlots(max_players);
+            dispatch.broadCastLobby(this);
         }
 
-        int id = createID();
-        Game new_game = new Game(name, x, y, max_players, id, this, theme_id);
-        new_game.addPlayer(firstPlayer);
-        live_games.put(id, new_game);
-        System.out.println("INFO: new game initialised [id:" + id + "]");
-
-        dispatch.broadCastLobby(this);
-        return new_game;
+        if (newGameInterface!=null) return newGameInterface;
+        else return newGame;
     }
 
     //TODO: add spectator

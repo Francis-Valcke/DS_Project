@@ -17,6 +17,9 @@ import java.util.List;
 
 public class VirtualClient extends UnicastRemoteObject implements ClientInterface {
 
+
+    private ApplicationServerInterface applicationServer;
+    private ApplicationServerInterface backupApplicationServer;
     private GameInterface game;
     private DispatcherInterface dispatch;
     private AppLoginInterface app_login;
@@ -190,6 +193,31 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
 
     @Override
     public void refreshLobbies() throws RemoteException {
+
+    }
+
+    @Override
+    public ApplicationServerInterface getApplicationServer() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void setApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
+
+    }
+
+    @Override
+    public ApplicationServerInterface getBackupApplicationServer() throws RemoteException {
+        return null;
+    }
+
+    @Override
+    public void setBackupApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
+
+    }
+
+    @Override
+    public void disconnect() throws RemoteException {
 
     }
 

@@ -11,7 +11,9 @@ import java.util.*;
 
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
-    private static final int SERVER_CAPACITY = 1;
+    //Dit is het aantal slots dat een server kan leveren.
+    //Wanneer een game wordt opgestart met 4 players zullen 4 van die tickets worden afgetrokken
+    private static final int SERVER_CAPACITY = 20;
     private static ApplicationServer instance;
 
     static {
@@ -22,6 +24,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         }
     }
 
+    private int freeSlots = SERVER_CAPACITY;
     private String name;
     private String ip;
     private int port;
@@ -113,6 +116,21 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean canFit(int slots) {
+        return freeSlots - slots >= 0;
+    }
+
+    public void transferClient(ClientInterface client) throws RemoteException {
+        client.disconnect();
+        client.setApplicationServer(this);
+        client.setBackupApplicationServer(backupServer);
+    }
+
+    public void disconnect(ClientInterface client) throws RemoteException {
+        System.out.println("Client " + client.getUsername() + " has disconnected.");
+        connectedClients.remove(client);
     }
 
     /*
@@ -227,6 +245,22 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public void setBackupServer(ApplicationServerInterface backupServer) {
         this.backupServer = backupServer;
+    }
+
+    public int getFreeSlots() {
+        return freeSlots;
+    }
+
+    public void setFreeSlots(int slots) {
+        freeSlots = slots;
+    }
+
+    public void reduceFreeSlots(int slots) {
+        freeSlots -= slots;
+    }
+
+    public void addFreeSlots(int slots) {
+        freeSlots += slots;
     }
 
     @Override

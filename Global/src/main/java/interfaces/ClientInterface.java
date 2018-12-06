@@ -31,4 +31,14 @@ public interface ClientInterface extends Remote {
     public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException;
 
     void refreshLobbies() throws RemoteException;
+
+    ApplicationServerInterface getApplicationServer() throws RemoteException;
+
+    void setApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
+
+    ApplicationServerInterface getBackupApplicationServer() throws RemoteException;
+
+    void setBackupApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
+
+    void disconnect() throws RemoteException;
 }

@@ -3,6 +3,8 @@ package classes;
 import java.io.Serializable;
 
 public class GameInfo implements Serializable {
+
+    String hostName;
     String name;
     boolean started;
     int id;
@@ -12,7 +14,8 @@ public class GameInfo implements Serializable {
     int numberOfPlayersJoined;
     int theme_id;
 
-    public GameInfo(String name, int id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started, int theme_id) {
+    public GameInfo(String hostName, String name, int id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started, int theme_id) {
+        this.hostName = hostName;
         this.name = name;
         this.id = id;
         this.width = width;
@@ -56,5 +59,9 @@ public class GameInfo implements Serializable {
 
     public void setTheme_id(int theme_id) {
         this.theme_id = theme_id;
+    }
+
+    public String getHostName() {
+        return hostName;
     }
 }

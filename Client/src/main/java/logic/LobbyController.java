@@ -81,6 +81,7 @@ public class LobbyController implements Initializable {
 
     public void refreshList() {
         try {
+
             gameslist.getItems().clear();
             ArrayList<GameInfo> games = new ArrayList<>();
 
@@ -89,10 +90,11 @@ public class LobbyController implements Initializable {
             }
 
             for (GameInfo gi : games) {
-                Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : ""));
+                Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : "") + " " + gi.getHostName());
                 labelMap.put(label, gi);
                 gameslist.getItems().add(label);
             }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }

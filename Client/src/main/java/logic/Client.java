@@ -30,6 +30,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     //Remote Objects
     private ApplicationServerInterface applicationServer;
+    private ApplicationServerInterface backupApplicationServer;
     private GameInterface game;
     private DispatcherInterface dispatch;
     private AppLoginInterface app_login;
@@ -164,6 +165,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
+    public void disconnect() throws RemoteException {
+        //Disconnect from the current server
+        applicationServer.disconnect(this);
+        applicationServer = null;
+        backupApplicationServer = null;
+    }
+
     public void showTile(Coordinate c, int value) throws RemoteException {
         gameController.showTile(c, value);
     }
@@ -283,5 +291,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     public void setLobbyController(LobbyController lobbyController) {
         this.lobbyController = lobbyController;
+    }
+
+    public ApplicationServerInterface getBackupApplicationServer() {
+        return backupApplicationServer;
+    }
+
+    public void setBackupApplicationServer(ApplicationServerInterface backupApplicationServer) {
+        this.backupApplicationServer = backupApplicationServer;
     }
 }

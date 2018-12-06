@@ -31,53 +31,6 @@ public class LoginController {
     public LoginController() {
     }
 
-    public void init(){
-        //login(Main.username, Main.password);
-    }
-
-    public void login(String username, String password) {
-        Registry registry;
-        try {
-            //Dispatcher opzoeken
-            registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            DispatcherInterface dispatch = (DispatcherInterface) registry.lookup("dispatcher_service");
-
-            //Token opvragen
-            String token = "";
-            //Nieuwe token opvragen als de oude ouder dan 24u is
-            if (!dispatch.isTokenValid(username, token)) {
-                token = dispatch.requestNewToken(username, password);
-            }
-
-            Client client = Client.getInstance();
-
-            ApplicationServerInterface appServer = dispatch.getApplicationServer();
-            LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
-            appServer.addConnectedClient(client);
-            client.setApplicationServer(appServer);
-
-            client.setUsername(username);
-            client.setToken(token);
-            client.setDispatch(dispatch);
-            client.setApp_login(appServer.getAppLogin());
-            client.setLobby(lobby);
-
-            //Naar lobby scherm gaan
-            SceneController.getInstance().showLobbyScene();
-
-            //Tijdelijke code
-
-        } catch (RemoteException | NotBoundException re) {
-            AlertBox.display("Connection problems", "Cannot contact dispatcher");
-            re.printStackTrace();
-        } catch (InvalidCredentialsException ice) {
-            //ice.printStackTrace();
-            AlertBox.display("Login not successful.", "Username and/or password are wrong.");
-            //TODO: error op scherm laten verschijnen;
-        }
-
-    }
-
     public void login(ActionEvent actionEvent) {
         Registry registry;
         try {

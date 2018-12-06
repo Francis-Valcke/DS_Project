@@ -99,16 +99,9 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
         System.out.println("INFO: new client connected");
 
+        //Return een appServer met minst connected players (poging tot load balancing)
         Optional<ApplicationServerInterface> oServer = applicationServers.stream()
-                .filter(s -> {
-                    boolean result = true;
-                    try {
-                        result = !s.isFull();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    return result;
-                }).min(new Comparator<ApplicationServerInterface>() {
+                .min(new Comparator<ApplicationServerInterface>() {
                     @Override
                     public int compare(ApplicationServerInterface o1, ApplicationServerInterface o2) {
                         int result = 0;
@@ -123,18 +116,33 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
                     }
                 });
 
+        return oServer.get();
+    }
+
+    public synchronized ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException {
+        Optional<ApplicationServerInterface> oServer = applicationServers.stream()
+                .filter(s -> {
+            boolean result = false;
+            try {
+                result = s.canFit(slots);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }).findFirst();
+
         if (oServer.isPresent()) return oServer.get();
         else {
+            //In dit geval is er geen enkele app server gevonden die de game aan kan dus wordt een server paar opgestart
             System.out.println("Starting new servers");
 
-            //Een nieuw paar servers opstarten.
             Main.startApplicationServers(2);
             try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return getApplicationServer();
+            return getApplicationServerByFreeSlots(slots);
         }
     }
 
@@ -143,6 +151,16 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         for (ApplicationServerInterface applicationServer : applicationServers) {
             applicationServer.updateLobby(lobby);
         }
+    }
+
+    public ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException {
+        ApplicationServerInterface appServer = null;
+        for (ApplicationServerInterface applicationServer : applicationServers) {
+            if (applicationServer.getName().equals(name)){
+                appServer = applicationServer;
+            }
+        }
+        return appServer;
     }
 
     public List<DatabaseServer> getDatabaseServers() {

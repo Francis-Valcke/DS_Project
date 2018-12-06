@@ -23,6 +23,9 @@ public interface DispatcherInterface extends Remote {
 
     public void broadCastLobby(LobbyInterface lobby) throws RemoteException;
 
+    ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException;
+
+    ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException;
 
 
 

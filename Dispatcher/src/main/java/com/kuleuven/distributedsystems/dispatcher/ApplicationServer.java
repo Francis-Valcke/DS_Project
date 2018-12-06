@@ -152,4 +152,24 @@ public class ApplicationServer implements ApplicationServerInterface {
     public Set<LobbyInterface> getAllLobbies() throws RemoteException {
         return null;
     }
+
+    @Override
+    public int getFreeSlots() throws RemoteException {
+        return 0;
+    }
+
+    @Override
+    public boolean canFit(int slots) throws RemoteException {
+        return false;
+    }
+
+    @Override
+    public void transferClient(ClientInterface client) throws RemoteException {
+
+    }
+
+    @Override
+    public void disconnect(ClientInterface client) throws RemoteException {
+
+    }
 }

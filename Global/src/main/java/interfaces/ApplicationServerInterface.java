@@ -48,4 +48,12 @@ public interface ApplicationServerInterface extends Remote {
     void updateLobby(LobbyInterface lobby) throws RemoteException;
 
     Set<LobbyInterface> getAllLobbies() throws RemoteException;
+
+    int getFreeSlots() throws RemoteException;
+
+    boolean canFit(int slots) throws RemoteException;
+
+    void transferClient(ClientInterface client) throws RemoteException;
+
+    void disconnect(ClientInterface client) throws RemoteException;
 }
