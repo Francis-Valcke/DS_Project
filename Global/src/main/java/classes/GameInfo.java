@@ -7,14 +7,14 @@ public class GameInfo implements Serializable {
     String hostName;
     String name;
     boolean started;
-    int id;
+    String id;
     int width;
     int height;
     int maxPlayers;
     int numberOfPlayersJoined;
     int theme_id;
 
-    public GameInfo(String hostName, String name, int id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started, int theme_id) {
+    public GameInfo(String hostName, String name, String id, int width, int height, int maxPlayers, int numberOfPlayersJoined, boolean started, int theme_id) {
         this.hostName = hostName;
         this.name = name;
         this.id = id;
@@ -33,7 +33,7 @@ public class GameInfo implements Serializable {
         return started;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

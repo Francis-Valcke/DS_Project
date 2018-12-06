@@ -106,7 +106,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
-    public void spectateGame(int gameId) {
+    public void spectateGame(String gameId) {
         try {
             game = lobby.spectateGame(gameId, this);
             gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId()));

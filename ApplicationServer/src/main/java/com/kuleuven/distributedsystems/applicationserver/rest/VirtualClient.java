@@ -48,7 +48,7 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         return game.getGameInfo();
     }
 
-    public GameInfo joinGame(int gameId) throws GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException, NoSuchGameExistsException, AlreadyPresentException {
+    public GameInfo joinGame(String gameId) throws GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException, NoSuchGameExistsException, AlreadyPresentException {
         game = lobby.getGame(gameId);
         gameController = new VirtualGameController(this, game.getHeight(), game.getWidth(), false);
         lobby.joinGame(gameId, this);
@@ -56,7 +56,7 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
         return game.getGameInfo();
     }
 
-    public void spectateGame(int gameId) throws GameNotFoundException, RemoteException, InvalidCredentialsException, NoSuchGameExistsException {
+    public void spectateGame(String gameId) throws GameNotFoundException, RemoteException, InvalidCredentialsException, NoSuchGameExistsException {
         game = lobby.getGame(gameId);
         gameController = new VirtualGameController(this, game.getHeight(), game.getWidth(), true);
         lobby.spectateGame(gameId, this);

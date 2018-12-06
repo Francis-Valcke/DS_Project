@@ -46,7 +46,7 @@ public class LobbyRestController {
     }
 
     @RequestMapping(value = "joinGame", produces = "application/json")
-    public ResponseMessage joinGame(@RequestParam String token, @RequestParam int gameId) {
+    public ResponseMessage joinGame(@RequestParam String token, @RequestParam String gameId) {
         ResponseMessage responseMessage = null;
         try {
             VirtualClient client = clientManager.getClient(token);
@@ -62,7 +62,7 @@ public class LobbyRestController {
     }
 
     @RequestMapping(value = "spectateGame", produces = "application/json")
-    public ResponseMessage spectateGame(@RequestParam String token, @RequestParam int gameId) {
+    public ResponseMessage spectateGame(@RequestParam String token, @RequestParam String gameId) {
         ResponseMessage responseMessage = null;
 
         try {

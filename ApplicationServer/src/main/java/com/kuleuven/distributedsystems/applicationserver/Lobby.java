@@ -21,7 +21,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         }
     }
 
-    private Map<Integer, Game> live_games = new HashMap<>();
+    private Map<String, Game> liveGames = new HashMap<>();
+    private Map<String, Game> backupLiveGames = new HashMap<>();
+
     private ApplicationServerInterface applicationServer;
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
@@ -29,8 +31,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     private Lobby() throws RemoteException {
     }
 
-    private static synchronized int createID() {
-        return idCounter++;
+    private String createID() throws RemoteException{
+        return applicationServer.getName() + idCounter++;
     }
 
     public static Lobby getInstance() {
@@ -65,10 +67,10 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
                 throw new InvalidCredentialsException();
             }
 
-            int id = createID();
+            String id = createID();
             newGame = new Game(name, x, y, max_players, id, this, theme_id);
             newGame.addPlayer(client);
-            live_games.put(id, newGame);
+            liveGames.put(id, newGame);
             System.out.println("INFO: new game initialised [id:" + id + "]");
             ((ApplicationServer)applicationServer).reduceFreeSlots(max_players);
             dispatch.broadCastLobby(this);
@@ -80,14 +82,14 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     //TODO: add spectator
 
-    public synchronized GameInterface joinGame(int gameId, ClientInterface client)
+    public synchronized GameInterface joinGame(String gameId, ClientInterface client)
             throws GameFullException, GameStartedException, RemoteException, InvalidCredentialsException, GameNotFoundException, AlreadyPresentException {
         //validate username and token in gameclientinterface
         if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
         }
 
-        Game game = live_games.get(gameId);
+        Game game = liveGames.get(gameId);
         if (game == null) {
             throw new GameNotFoundException();
         }
@@ -100,12 +102,12 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         } else throw new GameFullException();
     }
 
-    public GameInterface spectateGame(int gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException {
+    public GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException {
         if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
         }
 
-        Game game = live_games.get(gameId);
+        Game game = liveGames.get(gameId);
         if (game == null) {
             throw new GameNotFoundException();
         }
@@ -115,14 +117,14 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     public ArrayList<GameInfo> getLiveGames() throws RemoteException {
         ArrayList<GameInfo> liveGames = new ArrayList<>();
-        for (Game g : live_games.values()) {
+        for (Game g : this.liveGames.values()) {
             liveGames.add(g.getGameInfo());
         }
         return liveGames;
     }
 
     public void terminateGame(Game game) throws RemoteException {
-        live_games.remove(game.getId());
+        liveGames.remove(game.getId());
         dispatch.broadCastLobby(this);
         ((ApplicationServer)applicationServer).addFreeSlots(game.getMax_players());
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
@@ -147,9 +149,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     }
 
-    public Game getGame(int gameId) throws NoSuchGameExistsException {
-        if (!live_games.containsKey(gameId)) throw new NoSuchGameExistsException();
-        return live_games.get(gameId);
+    public Game getGame(String gameId) throws NoSuchGameExistsException {
+        if (!liveGames.containsKey(gameId)) throw new NoSuchGameExistsException();
+        return liveGames.get(gameId);
     }
 
     @Override

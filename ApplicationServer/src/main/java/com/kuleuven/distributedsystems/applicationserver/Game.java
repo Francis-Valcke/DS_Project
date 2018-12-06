@@ -16,7 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class Game extends UnicastRemoteObject implements GameInterface {
-    private int id;
+    private String id;
     private String name;
     private Map<Coordinate, Field> board;
     private ArrayList<Player> allPlayers = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private Lobby lobby;
     private VirtualClientManager virtualClientManager;
 
-    public Game(String name, int x_size, int y_size, int max_players, int id, Lobby lobby, int theme_id) throws InvalidSizeException, RemoteException {
+    public Game(String name, int x_size, int y_size, int max_players, String id, Lobby lobby, int theme_id) throws InvalidSizeException, RemoteException {
         this.name = name;
         this.x_size = x_size;
         this.y_size = y_size;
@@ -291,11 +291,11 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     //TODO: methode schrijven om flips te pushen
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
