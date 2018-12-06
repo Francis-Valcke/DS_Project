@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
+    boolean master = false;
     private Connection conn;
+    private List<DatabaseInterface> otherDBs = new ArrayList<>();
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
 
@@ -202,4 +204,19 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
         return bos != null ? bos.toByteArray() : null;
     }
+
+    public void executeSQL(String sql){
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setMaster(boolean master) throws RemoteException{
+        this.master = master;
+    }
+
+
 }

@@ -7,9 +7,6 @@ import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -28,7 +25,7 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
         }
     }
 
-    private List<DatabaseServer> databaseServers = new LinkedList<>();
+    private List<DatabaseInterface> databaseServers = new LinkedList<>();
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
 
@@ -39,15 +36,14 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
         return instance;
     }
 
-    public void registerDatabaseServer(String name, int port) throws RemoteException {
+    public void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
         try {
-            //Verbinden met de RMI van de database
-            Registry registry = LocateRegistry.getRegistry(RemoteServer.getClientHost(), port);
-            DatabaseInterface databaseImp = (DatabaseInterface) registry.lookup("database_service");
-            DatabaseServer newServer = new DatabaseServer(name, RemoteServer.getClientHost(), port, databaseImp);
             //Nieuwe database toevoegen aan pool
-            databaseServers.add(newServer);
-            System.out.println("INFO: new database server registered: " + name + " [" + newServer.getIp() + ":" + newServer.getPort() + "]");
+            databaseServers.add(db);
+            //Database master maken als het de eerste is
+            if(databaseServers.size() == 1) db.setMaster(true);
+            System.out.println("INFO: new database server registered");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +69,7 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
             //Notify waiting users that a new server is available
             notifyAll();
 
-            return databaseServers.get(0).getDatabaseImp();
+            return databaseServers.get(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,17 +78,17 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
 
 
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        databaseServers.get(0).getDatabaseImp().createNewUser(username, password);
+        databaseServers.get(0).createNewUser(username, password);
     }
 
 
     public String requestNewToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        return databaseServers.get(0).getDatabaseImp().createToken(username, password);
+        return databaseServers.get(0).createToken(username, password);
     }
 
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
-        return databaseServers.get(0).getDatabaseImp().isTokenValid(username, token);
+        return databaseServers.get(0).isTokenValid(username, token);
     }
 
     public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
@@ -135,14 +131,6 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
             }
             return getApplicationServer();
         }
-    }
-
-    public List<DatabaseServer> getDatabaseServers() {
-        return databaseServers;
-    }
-
-    public void setDatabaseServers(List<DatabaseServer> databaseServers) {
-        this.databaseServers = databaseServers;
     }
 
     public List<ApplicationServerInterface> getApplicationServers() {

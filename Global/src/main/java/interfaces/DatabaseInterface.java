@@ -21,4 +21,6 @@ public interface DatabaseInterface extends Remote {
 
     public void insertPhoto(int id) throws RemoteException;
 
+    public void setMaster(boolean master) throws RemoteException;
+
 }
