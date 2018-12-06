@@ -191,7 +191,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     @Override
     public void refreshLobbies() throws RemoteException {
-        lobbyController.refreshList();
+        //TODO: Remove this method
+        //lobbyController.refreshList();
     }
 
     public void setGameStarted() throws RemoteException {
