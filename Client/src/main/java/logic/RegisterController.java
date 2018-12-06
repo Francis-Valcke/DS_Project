@@ -43,9 +43,8 @@ public class RegisterController {
 
             ApplicationServerInterface appServer = dispatch.getApplicationServer();
             LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
-            appServer.addConnectedClient(client);
-            client.setApplicationServer(appServer);
-            client.setBackupApplicationServer(appServer.getBackupServer());
+
+            client.connect(appServer);
 
             client.setUsername(username);
             client.setToken(token);

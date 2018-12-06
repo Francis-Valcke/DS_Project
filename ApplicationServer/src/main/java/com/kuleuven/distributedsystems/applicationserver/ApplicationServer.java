@@ -56,6 +56,8 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         connectedClients = new ArrayList<>();
 
         allLobbies = new HashSet<>();
+        lobby = Lobby.getInstance();
+        allLobbies.add(lobby);
 
         startLogin();
         System.out.println("INFO: up and running on port: " + port);
@@ -82,11 +84,13 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
             //We krijgen een link naar de databank terug die deze server zal gebruiken
             db = dispatcher.registerApplicationServer((ApplicationServerInterface) this);
 
-            //We maken de login en lobby klaar voor gebruik.
+            //Maak de lobby klaar voor gebruik
+            ((Lobby)lobby).init(this, db, dispatcher);
+            allLobbies.addAll(dispatcher.requestAllLobbies());
+
+            //Maak login klaar voor gebruik
             appLogin.setDispatch(dispatcher);
             appLogin.setDb(db);
-            lobby = Lobby.getInstance().init(this, db, dispatcher);
-            allLobbies.add(lobby);
             appLogin.setLobby(lobby);
 
         } catch (NotBoundException | RemoteException e) {
@@ -124,8 +128,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
 
     public void transferClient(ClientInterface client) throws RemoteException {
         client.disconnect();
-        client.setApplicationServer(this);
-        client.setBackupApplicationServer(backupServer);
+        client.connect(this);
     }
 
     public void disconnect(ClientInterface client) throws RemoteException {
@@ -235,6 +238,10 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public void setLobby(LobbyInterface lobby) {
         this.lobby = lobby;
+    }
+
+    public void setAllLobbies(Set<LobbyInterface> allLobbies) {
+        this.allLobbies = allLobbies;
     }
 
     @Override

@@ -52,8 +52,8 @@ public class LoginController {
 
             ApplicationServerInterface appServer = dispatch.getApplicationServer();
             LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
-            appServer.addConnectedClient(client);
-            client.setApplicationServer(appServer);
+
+            client.connect(appServer);
 
             client.setUsername(username);
             client.setToken(token);

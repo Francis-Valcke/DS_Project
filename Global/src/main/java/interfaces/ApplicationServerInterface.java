@@ -56,4 +56,6 @@ public interface ApplicationServerInterface extends Remote {
     void transferClient(ClientInterface client) throws RemoteException;
 
     void disconnect(ClientInterface client) throws RemoteException;
+
+    void setAllLobbies(Set<LobbyInterface> lobbies) throws RemoteException;
 }

@@ -221,6 +221,16 @@ public class VirtualClient extends UnicastRemoteObject implements ClientInterfac
 
     }
 
+    @Override
+    public void transferTo(String serverName) throws RemoteException {
+
+    }
+
+    @Override
+    public void connect(ApplicationServerInterface serverInterface) throws RemoteException {
+
+    }
+
     public GameInterface getGame() {
         return game;
     }

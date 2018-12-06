@@ -6,6 +6,7 @@ import exceptions.UserAlreadyExistsException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 public interface DispatcherInterface extends Remote {
 
@@ -27,6 +28,5 @@ public interface DispatcherInterface extends Remote {
 
     ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException;
 
-
-
+    Set<LobbyInterface> requestAllLobbies() throws RemoteException;
 }

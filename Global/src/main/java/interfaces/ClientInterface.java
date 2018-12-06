@@ -41,4 +41,8 @@ public interface ClientInterface extends Remote {
     void setBackupApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
 
     void disconnect() throws RemoteException;
+
+    void transferTo(String serverName) throws RemoteException;
+
+    void connect(ApplicationServerInterface serverInterface) throws RemoteException;
 }

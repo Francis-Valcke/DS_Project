@@ -12,10 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Dispatcher extends UnicastRemoteObject implements DispatcherInterface {
 
@@ -70,7 +67,6 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
                 b.setBackupServer(a);
                 System.out.println("Server " + a.getName() + " is a backup server of server " + b.getName());
             }
-
             //Notify waiting users that a new server is available
             notifyAll();
 
@@ -86,11 +82,9 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         databaseServers.get(0).getDatabaseImp().createNewUser(username, password);
     }
 
-
     public String requestNewToken(String username, String password) throws RemoteException, InvalidCredentialsException {
         return databaseServers.get(0).getDatabaseImp().createToken(username, password);
     }
-
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
         return databaseServers.get(0).getDatabaseImp().isTokenValid(username, token);
@@ -147,7 +141,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     }
 
     @Override
-    public void broadCastLobby(LobbyInterface lobby) throws RemoteException {
+    public synchronized void broadCastLobby(LobbyInterface lobby) throws RemoteException {
         for (ApplicationServerInterface applicationServer : applicationServers) {
             applicationServer.updateLobby(lobby);
         }
@@ -161,6 +155,15 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             }
         }
         return appServer;
+    }
+
+    //This method only gets called when a lobby is registered.
+    public Set<LobbyInterface> requestAllLobbies() throws RemoteException {
+        Set<LobbyInterface> lobbies = new HashSet<>();
+        for (ApplicationServerInterface applicationServer : applicationServers) {
+            lobbies.add(applicationServer.getLobby());
+        }
+        return lobbies;
     }
 
     public List<DatabaseServer> getDatabaseServers() {

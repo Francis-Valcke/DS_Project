@@ -124,6 +124,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public void terminateGame(Game game) throws RemoteException {
         live_games.remove(game.getId());
         dispatch.broadCastLobby(this);
+        ((ApplicationServer)applicationServer).addFreeSlots(game.getMax_players());
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
     }
 

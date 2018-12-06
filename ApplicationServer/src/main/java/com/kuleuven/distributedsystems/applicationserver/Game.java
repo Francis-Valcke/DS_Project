@@ -93,11 +93,17 @@ public class Game extends UnicastRemoteObject implements GameInterface {
                 toDelete = p;
             }
         }
+
         if (toDelete != null) {
             allPlayers.remove(toDelete);
             playerQueue.remove(toDelete);
         }
+
         pushPlayerlist();
+
+        if (allPlayers.isEmpty()){
+            lobby.terminateGame(this);
+        }
     }
 
     public synchronized void readyUp(ClientInterface client) throws RemoteException {

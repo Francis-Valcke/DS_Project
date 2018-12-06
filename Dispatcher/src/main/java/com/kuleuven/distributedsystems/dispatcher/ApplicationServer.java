@@ -172,4 +172,9 @@ public class ApplicationServer implements ApplicationServerInterface {
     public void disconnect(ClientInterface client) throws RemoteException {
 
     }
+
+    @Override
+    public void setAllLobbies(Set<LobbyInterface> lobbies) throws RemoteException {
+
+    }
 }

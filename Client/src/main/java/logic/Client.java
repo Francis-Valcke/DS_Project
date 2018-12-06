@@ -165,11 +165,24 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
         }
     }
 
+    public void transferTo(String serverName) throws RemoteException {
+        ApplicationServerInterface newAppServer = dispatch.getApplicationServerByName(serverName);
+        newAppServer.transferClient(this);
+    }
+
     public void disconnect() throws RemoteException {
         //Disconnect from the current server
         applicationServer.disconnect(this);
         applicationServer = null;
         backupApplicationServer = null;
+        lobby = null;
+    }
+
+    public void connect(ApplicationServerInterface server) throws RemoteException{
+        applicationServer = server;
+        backupApplicationServer = server.getBackupServer();
+        server.addConnectedClient(this);
+        lobby = server.getLobby();
     }
 
     public void showTile(Coordinate c, int value) throws RemoteException {

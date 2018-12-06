@@ -3,6 +3,7 @@ package logic;
 
 import classes.GameInfo;
 import exceptions.AlreadyPresentException;
+import interfaces.ApplicationServerInterface;
 import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,10 +50,16 @@ public class LobbyController implements Initializable {
                 joinGame();
             } catch (AlreadyPresentException e1) {
                 System.out.println(e1.getMessage());
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
             }
         });
         spectatebutton.setOnAction(e -> {
-            spectateGame();
+            try {
+                spectateGame();
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
+            }
         });
 
         try {
@@ -68,13 +75,24 @@ public class LobbyController implements Initializable {
         client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), 1);
     }
 
-    public void joinGame() throws AlreadyPresentException {
+    public void joinGame() throws AlreadyPresentException, RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
+        if (!selected.getHostName().equals(client.getApplicationServer().getName())){
+            //The client needs to be transferred to the right application server
+            client.transferTo(selected.getHostName());
+        }
+
         client.joinGame(selected);
     }
 
-    public void spectateGame() {
+    public void spectateGame() throws RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
+
+        if (!selected.getHostName().equals(client.getApplicationServer().getName())){
+            //The client needs to be transferred to the right application server
+            client.transferTo(selected.getHostName());
+        }
+
         client.spectateGame(selected.getId());
         //TODO: implementeren
     }
