@@ -114,6 +114,11 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return db.getTheme(id);
     }
 
+    @Override
+    public ApplicationServerInterface getApplicationServer() throws RemoteException {
+        return applicationServer;
+    }
+
     public boolean isValidPlayer(ClientInterface client) {
         try {
             return dispatch.isTokenValid(client.getUsername(), client.getToken());

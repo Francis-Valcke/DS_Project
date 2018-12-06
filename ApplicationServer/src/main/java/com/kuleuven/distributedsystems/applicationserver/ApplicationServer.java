@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
-    private static final int SERVER_CAPACITY = 2;
+    private static final int SERVER_CAPACITY = 1;
     private static ApplicationServer instance;
 
     static {
@@ -100,9 +100,12 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     }
 
     @Override
-    public void showLobby(LobbyInterface lobbyInterface) {
+    public void updateLobby(LobbyInterface lobbyInterface) throws RemoteException {
         allLobbies.remove(lobbyInterface);
         allLobbies.add(lobbyInterface);
+
+        System.out.println("Lobby in appserver " + name + " from appserver " + lobbyInterface.getApplicationServer().getName() + " has been updated");
+
         for (ClientInterface client : connectedClients) {
             try {
                 client.refreshLobbies();

@@ -45,7 +45,7 @@ public interface ApplicationServerInterface extends Remote {
 
     void addConnectedClient(ClientInterface client) throws RemoteException;
 
-    void showLobby(LobbyInterface lobby) throws RemoteException;
+    void updateLobby(LobbyInterface lobby) throws RemoteException;
 
     Set<LobbyInterface> getAllLobbies() throws RemoteException;
 }

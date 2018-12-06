@@ -144,7 +144,7 @@ public class ApplicationServer implements ApplicationServerInterface {
     }
 
     @Override
-    public void showLobby(LobbyInterface lobby) throws RemoteException {
+    public void updateLobby(LobbyInterface lobby) throws RemoteException {
 
     }
 

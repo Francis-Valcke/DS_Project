@@ -141,7 +141,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     @Override
     public void broadCastLobby(LobbyInterface lobby) throws RemoteException {
         for (ApplicationServerInterface applicationServer : applicationServers) {
-            applicationServer.showLobby(lobby);
+            applicationServer.updateLobby(lobby);
         }
     }
 
