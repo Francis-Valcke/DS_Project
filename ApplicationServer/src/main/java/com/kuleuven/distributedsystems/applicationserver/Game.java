@@ -6,6 +6,7 @@ import classes.GameInfo;
 import classes.PlayerInfo;
 import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
 import exceptions.AlreadyPresentException;
+import exceptions.InvalidCredentialsException;
 import exceptions.InvalidSizeException;
 import exceptions.LeftGameException;
 import interfaces.ClientInterface;
@@ -31,8 +32,9 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private Thread gameThread;
     private Lobby lobby;
     private VirtualClientManager virtualClientManager;
+    boolean backup;
 
-    public Game(String name, int x_size, int y_size, int max_players, String id, Lobby lobby, int theme_id) throws InvalidSizeException, RemoteException {
+    public Game(String name, int x_size, int y_size, int max_players, String id, ClientInterface client, Lobby lobby, int theme_id, boolean backup) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
         this.name = name;
         this.x_size = x_size;
         this.y_size = y_size;
@@ -40,6 +42,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         this.max_players = max_players;
         this.lobby = lobby;
         this.theme_id = theme_id;
+        this.backup = backup;
         //checken als het board een even aantal veldjes heeft
         board = new HashMap<>();
         if ((x_size * y_size) % 2 != 0) {
@@ -59,6 +62,12 @@ public class Game extends UnicastRemoteObject implements GameInterface {
                 combinations.remove(list_index);
             }
         }
+
+        //Als de huidige game geen backup is dan moeten we een backup game creeeren op de backup server
+        if (!backup){
+            lobby.getApplicationServer().getBackupServer().getLobby().makeNewGame(id, name, x_size, y_size, max_players, client, theme_id, true);
+        }
+
     }
 
     public void addPlayer(ClientInterface newClient) throws AlreadyPresentException {
@@ -422,5 +431,12 @@ public class Game extends UnicastRemoteObject implements GameInterface {
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id='" + id + '\'' +
+                '}';
     }
 }

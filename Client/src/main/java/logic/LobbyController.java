@@ -3,7 +3,6 @@ package logic;
 
 import classes.GameInfo;
 import exceptions.AlreadyPresentException;
-import interfaces.ApplicationServerInterface;
 import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -77,7 +76,7 @@ public class LobbyController implements Initializable {
 
     public void joinGame() throws AlreadyPresentException, RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (!selected.getHostName().equals(client.getApplicationServer().getName())){
+        if (client.isDiffrentServer(selected.getHostName())){
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }
@@ -87,14 +86,12 @@ public class LobbyController implements Initializable {
 
     public void spectateGame() throws RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-
-        if (!selected.getHostName().equals(client.getApplicationServer().getName())){
+        if (client.isDiffrentServer(selected.getHostName())){
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }
 
         client.spectateGame(selected.getId());
-        //TODO: implementeren
     }
 
     public void refreshList() {

@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class Client extends UnicastRemoteObject implements ClientInterface {
     //Singleton
@@ -208,6 +207,16 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
     @Override
     public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException {
 
+    }
+
+    public boolean isDiffrentServer(String name){
+        try {
+            return !applicationServer.getName().equals(name);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        //TODO: dit beter doen
+        return false;
     }
 
     @Override

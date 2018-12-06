@@ -49,13 +49,23 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface client, int theme_id)
             throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
 
+        return makeNewGame(createID(), name, x, y, max_players, client, theme_id, false);
+    }
+
+    public GameInterface makeNewGame(String id, String name, int x, int y, int max_players, ClientInterface client, int theme_id, boolean backup)
+            throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
+
+        if (!isValidPlayer(client)) {
+            throw new InvalidCredentialsException();
+        }
+
         GameInterface newGameInterface = null;
         Game newGame = null;
         /*
         * Bij het aanmaken van een new game moet eerst gechecked worden of de gevraagde game bij de server kan.
         * Zo niet wordt een nieuwe app server opgestart
         * */
-        if (!applicationServer.canFit(max_players)){
+        if (!applicationServer.canFit(max_players) && !backup){
             //Vraag een appserver op die wel plaats heeft voor de game.
             //De dispatcher start als nodig een nieuwe appserver op.
             ApplicationServerInterface newAppServer = dispatch.getApplicationServerByFreeSlots(max_players);
@@ -63,18 +73,32 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
             newGameInterface = newAppServer.getLobby().makeNewGame(name, x, y, max_players, client, theme_id);
         } else {
             //validate username and token in gameclientinterface
-            if (!isValidPlayer(client)) {
-                throw new InvalidCredentialsException();
-            }
 
-            String id = createID();
-            newGame = new Game(name, x, y, max_players, id, this, theme_id);
+
+            newGame = new Game(name, x, y, max_players, id , client, this, theme_id, backup);
             newGame.addPlayer(client);
-            liveGames.put(id, newGame);
-            System.out.println("INFO: new game initialised [id:" + id + "]");
-            ((ApplicationServer)applicationServer).reduceFreeSlots(max_players);
-            dispatch.broadCastLobby(this);
+
+            if (!backup) {
+                liveGames.put(id, newGame);
+                System.out.println("INFO: new game initialised [id:" + id + "]");
+                ((ApplicationServer) applicationServer).reduceFreeSlots(max_players);
+                dispatch.broadCastLobby(this);
+            } else {
+                backupLiveGames.put(id, newGame);
+            }
         }
+
+        System.out.println();
+        System.out.println("Current games:");
+        System.out.println("\tLive Games:");
+        for (Map.Entry<String, Game> entry : liveGames.entrySet()) {
+            System.out.println("\t\t" + entry.getValue());
+        }
+        System.out.println("\tBackup Games:");
+        for (Map.Entry<String, Game> entry : backupLiveGames.entrySet()) {
+            System.out.println("\t\t" + entry.getValue());
+        }
+        System.out.println();
 
         if (newGameInterface!=null) return newGameInterface;
         else return newGame;
