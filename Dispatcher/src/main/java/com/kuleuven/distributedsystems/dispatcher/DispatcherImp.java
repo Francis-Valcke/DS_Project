@@ -40,8 +40,8 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
         try {
             //Nieuwe database toevoegen aan pool
             databaseServers.add(db);
-            //Database master maken als het de eerste is
-            if(databaseServers.size() == 1) db.setMaster(true);
+            //1ste DB als master instellen bij de rest
+            if(databaseServers.size() > 1) db.setMaster(databaseServers.get(0));
             System.out.println("INFO: new database server registered");
 
         } catch (Exception e) {
