@@ -6,7 +6,6 @@
     <runConfiguration name="ApplicationServer 1" type="Spring Boot" />
     <runConfiguration name="Client1" type="Spring Boot" />
     <runConfiguration name="Client2" type="Spring Boot" />
-    <runConfiguration name="Client3" type="Spring Boot" />
     <method v="2" />
   </configuration>
 </component>

@@ -1,5 +1,6 @@
 package interfaces;
 
+import classes.PreparedStatementWrapper;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 
@@ -24,5 +25,9 @@ public interface DatabaseInterface extends Remote {
     public DatabaseInterface getMaster() throws RemoteException;
 
     public void setMaster(DatabaseInterface master) throws RemoteException;
+
+    void addSlave(DatabaseInterface slave) throws RemoteException;
+
+    public void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException;
 
 }

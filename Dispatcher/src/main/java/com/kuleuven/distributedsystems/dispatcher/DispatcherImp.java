@@ -26,6 +26,7 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
     }
 
     private List<DatabaseInterface> databaseServers = new LinkedList<>();
+    private DatabaseInterface masterDB;
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
 
@@ -38,10 +39,15 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
 
     public void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
         try {
+            //1ste DB als masterDB instellen bij de rest
+            if (databaseServers.size() < 1) masterDB = db;
+            else {
+                db.setMaster(masterDB);
+                masterDB.addSlave(db);
+            }
             //Nieuwe database toevoegen aan pool
             databaseServers.add(db);
-            //1ste DB als master instellen bij de rest
-            if(databaseServers.size() > 1) db.setMaster(databaseServers.get(0));
+
             System.out.println("INFO: new database server registered");
 
         } catch (Exception e) {
@@ -78,17 +84,17 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
 
 
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        databaseServers.get(0).createNewUser(username, password);
+        masterDB.createNewUser(username, password);
     }
 
 
     public String requestNewToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        return databaseServers.get(0).createToken(username, password);
+        return masterDB.createToken(username, password);
     }
 
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
-        return databaseServers.get(0).isTokenValid(username, token);
+        return masterDB.isTokenValid(username, token);
     }
 
     public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
@@ -139,5 +145,13 @@ public class DispatcherImp extends UnicastRemoteObject implements DispatcherInte
 
     public void setApplicationServers(List<ApplicationServerInterface> applicationServers) {
         this.applicationServers = applicationServers;
+    }
+
+    public List<DatabaseInterface> getDatabaseServers() {
+        return databaseServers;
+    }
+
+    public DatabaseInterface getMasterDB() {
+        return masterDB;
     }
 }

@@ -1,5 +1,6 @@
 package com.kuleuven.ds.database;
 
+import classes.PreparedStatementWrapper;
 import com.google.common.hash.Hashing;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
@@ -18,6 +19,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     private DatabaseInterface master; //==null betekent dat deze de master is
     private Connection conn;
     private List<Transaction> deltaList = new ArrayList<>();
+    private List<DatabaseInterface> slaves = new ArrayList<>();
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
 
@@ -49,15 +51,17 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                 String salt = Hashing.sha256().hashString((System.currentTimeMillis() + "WillekeurigeString"), StandardCharsets.UTF_8).toString();
                 String hashedPassw = hash(password, salt);
                 try {
-                    PreparedStatement pstmt = conn.prepareStatement(sql);
+                    PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
                     pstmt.setString(1, username);
                     pstmt.setString(2, hashedPassw);
                     pstmt.setString(3, salt);
-                    ResultSet rs = pstmt.executeQuery();
+                    pstmt.executeUpdate(conn);
 
                     //Toevoegen aan deltalist
-                    deltaList.add(new Transaction(rs.getStatement().toString()));
+                    deltaList.add(new Transaction(pstmt));
 
+                    //Nieuwe users moeten direct gepusht worden naar alle servers
+                    //pushToSlaves(pstmt);
 
                 } catch (SQLException sqle) {
                     sqle.printStackTrace();
@@ -78,14 +82,16 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
                 String token = hash(password + "MemoryGame" + System.currentTimeMillis());
                 try {
-                    PreparedStatement pstmt = conn.prepareStatement(sql);
-                    pstmt.setString(1, token);
+                    PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+                    pstmt.setString(1, hash(token));
                     pstmt.setLong(2, System.currentTimeMillis());
                     pstmt.setString(3, username);
-                    ResultSet rs = pstmt.executeQuery();
+                    pstmt.executeUpdate(conn);
 
                     //Toevoegen aan deltalist
-                    deltaList.add(new Transaction(rs.getStatement().toString()));
+                    deltaList.add(new Transaction(pstmt));
+                    //Tokens moeten direct gepusht worden naar alle servers
+                    pushToSlaves(pstmt);
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
@@ -122,12 +128,11 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
-        //TODO: tokens hashen
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
-            pstmt.setString(2, token);
+            pstmt.setString(2, hash(token));
             ResultSet rs = pstmt.executeQuery();
             long currentTime = System.currentTimeMillis();
             while (rs.next()) {
@@ -187,17 +192,17 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
 
             try {
-                PreparedStatement pstmt = conn.prepareStatement(sql);
+                PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
 
                 // set parameters
                 pstmt.setBytes(1, picture);
                 pstmt.setInt(2, 1);
 
                 //execute query
-                ResultSet rs = pstmt.executeQuery();
+                pstmt.executeUpdate(conn);
 
                 //Toevoegen aan deltalist
-                deltaList.add(new Transaction(rs.getStatement().toString()));
+                deltaList.add(new Transaction(pstmt));
 
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -231,15 +236,23 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return bos != null ? bos.toByteArray() : null;
     }
 
-    public void executeSQL(String sql){
+    public void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException {
         try {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.executeUpdate();
+            pstmt.executeUpdate(conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public void pushToSlaves(PreparedStatementWrapper pstmt) {
+        for (DatabaseInterface slave : slaves) {
+            try {
+                slave.executeSQL(pstmt);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public DatabaseInterface getMaster() throws RemoteException{
         return master;
@@ -248,4 +261,10 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     public void setMaster(DatabaseInterface master) throws RemoteException{
         this.master = master;
     }
+
+    public void addSlave(DatabaseInterface slave) throws RemoteException {
+        slaves.add(slave);
+    }
+
+
 }

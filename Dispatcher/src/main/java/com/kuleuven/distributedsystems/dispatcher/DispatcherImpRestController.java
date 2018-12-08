@@ -22,7 +22,7 @@ public class DispatcherImpRestController {
     public ResponseMessage registerNewUser(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
         ResponseMessage responseMessage = null;
         try {
-            dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().createNewUser(username, password);
+            dispatcherImp.getDatabaseServers().get(0).createNewUser(username, password);
             responseMessage = new ResponseMessage(ResponseType.OK, "New user has been created.");
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
@@ -38,7 +38,7 @@ public class DispatcherImpRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            String token = dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().createToken(username, password);
+            String token = dispatcherImp.getDatabaseServers().get(0).createToken(username, password);
             responseMessage = new ResponseMessage(ResponseType.OK, "Token created.", token);
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
@@ -53,7 +53,7 @@ public class DispatcherImpRestController {
     public ResponseMessage isTokenValid(@RequestParam(value = "username") String username, @RequestParam(value = "token") String token) {
         ResponseMessage responseMessage = null;
         try {
-            dispatcherImp.getDatabaseServers().get(0).getDatabaseImp().isTokenValid(username, token);
+            dispatcherImp.getDatabaseServers().get(0).isTokenValid(username, token);
             responseMessage = new ResponseMessage(ResponseType.OK, "Token is valid.");
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
