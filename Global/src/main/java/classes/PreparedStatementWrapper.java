@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 
 //Wrapper class voor Prepared statements
-public class PreparedStatementWrapper {
+public class PreparedStatementWrapper implements Serializable {
     private String sql;
     private Map<Integer, Object> parameters;
 

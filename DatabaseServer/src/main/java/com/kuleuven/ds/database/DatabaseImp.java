@@ -61,7 +61,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                     deltaList.add(new Transaction(pstmt));
 
                     //Nieuwe users moeten direct gepusht worden naar alle servers
-                    //pushToSlaves(pstmt);
+                    pushToSlaves(pstmt);
 
                 } catch (SQLException sqle) {
                     sqle.printStackTrace();
