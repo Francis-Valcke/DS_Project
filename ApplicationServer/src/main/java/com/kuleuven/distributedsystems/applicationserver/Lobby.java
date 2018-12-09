@@ -69,7 +69,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
             //Vraag een appserver op die wel plaats heeft voor de game.
             //De dispatcher start als nodig een nieuwe appserver op.
             ApplicationServerInterface newAppServer = dispatch.getApplicationServerByFreeSlots(max_players);
-            newAppServer.transferClient(client);
+            client.transferTo(newAppServer);
             newGameInterface = newAppServer.getLobby().makeNewGame(name, x, y, max_players, client, theme_id);
         } else {
             //validate username and token in gameclientinterface

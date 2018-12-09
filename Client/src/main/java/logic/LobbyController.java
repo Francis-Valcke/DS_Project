@@ -3,6 +3,7 @@ package logic;
 
 import classes.GameInfo;
 import exceptions.AlreadyPresentException;
+import exceptions.InvalidCredentialsException;
 import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,7 +48,7 @@ public class LobbyController implements Initializable {
         joinbutton.setOnAction(e -> {
             try {
                 joinGame();
-            } catch (AlreadyPresentException e1) {
+            } catch (AlreadyPresentException | InvalidCredentialsException e1) {
                 System.out.println(e1.getMessage());
             } catch (RemoteException e1) {
                 e1.printStackTrace();
@@ -56,13 +57,13 @@ public class LobbyController implements Initializable {
         spectatebutton.setOnAction(e -> {
             try {
                 spectateGame();
-            } catch (RemoteException e1) {
+            } catch (RemoteException | InvalidCredentialsException e1) {
                 e1.printStackTrace();
             }
         });
 
         try {
-            serverName.setText(client.getApplicationServer().getName());
+            serverName.setText(client.getLobby().getApplicationServer().getName());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -74,18 +75,18 @@ public class LobbyController implements Initializable {
         client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), 1);
     }
 
-    public void joinGame() throws AlreadyPresentException, RemoteException {
+    public void joinGame() throws AlreadyPresentException, RemoteException, InvalidCredentialsException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDiffrentServer(selected.getHostName())) {
+        if (client.isDifferentServer(selected.getHostName())) {
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }
         client.joinGame(selected.getId());
     }
 
-    public void spectateGame() throws RemoteException {
+    public void spectateGame() throws RemoteException, InvalidCredentialsException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDiffrentServer(selected.getHostName())) {
+        if (client.isDifferentServer(selected.getHostName())) {
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }
@@ -99,7 +100,7 @@ public class LobbyController implements Initializable {
             gameslist.getItems().clear();
             ArrayList<GameInfo> games = new ArrayList<>();
 
-            for (LobbyInterface lobby : client.getApplicationServer().getAllLobbies()) {
+            for (LobbyInterface lobby : client.getLobby().getApplicationServer().getAllLobbies()) {
                 games.addAll(lobby.getLiveGames());
             }
 

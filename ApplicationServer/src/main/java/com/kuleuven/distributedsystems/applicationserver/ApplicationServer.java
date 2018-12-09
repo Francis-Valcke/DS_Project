@@ -116,11 +116,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         return freeSlots - slots >= 0;
     }
 
-    public void transferClient(ClientInterface client) throws RemoteException {
-        client.disconnect();
-        client.connect(this);
-    }
-
     public void disconnect(ClientInterface client) throws RemoteException {
         System.out.println("Client " + client.getUsername() + " has disconnected.");
         connectedClients.remove(client);
@@ -167,7 +162,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public int getPort() {
         return port;
     }
-
 
     public void setPort(int port) {
         this.port = port;

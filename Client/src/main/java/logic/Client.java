@@ -109,7 +109,6 @@ public class Client extends AbstractClient {
     }
 
     public Theme loadTheme(int theme_id) {
-        System.out.println(System.getProperty("user.dir"));
         File themeDirectory = new File("Client/src/main/resources/themes/" + theme_id);
         if (themeDirectory.isDirectory()) {
             return new Theme(theme_id);

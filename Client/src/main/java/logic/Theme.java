@@ -14,7 +14,6 @@ public class Theme {
 
     public Theme(int id) {
         this.id = id;
-        System.out.println(System.getProperty("user.dir"));
         File themeDirectory = new File("Client/src/main/resources/themes/" + id);
         for (File picture : themeDirectory.listFiles()) {
             images.add(new Image("file:" + picture.getPath()));
@@ -25,7 +24,6 @@ public class Theme {
         try {
             int i = 0;
             for (byte[] byteArray : images) {
-                System.out.println(System.getProperty("user.dir"));
                 FileUtils.writeByteArrayToFile(new File("Client/src/main/resources/themes/" + id + "/" + i + ".jpg"), byteArray);
                 i++;
             }

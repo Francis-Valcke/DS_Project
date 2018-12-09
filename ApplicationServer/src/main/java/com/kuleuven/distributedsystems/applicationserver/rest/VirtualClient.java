@@ -19,7 +19,6 @@ public class VirtualClient extends AbstractClient {
     public VirtualClient(String username, String token) throws RemoteException {
         this.username = username;
         this.token = token;
-        app_login = AppLogin.getInstance();
         lobby = Lobby.getInstance();
         gameController = new VirtualGameController();
     }

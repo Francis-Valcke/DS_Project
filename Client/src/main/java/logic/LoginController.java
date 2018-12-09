@@ -49,17 +49,12 @@ public class LoginController {
             }
 
             Client client = Client.getInstance();
-
-            ApplicationServerInterface appServer = dispatch.getApplicationServer();
-            LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
-
-            client.connect(appServer);
-
+            client.setDispatch(dispatch);
             client.setUsername(username);
             client.setToken(token);
-            client.setDispatch(dispatch);
-            client.setApp_login(appServer.getAppLogin());
-            client.setLobby(lobby);
+
+            client.connect();
+
 
             //Naar lobby scherm gaan
             SceneController.getInstance().showLobbyScene();

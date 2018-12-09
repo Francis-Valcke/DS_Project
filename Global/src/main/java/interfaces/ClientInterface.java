@@ -2,6 +2,7 @@ package interfaces;
 
 import classes.Coordinate;
 import classes.PlayerInfo;
+import exceptions.InvalidCredentialsException;
 import exceptions.LeftGameException;
 
 import java.rmi.Remote;
@@ -10,39 +11,39 @@ import java.util.List;
 
 public interface ClientInterface extends Remote {
 
-    public Coordinate requestMove() throws RemoteException, LeftGameException;
+    Coordinate requestMove() throws RemoteException, LeftGameException;
 
-    public String getUsername() throws RemoteException;
+    void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException;
 
-    public String getToken() throws RemoteException;
+    void hideTile(Coordinate c, int delay) throws RemoteException;
 
-    public void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException;
+    void showTile(Coordinate c, int value) throws RemoteException;
 
-    public void hideTile(Coordinate c, int delay) throws RemoteException;
+    boolean isSameClient(ClientInterface c) throws RemoteException;
 
-    public void showTile(Coordinate c, int value) throws RemoteException;
+    void setGameStarted() throws RemoteException;
 
-    public boolean isSameClient(ClientInterface c) throws RemoteException;
+    void updateInfoLabel(String s) throws RemoteException;
 
-    public void setGameStarted() throws RemoteException;
+    void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException;
 
-    public void updateInfoLabel(String s) throws RemoteException;
-
-    ApplicationServerInterface getApplicationServer() throws RemoteException;
-
-    void setApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
-
-    ApplicationServerInterface getBackupApplicationServer() throws RemoteException;
-
-    void setBackupApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
+    void transferTo(String serverName) throws RemoteException, InvalidCredentialsException;
 
     void disconnect() throws RemoteException;
 
-    void transferTo(String serverName) throws RemoteException;
+    void connect() throws RemoteException, InvalidCredentialsException;
 
-    void connect(ApplicationServerInterface serverInterface) throws RemoteException;
+    void connect(String serverName) throws RemoteException, InvalidCredentialsException;
+
+    void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException;
+
+    String getUsername() throws RemoteException;
+
+    String getToken() throws RemoteException;
 
     void setGameController(GameControllerInterface gameController) throws RemoteException;
 
     GameControllerInterface getGameController() throws RemoteException;
+
+
 }

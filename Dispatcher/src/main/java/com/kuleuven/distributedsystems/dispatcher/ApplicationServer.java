@@ -164,11 +164,6 @@ public class ApplicationServer implements ApplicationServerInterface {
     }
 
     @Override
-    public void transferClient(ClientInterface client) throws RemoteException {
-
-    }
-
-    @Override
     public void disconnect(ClientInterface client) throws RemoteException {
 
     }

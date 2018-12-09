@@ -12,12 +12,10 @@ import java.util.Objects;
 public abstract class AbstractClient extends UnicastRemoteObject implements ClientInterface {
 
     //Remote Objects
-    protected ApplicationServerInterface applicationServer;
-    protected ApplicationServerInterface backupApplicationServer;
     protected GameInterface game;
     protected DispatcherInterface dispatch;
-    protected AppLoginInterface app_login;
     protected LobbyInterface lobby;
+    protected LobbyInterface backupLobby;
 
     //Local objects
     protected GameControllerInterface gameController;
@@ -33,8 +31,8 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
      * Logic from this class
      * */
 
-    public boolean isDiffrentServer(String name) throws RemoteException {
-        return !applicationServer.getName().equals(name);
+    public boolean isDifferentServer(String hostName) throws RemoteException {
+        return !lobby.getApplicationServer().getName().equals(hostName);
     }
 
     public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException, InvalidSizeException, RemoteException, InvalidCredentialsException {
@@ -125,27 +123,48 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     }
 
     @Override
+    public void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException {
+        disconnect();
+        connect(server);
+    }
+
+    @Override
+    public void transferTo(String serverName) throws RemoteException, InvalidCredentialsException {
+        disconnect();
+        connect(serverName);
+    }
+
+    @Override
     public void disconnect() throws RemoteException {
-        //Disconnect from the current server
-        applicationServer.disconnect(this);
-        applicationServer = null;
-        backupApplicationServer = null;
-        lobby = null;
+        lobby.getApplicationServer().disconnect(this);
+        backupLobby.getApplicationServer().disconnect(this);
     }
 
     @Override
-    public void transferTo(String serverName) throws RemoteException {
-        ApplicationServerInterface newAppServer = dispatch.getApplicationServerByName(serverName);
-        newAppServer.transferClient(this);
-    }
-
-    @Override
-    public void connect(ApplicationServerInterface server) throws RemoteException {
-        applicationServer = server;
-        backupApplicationServer = server.getBackupServer();
+    //Let the dispatcher choose which server
+    public void connect() throws RemoteException, InvalidCredentialsException {
+        ApplicationServerInterface server = dispatch.getApplicationServer();
         server.addConnectedClient(this);
-        lobby = server.getLobby();
+        lobby = server.getAppLogin().clientLogin(username, token);
+        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
     }
+
+    @Override
+    //Ask the dispatcher for a specific server
+    public void connect(String serverName) throws RemoteException, InvalidCredentialsException {
+        ApplicationServerInterface server = dispatch.getApplicationServerByName(serverName);
+        server.addConnectedClient(this);
+        lobby = server.getAppLogin().clientLogin(username, token);
+        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
+    }
+
+    @Override
+    public void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException {
+        server.addConnectedClient(this);
+        lobby = server.getAppLogin().clientLogin(username, token);
+        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
+    }
+
 
     /*
      * Implemented Getters & Setters
@@ -159,26 +178,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     @Override
     public String getToken() throws RemoteException {
         return token;
-    }
-
-    @Override
-    public ApplicationServerInterface getApplicationServer() throws RemoteException {
-        return applicationServer;
-    }
-
-    @Override
-    public void setApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
-        applicationServer = appServer;
-    }
-
-    @Override
-    public ApplicationServerInterface getBackupApplicationServer() throws RemoteException {
-        return backupApplicationServer;
-    }
-
-    @Override
-    public void setBackupApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
-        backupApplicationServer = appServer;
     }
 
     @Override
@@ -209,14 +208,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
     public void setDispatch(DispatcherInterface dispatch) {
         this.dispatch = dispatch;
-    }
-
-    public AppLoginInterface getApp_login() {
-        return app_login;
-    }
-
-    public void setApp_login(AppLoginInterface app_login) {
-        this.app_login = app_login;
     }
 
     public LobbyInterface getLobby() {
@@ -250,6 +241,14 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
     public void setInGame(boolean inGame) {
         this.inGame = inGame;
+    }
+
+    public LobbyInterface getBackupLobby() {
+        return backupLobby;
+    }
+
+    public void setBackupLobby(LobbyInterface backupLobby) {
+        this.backupLobby = backupLobby;
     }
 
     /*

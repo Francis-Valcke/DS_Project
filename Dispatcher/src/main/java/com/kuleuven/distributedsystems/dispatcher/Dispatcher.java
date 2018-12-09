@@ -130,12 +130,15 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         else {
             //In dit geval is er geen enkele app server gevonden die de game aan kan dus wordt een server paar opgestart
             System.out.println("Starting new servers");
-
+            int serverCount = applicationServers.size();
             Main.startApplicationServers(2);
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            //Wachten tot ze alletwee zijn opgestart
+            while (applicationServers.size() != serverCount+2) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             return getApplicationServerByFreeSlots(slots);
         }

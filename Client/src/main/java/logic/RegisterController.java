@@ -38,19 +38,14 @@ public class RegisterController {
 
             String token = dispatch.requestNewToken(username, password);
 
+
             Client client = Client.getInstance();
-            client.setApplicationServer(dispatch.getApplicationServer());
-
-            ApplicationServerInterface appServer = dispatch.getApplicationServer();
-            LobbyInterface lobby = appServer.getAppLogin().clientLogin(username, token);
-
-            client.connect(appServer);
-
+            client.setDispatch(dispatch);
             client.setUsername(username);
             client.setToken(token);
-            client.setDispatch(dispatch);
-            client.setApp_login(appServer.getAppLogin());
-            client.setLobby(lobby);
+
+            client.connect();
+
             SceneController.getInstance().showLobbyScene();
 
         } catch (RemoteException | NotBoundException | UserAlreadyExistsException | InvalidCredentialsException e) {

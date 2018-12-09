@@ -123,8 +123,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             se.printStackTrace();
             return false;
         }
-
-
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
@@ -186,7 +184,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     public void insertPhoto(int id) throws RemoteException {
         if(master == null) {
-            //System.out.println(System.getProperty("user.dir"));
             byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
 
             String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
