@@ -1,9 +1,8 @@
-package com.kuleuven.distributedsystems.applicationserver.rest.controllers;
+package com.kuleuven.ds.controllers;
 
 import classes.ResponseMessage;
-import com.kuleuven.distributedsystems.applicationserver.AppLogin;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClient;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
+import com.kuleuven.ds.VirtualClient;
+import com.kuleuven.ds.VirtualClientServer;
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,15 +18,15 @@ import static classes.ResponseType.OK;
 @RequestMapping(value = "memory/appLogin")
 public class AppLoginRestController {
 
-    private static VirtualClientManager clientManager = VirtualClientManager.getInstance();
+    private static VirtualClientServer clientServer = VirtualClientServer.getInstance();
 
     @RequestMapping(value = "login", produces = "application/json")
     public ResponseMessage login(@RequestParam String username, @RequestParam String token) {
         ResponseMessage responseMessage = null;
 
         try {
-            AppLogin.getInstance().clientLogin(username, token);
-            VirtualClient client = clientManager.newClient(username, token);
+            VirtualClient client = clientServer.newClient(username, token);
+            client.getAppLogin().clientLogin(username, token);
             responseMessage = new ResponseMessage(OK, "Logged in.");
         } catch (AlreadyPresentException | InvalidCredentialsException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());

@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 
 @RestController
 @RequestMapping(value = "memory")
-public class DispatcherImpRestController {
+public class DispatcherController {
 
     private Dispatcher dispatcher = Dispatcher.getInstance();
 
@@ -62,12 +62,13 @@ public class DispatcherImpRestController {
         return responseMessage;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/getApplicationServer")
+    @RequestMapping(method = RequestMethod.GET, value = "/getVirtualClientServer")
     public ResponseMessage getApplicationServer() throws RemoteException, JsonProcessingException {
-        System.out.println("INFO: new client connected");
         ResponseMessage responseMessage = null;
+
         ApplicationServer appServer = new ApplicationServer(dispatcher.getApplicationServer());
         responseMessage = new ResponseMessage(ResponseType.OK, "Application servers available.", appServer);
+
         return responseMessage;
     }
 

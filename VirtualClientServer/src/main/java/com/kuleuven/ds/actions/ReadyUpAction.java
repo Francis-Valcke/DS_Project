@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.applicationserver.rest.actions;
+package com.kuleuven.ds.actions;
 
 public class ReadyUpAction extends Action {
 

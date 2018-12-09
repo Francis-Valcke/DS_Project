@@ -46,5 +46,7 @@ public interface ClientInterface extends Remote {
 
     GameControllerInterface getGameController() throws RemoteException;
 
+    AppLoginInterface getAppLogin() throws RemoteException;
 
+    void setAppLogin(AppLoginInterface appLogin) throws RemoteException;
 }

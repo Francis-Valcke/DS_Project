@@ -1,12 +1,11 @@
-package com.kuleuven.distributedsystems.applicationserver.rest.controllers;
+package com.kuleuven.ds.controllers;
 
 import classes.GameInfo;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.distributedsystems.applicationserver.Lobby;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClient;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
+import com.kuleuven.ds.VirtualClient;
+import com.kuleuven.ds.VirtualClientServer;
 import exceptions.*;
 import interfaces.ClientInterface;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,8 @@ import static classes.ResponseType.OK;
 @RestController
 @RequestMapping(value = "memory/lobby")
 public class LobbyRestController {
-    private static VirtualClientManager clientManager = VirtualClientManager.getInstance();
+
+    private static VirtualClientServer clientServer = VirtualClientServer.getInstance();
 
     @RequestMapping(method = RequestMethod.POST, value = "makeNewGame", consumes = "application/json", produces = "application/json")
     public ResponseMessage makeNewGame(@RequestParam String token, @RequestBody String body) {
@@ -33,7 +33,7 @@ public class LobbyRestController {
             int y = actualObj.get("y").asInt();
             int maxPlayers = actualObj.get("maxPlayers").asInt();
 
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             client.makeGame(name, x, y, maxPlayers, 0);
 
             GameInfo game = client.getGame().getGameInfo();
@@ -53,7 +53,7 @@ public class LobbyRestController {
         ResponseMessage responseMessage = null;
         try {
 
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             client.joinGame(gameId);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Game joined successfully", game);
@@ -73,7 +73,7 @@ public class LobbyRestController {
 
         try {
 
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             client.spectateGame(gameId);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Spectating game successfully", game);
@@ -93,10 +93,10 @@ public class LobbyRestController {
     public ResponseMessage getLiveGames(@RequestParam String token) throws RemoteException {
         ResponseMessage responseMessage = null;
 
-        ClientInterface client = null;
+        VirtualClient client = null;
         try {
-            client = clientManager.getClient(token);
-            Object o = Lobby.getInstance().getLiveGames();
+            client = clientServer.getClient(token);
+            Object o = client.getLobby().getLiveGames();
             responseMessage = new ResponseMessage(OK, "Live games:", o);
         } catch (UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());

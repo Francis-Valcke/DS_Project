@@ -1,12 +1,12 @@
-package com.kuleuven.distributedsystems.applicationserver.rest.controllers;
+package com.kuleuven.ds.controllers;
 
 import classes.Coordinate;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClient;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualGameController;
+import com.kuleuven.ds.VirtualClient;
+import com.kuleuven.ds.VirtualClientServer;
+import com.kuleuven.ds.VirtualGameController;
 import exceptions.InvalidMoveException;
 import exceptions.NotInGameException;
 import exceptions.NotYourTurnException;
@@ -23,7 +23,7 @@ import static classes.ResponseType.OK;
 @RequestMapping(value = "memory/game")
 public class GameRestController {
 
-    private static VirtualClientManager clientManager = VirtualClientManager.getInstance();
+    private static VirtualClientServer clientServer = VirtualClientServer.getInstance();
 
     /*
      * REST METHODS
@@ -34,7 +34,7 @@ public class GameRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             client.leaveGame();
             responseMessage = new ResponseMessage(OK, "Left the game successfully");
         } catch (UserNotLoggedInException | NotInGameException e) {
@@ -53,7 +53,7 @@ public class GameRestController {
 
         VirtualClient client = null;
         try {
-            client = clientManager.getClient(token);
+            client = clientServer.getClient(token);
             client.readyUp();
             responseMessage = new ResponseMessage(OK, "Player set to ready.");
 
@@ -72,7 +72,7 @@ public class GameRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             Object o = ((VirtualGameController) client.getGameController()).getActions(from);
             responseMessage = new ResponseMessage(OK, "Game data:", o);
         } catch (UserNotLoggedInException e) {
@@ -90,7 +90,7 @@ public class GameRestController {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            VirtualClient client = clientManager.getClient(token);
+            VirtualClient client = clientServer.getClient(token);
             Coordinate c = mapper.readValue(string, Coordinate.class);
             Object value = client.recordMove(c);
             responseMessage = new ResponseMessage(OK, "Move has been processed", value);

@@ -3,10 +3,7 @@ package com.kuleuven.distributedsystems.dispatcher;
 import com.google.common.collect.HashMultimap;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
-import interfaces.ApplicationServerInterface;
-import interfaces.DatabaseInterface;
-import interfaces.DispatcherInterface;
-import interfaces.LobbyInterface;
+import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -37,7 +34,8 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return instance;
     }
 
-    public void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
+    @Override
+    public synchronized void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
         try {
             //1ste DB als masterDB instellen bij de rest
             if (databaseServers.size() < 1) masterDB = db;
@@ -55,6 +53,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         }
     }
 
+    @Override
     public synchronized DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException {
         try {
 
@@ -80,6 +79,13 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         }
         return null;
     }
+
+    @Override
+    public synchronized void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException {
+        System.out.println("INFO: New application server registered: " + server.getName() + " [" + server.getAddress() + ":" + server.getPort() + "]");
+
+    }
+
 
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
         masterDB.createNewUser(username, password);

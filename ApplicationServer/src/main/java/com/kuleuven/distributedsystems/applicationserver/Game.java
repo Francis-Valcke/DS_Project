@@ -4,7 +4,6 @@ import classes.Coordinate;
 import classes.Field;
 import classes.GameInfo;
 import classes.PlayerInfo;
-import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.InvalidSizeException;
@@ -31,7 +30,6 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private boolean started = false;
     private Thread gameThread;
     private Lobby lobby;
-    private VirtualClientManager virtualClientManager;
     private boolean backup;
     private GameInterface backupGame;
 
@@ -417,14 +415,6 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     public void setLobby(Lobby lobby) {
         this.lobby = lobby;
-    }
-
-    public VirtualClientManager getVirtualClientManager() {
-        return virtualClientManager;
-    }
-
-    public void setVirtualClientManager(VirtualClientManager virtualClientManager) {
-        this.virtualClientManager = virtualClientManager;
     }
 
     public boolean allFieldsFlipped() {

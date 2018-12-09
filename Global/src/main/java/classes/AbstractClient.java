@@ -15,7 +15,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     protected GameInterface game;
     protected DispatcherInterface dispatch;
 
-
     protected AppLoginInterface appLogin;
     protected AppLoginInterface backupAppLogin;
     protected LobbyInterface lobby;
@@ -208,6 +207,16 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     @Override
     public GameControllerInterface getGameController() throws RemoteException {
         return gameController;
+    }
+
+    @Override
+    public AppLoginInterface getAppLogin() {
+        return appLogin;
+    }
+
+    @Override
+    public void setAppLogin(AppLoginInterface appLogin) {
+        this.appLogin = appLogin;
     }
 
     /*

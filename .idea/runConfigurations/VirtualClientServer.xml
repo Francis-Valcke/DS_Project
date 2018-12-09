@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="VirtualClientServer" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="VirtualClientServer_main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.kuleuven.ds.Main" />
+    <option name="PROGRAM_PARAMETERS" value="VirtualClientServer 1700" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

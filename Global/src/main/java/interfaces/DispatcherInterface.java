@@ -16,6 +16,8 @@ public interface DispatcherInterface extends Remote {
 
     public String requestNewToken(String username, String password) throws RemoteException, InvalidCredentialsException;
 
+    void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException;
+
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException;
 
     public boolean isTokenValid(String username, String token) throws RemoteException;

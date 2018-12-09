@@ -1,10 +1,10 @@
-package com.kuleuven.distributedsystems.applicationserver.rest;
+package com.kuleuven.ds;
 
 import classes.Coordinate;
 import classes.PlayerInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.distributedsystems.applicationserver.rest.actions.*;
+import com.kuleuven.ds.actions.*;
 import interfaces.GameControllerInterface;
 
 import java.util.ArrayList;

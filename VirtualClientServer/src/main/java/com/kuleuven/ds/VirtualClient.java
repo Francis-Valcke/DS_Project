@@ -1,12 +1,8 @@
-package com.kuleuven.distributedsystems.applicationserver.rest;
+package com.kuleuven.ds;
 
 import classes.AbstractClient;
 import classes.Coordinate;
-import com.kuleuven.distributedsystems.applicationserver.AppLogin;
-import com.kuleuven.distributedsystems.applicationserver.Game;
-import com.kuleuven.distributedsystems.applicationserver.Lobby;
 import exceptions.*;
-
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,7 +15,6 @@ public class VirtualClient extends AbstractClient {
     public VirtualClient(String username, String token) throws RemoteException {
         this.username = username;
         this.token = token;
-        lobby = Lobby.getInstance();
         gameController = new VirtualGameController();
     }
 
@@ -69,7 +64,9 @@ public class VirtualClient extends AbstractClient {
         nextMove = c;
         moves.add(c);
         notifyAll();
-        return ((Game) game).getBoard().get(c).getValue();
+
+        //TODO: FIX
+        return null;
     }
 
     private boolean isMoveValid(Coordinate c) throws RemoteException {

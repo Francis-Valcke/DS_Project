@@ -1,6 +1,6 @@
-package com.kuleuven.distributedsystems.applicationserver.rest.actions;
+package com.kuleuven.ds.actions;
 
-import static com.kuleuven.distributedsystems.applicationserver.rest.actions.ActionType.INITIALISE;
+import static com.kuleuven.ds.actions.ActionType.INITIALISE;
 
 public class InitialiseAction extends Action {
 
