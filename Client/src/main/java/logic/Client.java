@@ -209,7 +209,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface {
 
     }
 
-    public boolean isDiffrentServer(String name){
+    public boolean isDifferentServer(String name) {
         try {
             return !applicationServer.getName().equals(name);
         } catch (RemoteException e) {
