@@ -28,7 +28,7 @@
                                            AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0"/>
                             </children>
                         </AnchorPane>
-                        <Text fx:id="name" layoutX="88.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                        <Text fx:id="serverName" layoutX="88.0" strokeType="OUTSIDE" strokeWidth="0.0"
                               textAlignment="CENTER" wrappingWidth="192.5078125" AnchorPane.leftAnchor="88.0"
                               AnchorPane.rightAnchor="87.0" AnchorPane.topAnchor="10.0"/>
                     </children>
