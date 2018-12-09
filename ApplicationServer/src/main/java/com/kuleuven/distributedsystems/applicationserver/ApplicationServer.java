@@ -110,16 +110,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public void updateLobby(LobbyInterface lobbyInterface) throws RemoteException {
         allLobbies.remove(lobbyInterface);
         allLobbies.add(lobbyInterface);
-
-        System.out.println("Lobby in appserver " + name + " from appserver " + lobbyInterface.getApplicationServer().getName() + " has been updated");
-
-        for (ClientInterface client : connectedClients) {
-            try {
-                client.refreshLobbies();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean canFit(int slots) {

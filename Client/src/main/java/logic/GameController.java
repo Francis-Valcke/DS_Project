@@ -2,6 +2,7 @@ package logic;
 
 import classes.Coordinate;
 import classes.PlayerInfo;
+import exceptions.NotInGameException;
 import interfaces.GameControllerInterface;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -68,8 +69,12 @@ public class GameController implements Initializable, GameControllerInterface {
     }
 
     public void ready() {
-        Client.getInstance().readyUp();
-        readycheckbox.setDisable(true);
+        try {
+            Client.getInstance().readyUp();
+            readycheckbox.setDisable(true);
+        } catch (RemoteException | NotInGameException e) {
+            e.printStackTrace();
+        }
     }
 
     public void leaveGame() {

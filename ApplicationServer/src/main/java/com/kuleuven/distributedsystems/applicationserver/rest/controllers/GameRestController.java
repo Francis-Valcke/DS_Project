@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClient;
 import com.kuleuven.distributedsystems.applicationserver.rest.VirtualClientManager;
+import com.kuleuven.distributedsystems.applicationserver.rest.VirtualGameController;
 import exceptions.InvalidMoveException;
 import exceptions.NotInGameException;
 import exceptions.NotYourTurnException;
@@ -72,11 +73,11 @@ public class GameRestController {
 
         try {
             VirtualClient client = clientManager.getClient(token);
-            Object o = client.getGameController().getActions(from);
+            Object o = ((VirtualGameController) client.getGameController()).getActions(from);
             responseMessage = new ResponseMessage(OK, "Game data:", o);
         } catch (UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | RemoteException e) {
             e.printStackTrace();
         }
 

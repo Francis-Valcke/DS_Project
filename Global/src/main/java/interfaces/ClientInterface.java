@@ -28,10 +28,6 @@ public interface ClientInterface extends Remote {
 
     public void updateInfoLabel(String s) throws RemoteException;
 
-    public void showLobbies(List<LobbyInterface> lobbies) throws RemoteException;
-
-    void refreshLobbies() throws RemoteException;
-
     ApplicationServerInterface getApplicationServer() throws RemoteException;
 
     void setApplicationServer(ApplicationServerInterface appServer) throws RemoteException;
@@ -45,4 +41,8 @@ public interface ClientInterface extends Remote {
     void transferTo(String serverName) throws RemoteException;
 
     void connect(ApplicationServerInterface serverInterface) throws RemoteException;
+
+    void setGameController(GameControllerInterface gameController) throws RemoteException;
+
+    GameControllerInterface getGameController() throws RemoteException;
 }

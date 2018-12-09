@@ -5,6 +5,7 @@ import classes.PlayerInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuleuven.distributedsystems.applicationserver.rest.actions.*;
+import interfaces.GameControllerInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 /*
  * This method will virtually keep the game state for the mobile clients
  * */
-public class VirtualGameController {
+public class VirtualGameController implements GameControllerInterface {
 
     private ArrayList<Action> actions;
     private VirtualClient client;
@@ -43,11 +44,11 @@ public class VirtualGameController {
         actions.add(new InitialiseAction(width, height, spectating));
     }
 
-    public void showTile(Coordinate c, Integer integer) {
+    public void showTile(Coordinate c, int integer) {
         actions.add(new ShowTileAction(c, integer));
     }
 
-    public void hideTile(Coordinate c, Integer delay) {
+    public void hideTile(Coordinate c, int delay) {
         actions.add(new HideTileAction(c, delay));
     }
 
