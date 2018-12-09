@@ -75,6 +75,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     @Override
     public synchronized Coordinate requestMove() throws RemoteException, LeftGameException {
         gameController.updateInfoLabel("Flip a card!");
+        nextMove = null;
         while (nextMove == null) {
             try {
                 wait();
