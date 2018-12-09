@@ -32,7 +32,8 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private Thread gameThread;
     private Lobby lobby;
     private VirtualClientManager virtualClientManager;
-    boolean backup;
+    private boolean backup;
+    private GameInterface backupGame;
 
     public Game(String name, int x_size, int y_size, int max_players, String id, ClientInterface client, Lobby lobby, int theme_id, boolean backup) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
         this.name = name;
@@ -65,13 +66,14 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
         //Als de huidige game geen backup is dan moeten we een backup game creeeren op de backup server
         if (!backup){
-            lobby.getApplicationServer().getBackupServer().getLobby().makeNewGame(id, name, x_size, y_size, max_players, client, theme_id, true);
+            backupGame = lobby.getApplicationServer().getBackupServer().getLobby().makeNewGame(id, name, x_size, y_size, max_players, client, theme_id, true);
         }
 
     }
 
     public void addPlayer(ClientInterface newClient) throws AlreadyPresentException {
         try {
+
             System.out.println("INFO: new player added: " + newClient.getUsername());
             Player newPlayer = new Player(newClient, newClient.getUsername());
             if (allPlayers.contains(newPlayer)) throw new AlreadyPresentException();
@@ -83,6 +85,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
     }
 
     public void addSpectator(ClientInterface newClient) {
