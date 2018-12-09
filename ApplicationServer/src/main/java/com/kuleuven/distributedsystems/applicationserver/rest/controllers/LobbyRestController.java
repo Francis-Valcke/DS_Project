@@ -34,7 +34,10 @@ public class LobbyRestController {
             int maxPlayers = actualObj.get("maxPlayers").asInt();
 
             VirtualClient client = clientManager.getClient(token);
-            GameInfo game = client.makeGame(name, x, y, maxPlayers);
+            client.makeGame(name, x, y, maxPlayers, 0);
+
+            GameInfo game = client.getGame().getGameInfo();
+
             responseMessage = new ResponseMessage(OK, "New game created.", game);
         } catch (IOException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
@@ -49,13 +52,16 @@ public class LobbyRestController {
     public ResponseMessage joinGame(@RequestParam String token, @RequestParam String gameId) {
         ResponseMessage responseMessage = null;
         try {
+
             VirtualClient client = clientManager.getClient(token);
-            GameInfo game = client.joinGame(gameId);
+            client.joinGame(gameId);
+            GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Game joined successfully", game);
+
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
             e.printStackTrace();
-        } catch (InvalidCredentialsException | GameNotFoundException | GameFullException | GameStartedException | UserNotLoggedInException | NoSuchGameExistsException | AlreadyPresentException e) {
+        } catch (InvalidCredentialsException | GameNotFoundException | GameFullException | GameStartedException | UserNotLoggedInException | AlreadyPresentException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         }
         return responseMessage;
@@ -66,10 +72,13 @@ public class LobbyRestController {
         ResponseMessage responseMessage = null;
 
         try {
+
             VirtualClient client = clientManager.getClient(token);
             client.spectateGame(gameId);
-            responseMessage = new ResponseMessage(OK, "Spectating game successfully");
-        } catch (InvalidCredentialsException | GameNotFoundException | UserNotLoggedInException | NoSuchGameExistsException e) {
+            GameInfo game = client.getGame().getGameInfo();
+            responseMessage = new ResponseMessage(OK, "Spectating game successfully", game);
+
+        } catch (InvalidCredentialsException | GameNotFoundException | UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");

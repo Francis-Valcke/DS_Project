@@ -1,5 +1,6 @@
 package logic;
 
+import interfaces.GameControllerInterface;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -63,7 +64,7 @@ public class SceneController {
         }
     }
 
-    public void createGameScene(GameController gc) {
+    public void createGameScene(GameControllerInterface gc) {
         try {
             Client.getInstance().setGameController(gc);
 
@@ -78,7 +79,7 @@ public class SceneController {
             stage.show();
             //Zorgen dat de controller de game verlaat als het scherm gesloten wordt
             stage.setOnCloseRequest(e -> {
-                gc.leaveGame();
+                ((GameController) gc).leaveGame();
                 SceneController.getInstance().showLobbyScene();
             });
             prevStage.close();

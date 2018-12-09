@@ -16,4 +16,5 @@ public interface GameControllerInterface {
     void startGame();
 
     void updatePlayerList(List<PlayerInfo> playerInfoList);
+
 }

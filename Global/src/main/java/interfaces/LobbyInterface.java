@@ -24,4 +24,6 @@ public interface LobbyInterface extends Remote {
 
     ApplicationServerInterface getApplicationServer() throws RemoteException;
 
+    GameInterface getGameById(String gameId) throws RemoteException, NoSuchGameExistsException;
+
 }

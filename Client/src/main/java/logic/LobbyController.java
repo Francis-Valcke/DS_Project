@@ -76,17 +76,16 @@ public class LobbyController implements Initializable {
 
     public void joinGame() throws AlreadyPresentException, RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDiffrentServer(selected.getHostName())){
+        if (client.isDiffrentServer(selected.getHostName())) {
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }
-
-        client.joinGame(selected);
+        client.joinGame(selected.getId());
     }
 
     public void spectateGame() throws RemoteException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDiffrentServer(selected.getHostName())){
+        if (client.isDiffrentServer(selected.getHostName())) {
             //The client needs to be transferred to the right application server
             client.transferTo(selected.getHostName());
         }

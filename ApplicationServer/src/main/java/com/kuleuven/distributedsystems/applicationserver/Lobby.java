@@ -74,9 +74,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         } else {
             //validate username and token in gameclientinterface
 
-
             newGame = new Game(name, x, y, max_players, id , client, this, theme_id, backup);
             newGame.addPlayer(client);
+
 
             if (!backup) {
                 liveGames.put(id, newGame);
@@ -161,6 +161,12 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     @Override
     public ApplicationServerInterface getApplicationServer() throws RemoteException {
         return applicationServer;
+    }
+
+    @Override
+    public Game getGameById(String gameId) throws RemoteException, NoSuchGameExistsException {
+        if (!liveGames.containsKey(gameId)) throw new NoSuchGameExistsException();
+        return liveGames.get(gameId);
     }
 
     public boolean isValidPlayer(ClientInterface client) {
