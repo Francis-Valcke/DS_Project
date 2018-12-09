@@ -14,25 +14,29 @@ public class PreparedStatementWrapper implements Serializable {
     private String sql;
     private Map<Integer, Object> parameters;
 
-    public PreparedStatementWrapper(String sql) throws SQLException {
+    public PreparedStatementWrapper(String sql) {
         this.sql = sql;
         this.parameters = new HashMap<>();
     }
 
 
-    public void setString(int index, String x) throws SQLException {
+    public void setString(int index, String x) {
         parameters.put(index, x);
     }
 
-    public void setInt(int index, int x) throws SQLException {
+    public void setInt(int index, int x) {
         parameters.put(index, x);
     }
 
-    public void setLong(int index, long x) throws SQLException {
+    public void setLong(int index, long x) {
         parameters.put(index, x);
     }
 
-    public void setBytes(int index, byte[] x) throws SQLException {
+    public void setBytes(int index, byte[] x) {
+        parameters.put(index, x);
+    }
+
+    public void setBoolean(int index, boolean x) {
         parameters.put(index, x);
     }
 
@@ -58,6 +62,9 @@ public class PreparedStatementWrapper implements Serializable {
             }
             if (o.getValue() instanceof String) {
                 pstmt.setString(o.getKey(), (String) o.getValue());
+            }
+            if (o.getValue() instanceof Boolean) {
+                pstmt.setBoolean(o.getKey(), (boolean) o.getValue());
             }
         }
         return pstmt;

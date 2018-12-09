@@ -1,6 +1,8 @@
 package com.kuleuven.ds.database;
 
+import classes.GameInfo;
 import classes.PreparedStatementWrapper;
+import classes.ThemeInfo;
 import com.google.common.hash.Hashing;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
@@ -20,6 +22,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     private Connection conn;
     private List<Transaction> deltaList = new ArrayList<>();
     private List<DatabaseInterface> slaves = new ArrayList<>();
+    int gamesMade = 0;
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
 
@@ -41,7 +44,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public void createNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        if(master == null) {
+        if (master == null) {
             if (userExists(username)) throw new UserAlreadyExistsException();
 
             // SQL statement for creating new user
@@ -69,14 +72,13 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             master.createNewUser(username, password);
         }
     }
 
     public String createToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        if(master == null) {
+        if (master == null) {
             if (checkCredentials(username, password)) {
                 String sql = "UPDATE users SET token = ? , token_timestamp = ? WHERE username = ?;";
 
@@ -98,8 +100,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                 return token;
 
             } else throw new InvalidCredentialsException();
-        }
-        else{
+        } else {
             return master.createToken(username, password);
         }
     }
@@ -122,6 +123,28 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
+        }
+
+
+    }
+
+    public void inValidateToken(String username) throws RemoteException {
+        //token invalideren door timestamp op 0 te zetten
+        if (master == null) {
+            try {
+                String sql = "UPDATE users SET token_timestamp = ? WHERE username = ?;";
+                PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+                pstmt.setLong(1, 0);
+                pstmt.setString(2, username);
+
+                pstmt.executeUpdate(conn);
+
+                pushToSlaves(pstmt);
+            } catch (SQLException sqle) {
+                System.out.println(sqle);
+            }
+        } else {
+            master.inValidateToken(username);
         }
     }
 
@@ -161,11 +184,11 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return false;
     }
 
-    public List<byte[]> getTheme(int id) throws RemoteException {
+    public List<byte[]> getPictures(int theme_id) throws RemoteException {
         String sql = "SELECT picture FROM pictures WHERE theme_id=?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, Integer.toString(id));
+            pstmt.setString(1, Integer.toString(theme_id));
             ResultSet rs = pstmt.executeQuery();
 
             List<byte[]> toReturn = new ArrayList<>();
@@ -182,8 +205,80 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
+    public List<ThemeInfo> getThemes() throws RemoteException {
+        String sql = "SELECT * FROM themes";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+            List<ThemeInfo> toReturn = new ArrayList<>();
+            while (rs.next()) {
+                toReturn.add(new ThemeInfo(rs.getInt(1), rs.getString(2), rs.getInt(3)));
+            }
+            return toReturn;
+        } catch (SQLException sqe) {
+            System.out.println(sqe);
+        }
+        return null;
+    }
+
+    public List<GameInfo> getAllGames() throws RemoteException {
+        try {
+            String sql = "SELECT * FROM games";
+            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+            ResultSet rs = pstmt.executeQuery(conn);
+            List<GameInfo> toReturn = new ArrayList<>();
+            while (rs.next()) {
+                toReturn.add(new GameInfo(rs.getString(6), rs.getString(2), rs.getString(1),
+                        rs.getInt(8), rs.getInt(9), rs.getInt(4), rs.getInt(3),
+                        rs.getBoolean(5), rs.getInt(7)));
+            }
+            return toReturn;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addGame(GameInfo gi) throws RemoteException {
+        try {
+            String sql = "INSERT INTO games(id, name, players_joined, max_players, started, hostname, theme_id, width, height) VALUES(?,?,?,?,?,?,?,?,?)";
+            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+            pstmt.setString(1, gi.getId());
+            pstmt.setString(2, gi.getName());
+            pstmt.setInt(3, gi.getNumberOfPlayersJoined());
+            pstmt.setInt(4, gi.getMaxPlayers());
+            pstmt.setBoolean(5, gi.isStarted());
+            pstmt.setString(6, gi.getHostName());
+            pstmt.setInt(7, gi.getTheme_id());
+            pstmt.setInt(8, gi.getWidth());
+            pstmt.setInt(9, gi.getHeight());
+
+            pstmt.executeQuery(conn);
+
+            //TODO: doorsturen naar andere serveronis
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void clearGames() {
+        try {
+            String sql = "DELETE FROM games";
+            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+            pstmt.executeUpdate(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void insertPhoto(int id) throws RemoteException {
-        if(master == null) {
+        if (master == null) {
+            //System.out.println(System.getProperty("user.dir"));
             byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
 
             String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
@@ -204,8 +299,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        }
-        else{
+        } else {
             master.insertPhoto(id);
         }
     }
@@ -251,11 +345,11 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public DatabaseInterface getMaster() throws RemoteException{
+    public DatabaseInterface getMaster() throws RemoteException {
         return master;
     }
 
-    public void setMaster(DatabaseInterface master) throws RemoteException{
+    public void setMaster(DatabaseInterface master) throws RemoteException {
         this.master = master;
     }
 

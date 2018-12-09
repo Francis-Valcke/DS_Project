@@ -32,6 +32,7 @@ public class Main {
         }
 
         databaseImp = new DatabaseImp(dbFilePath);
+        databaseImp.clearGames();
         dispatcherImp = registerDispatcher();
         System.out.println("INFO: " + dbFilePath + " up and running on port: " + serverPort);
 
