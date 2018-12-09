@@ -60,15 +60,17 @@ public class Client extends AbstractClient {
 
         } catch (InvalidCredentialsException e) {
             AlertBox.display("Cannot make game", "Wrong credentials");
+        } catch (ThemeNotLargeEnoughException e) {
+            AlertBox.display("Cannot make game", e.getMessage());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void joinGame(String gameId) throws AlreadyPresentException {
+    public void joinGame(GameInfo gameInfo) throws AlreadyPresentException, NoSuchGameExistsException {
         try {
-            super.joinGame(gameId);
+            super.joinGame(gameInfo);
             gameController = new GameController(game.getHeight(), game.getWidth(), false, loadTheme(game.getThemeId()));
             SceneController.getInstance().createGameScene(gameController);
 
@@ -80,9 +82,9 @@ public class Client extends AbstractClient {
     }
 
     @Override
-    public void spectateGame(String gameId) {
+    public void spectateGame(GameInfo gameInfo) throws AlreadyPresentException {
         try {
-            game = lobby.spectateGame(gameId, this);
+            super.spectateGame(gameInfo);
             gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId()));
             SceneController.getInstance().createGameScene(gameController);
             HashMap<Coordinate, Integer> flippedFields = game.getFlippedFields();

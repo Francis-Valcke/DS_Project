@@ -4,10 +4,7 @@ import classes.Coordinate;
 import classes.Field;
 import classes.GameInfo;
 import classes.PlayerInfo;
-import exceptions.AlreadyPresentException;
-import exceptions.InvalidCredentialsException;
-import exceptions.InvalidSizeException;
-import exceptions.LeftGameException;
+import exceptions.*;
 import interfaces.ClientInterface;
 import interfaces.GameInterface;
 
@@ -33,7 +30,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private boolean backup;
     private GameInterface backupGame;
 
-    public Game(String name, int x_size, int y_size, int max_players, String id, ClientInterface client, Lobby lobby, int theme_id, boolean backup) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    public Game(String name, int x_size, int y_size, int max_players, String id, ClientInterface client, Lobby lobby, int theme_id, boolean backup) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException {
         this.name = name;
         this.x_size = x_size;
         this.y_size = y_size;

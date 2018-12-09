@@ -2,6 +2,7 @@ package com.kuleuven.ds;
 
 import classes.AbstractClient;
 import classes.Coordinate;
+import classes.GameInfo;
 import exceptions.*;
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -34,24 +35,22 @@ public class VirtualClient extends AbstractClient {
     }
 
     @Override
-    public void makeGame(String name, int width, int height, int maxPlayers, int themeId) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    public void makeGame(String name, int width, int height, int maxPlayers, int themeId) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException {
         super.makeGame(name, width, height, maxPlayers, themeId);
         gameController = new VirtualGameController(this, height, width, false);
 
     }
 
     @Override
-    public void joinGame(String gameId) throws GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException, AlreadyPresentException {
-        super.joinGame(gameId);
+    public void joinGame(GameInfo gameInfo) throws GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException, AlreadyPresentException, NoSuchGameExistsException {
+        super.joinGame(gameInfo);
         gameController = new VirtualGameController(this, game.getHeight(), game.getWidth(), false);
     }
 
     @Override
-    public void spectateGame(String gameId) throws GameNotFoundException, RemoteException, InvalidCredentialsException {
-        super.spectateGame(gameId);
+    public void spectateGame(GameInfo gameInfo) throws GameNotFoundException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        super.spectateGame(gameInfo);
         gameController = new VirtualGameController(this, game.getHeight(), game.getWidth(), true);
-        lobby.spectateGame(gameId, this);
-        inGame = true;
         HashMap<Coordinate, Integer> flippedFields = game.getFlippedFields();
         for (Coordinate c : flippedFields.keySet()) {
             gameController.showTile(c, flippedFields.get(c));

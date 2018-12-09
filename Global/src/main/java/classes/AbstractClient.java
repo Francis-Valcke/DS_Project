@@ -43,18 +43,25 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         return false;
     }
 
-    public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException, InvalidSizeException, RemoteException, InvalidCredentialsException {
+    public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException, InvalidSizeException, RemoteException, InvalidCredentialsException, ThemeNotLargeEnoughException {
         game = lobby.makeNewGame(name, width, height, max_players, this, theme_id);
         inGame = true;
     }
 
-    public void joinGame(String gameId) throws AlreadyPresentException, GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException {
-        game = lobby.joinGame(gameId, this);
+    public void joinGame(GameInfo gameInfo) throws AlreadyPresentException, GameFullException, RemoteException, GameStartedException, InvalidCredentialsException, GameNotFoundException, NoSuchGameExistsException {
+        if (isDifferentServer(gameInfo.getHostName())) {
+            transferTo(gameInfo.getHostName());
+        }
+        game = lobby.joinGame(gameInfo.getId(), this);
         inGame = true;
     }
 
-    public void spectateGame(String gameId) throws GameNotFoundException, RemoteException, InvalidCredentialsException {
-        game = lobby.spectateGame(gameId, this);
+    public void spectateGame(GameInfo gameInfo) throws GameNotFoundException, RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        if (isDifferentServer(gameInfo.getHostName())) {
+            transferTo(gameInfo.getHostName());
+        }
+        game = lobby.spectateGame(gameInfo.getId(), this);
+        inGame = true;
     }
 
     public void readyUp() throws RemoteException, NotInGameException {

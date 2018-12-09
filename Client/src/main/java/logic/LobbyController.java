@@ -2,8 +2,7 @@ package logic;
 
 
 import classes.GameInfo;
-import exceptions.AlreadyPresentException;
-import exceptions.InvalidCredentialsException;
+import exceptions.*;
 import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -48,7 +47,7 @@ public class LobbyController implements Initializable {
         joinbutton.setOnAction(e -> {
             try {
                 joinGame();
-            } catch (AlreadyPresentException | InvalidCredentialsException e1) {
+            } catch (AlreadyPresentException | InvalidCredentialsException | GameFullException | GameStartedException | NoSuchGameExistsException | GameNotFoundException e1) {
                 System.out.println(e1.getMessage());
             } catch (RemoteException e1) {
                 e1.printStackTrace();
@@ -57,7 +56,7 @@ public class LobbyController implements Initializable {
         spectatebutton.setOnAction(e -> {
             try {
                 spectateGame();
-            } catch (RemoteException | InvalidCredentialsException e1) {
+            } catch (RemoteException | InvalidCredentialsException | GameNotFoundException e1) {
                 e1.printStackTrace();
             } catch (AlreadyPresentException e1) {
                 e1.printStackTrace();
@@ -77,23 +76,14 @@ public class LobbyController implements Initializable {
         client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), 1);
     }
 
-    public void joinGame() throws AlreadyPresentException, RemoteException, InvalidCredentialsException {
+    public void joinGame() throws AlreadyPresentException, RemoteException, InvalidCredentialsException, GameFullException, GameStartedException, NoSuchGameExistsException, GameNotFoundException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDifferentServer(selected.getHostName())) {
-            //The client needs to be transferred to the right application server
-            client.transferTo(selected.getHostName());
-        }
-        client.joinGame(selected.getId());
+        client.joinGame(selected);
     }
 
-    public void spectateGame() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    public void spectateGame() throws RemoteException, InvalidCredentialsException, AlreadyPresentException, GameNotFoundException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
-        if (client.isDifferentServer(selected.getHostName())) {
-            //The client needs to be transferred to the right application server
-            client.transferTo(selected.getHostName());
-        }
-
-        client.spectateGame(selected.getId());
+        client.spectateGame(selected);
     }
 
     public void refreshList() {

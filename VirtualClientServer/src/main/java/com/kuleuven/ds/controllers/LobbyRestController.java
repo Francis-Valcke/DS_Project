@@ -9,10 +9,14 @@ import com.kuleuven.ds.VirtualClient;
 import com.kuleuven.ds.VirtualClientServer;
 import exceptions.*;
 import interfaces.ClientInterface;
+import interfaces.LobbyInterface;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static classes.ResponseType.NOK;
 import static classes.ResponseType.OK;
@@ -43,43 +47,43 @@ public class LobbyRestController {
         } catch (IOException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
             e.printStackTrace();
-        } catch (UserNotLoggedInException | InvalidSizeException | InvalidCredentialsException | AlreadyPresentException e) {
+        } catch (UserNotLoggedInException | InvalidSizeException | InvalidCredentialsException | AlreadyPresentException | ThemeNotLargeEnoughException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         }
         return responseMessage;
     }
 
     @RequestMapping(value = "joinGame", produces = "application/json")
-    public ResponseMessage joinGame(@RequestParam String token, @RequestParam String gameId) {
+    public ResponseMessage joinGame(@RequestParam String token, @RequestBody GameInfo gameInfo) {
         ResponseMessage responseMessage = null;
         try {
 
             VirtualClient client = ((VirtualClient) clientServer.getClient(token));
-            client.joinGame(gameId);
+            client.joinGame(gameInfo);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Game joined successfully", game);
 
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
             e.printStackTrace();
-        } catch (InvalidCredentialsException | GameNotFoundException | GameFullException | GameStartedException | UserNotLoggedInException | AlreadyPresentException e) {
+        } catch (InvalidCredentialsException | GameNotFoundException | GameFullException | GameStartedException | UserNotLoggedInException | AlreadyPresentException | NoSuchGameExistsException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         }
         return responseMessage;
     }
 
     @RequestMapping(value = "spectateGame", produces = "application/json")
-    public ResponseMessage spectateGame(@RequestParam String token, @RequestParam String gameId) {
+    public ResponseMessage spectateGame(@RequestParam String token, @RequestBody GameInfo gameInfo) {
         ResponseMessage responseMessage = null;
 
         try {
-
             VirtualClient client = ((VirtualClient) clientServer.getClient(token));
-            client.spectateGame(gameId);
+
+            client.spectateGame(gameInfo);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Spectating game successfully", game);
 
-        } catch (InvalidCredentialsException | GameNotFoundException | UserNotLoggedInException e) {
+        } catch (InvalidCredentialsException | GameNotFoundException | UserNotLoggedInException | AlreadyPresentException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
@@ -93,12 +97,18 @@ public class LobbyRestController {
     @RequestMapping(value = "getLiveGames", produces = "application/json")
     public ResponseMessage getLiveGames(@RequestParam String token) throws RemoteException {
         ResponseMessage responseMessage = null;
-
+        //TODO: Dit nog veranderen naar de goeie methode die jern ga implementeren
         VirtualClient client = null;
         try {
             client = ((VirtualClient) clientServer.getClient(token));
-            Object o = client.getLobby().getLiveGames();
-            responseMessage = new ResponseMessage(OK, "Live games:", o);
+
+            Set<LobbyInterface> lobbies = clientServer.getDispatcher().requestAllLobbies();
+            List<GameInfo> liveGames = new ArrayList<>();
+            for (LobbyInterface lobby : lobbies) {
+                liveGames.addAll(lobby.getLiveGames());
+            }
+
+            responseMessage = new ResponseMessage(OK, "Live games:", liveGames);
         } catch (UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         }
