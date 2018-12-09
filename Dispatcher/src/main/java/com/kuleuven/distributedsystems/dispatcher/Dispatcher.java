@@ -79,7 +79,6 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return null;
     }
 
-
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
         masterDB.createNewUser(username, password);
     }
