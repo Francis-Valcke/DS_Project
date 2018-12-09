@@ -1,6 +1,5 @@
 package com.kuleuven.ds.database;
 
-import interfaces.DatabaseInterface;
 import interfaces.DispatcherInterface;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,12 +17,12 @@ public class Main {
     private static int serverPort;
 
     private static DispatcherInterface dispatcherImp;
-    private static DatabaseInterface databaseImp;
+    private static DatabaseImp databaseImp;
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException{
         if (args.length != 0) {
             dbFilePath = args[0];
             serverPort = Integer.parseInt(args[1]);
@@ -31,41 +30,30 @@ public class Main {
             dbFilePath = "db_alpha";
             serverPort = 1100;
         }
-        databaseImp = startRMI(dbFilePath, serverPort);
-        dispatcherImp = registerDispatcher(dbFilePath, serverPort);
+
+        databaseImp = new DatabaseImp(dbFilePath);
+        dispatcherImp = registerDispatcher();
+        System.out.println("INFO: " + dbFilePath + " up and running on port: " + serverPort);
 
         /*for(int i = 1; i< 152; i++){
             try {
-                databaseImp.insertPhoto(i);
+                database.insertPhoto(i);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }*/
     }
 
-    public static DispatcherInterface registerDispatcher(String serverName, int port) {
+    public static DispatcherInterface registerDispatcher() {
 
         //Registreren bij dispatcher
         try {
             Registry registry = LocateRegistry.getRegistry(DISPATCH_IP, DISPATCH_PORT);
             DispatcherInterface dispatcherImp = (DispatcherInterface) registry.lookup("dispatcher_service");
-            dispatcherImp.registerDatabaseServer(serverName, port);
-            System.out.println("INFO: " + serverName + " up and running on port: " + port);
+            dispatcherImp.registerDatabaseServer(databaseImp);
             return dispatcherImp;
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static DatabaseInterface startRMI(String server_name, int port) {
-        try {
-            databaseImp = new DatabaseImp(server_name);
-            Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("database_service", databaseImp);
-            return databaseImp;
-        } catch (RemoteException re) {
-            re.printStackTrace();
         }
         return null;
     }

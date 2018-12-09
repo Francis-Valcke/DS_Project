@@ -1,5 +1,6 @@
 package com.kuleuven.ds.database;
 
+import classes.PreparedStatementWrapper;
 import com.google.common.hash.Hashing;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
@@ -15,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
+    private DatabaseInterface master; //==null betekent dat deze de master is
     private Connection conn;
+    private List<Transaction> deltaList = new ArrayList<>();
+    private List<DatabaseInterface> slaves = new ArrayList<>();
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
 
@@ -37,45 +41,67 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public void createNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        if (userExists(username)) throw new UserAlreadyExistsException();
+        if(master == null) {
+            if (userExists(username)) throw new UserAlreadyExistsException();
 
-        // SQL statement for creating new user
-        String sql = "INSERT INTO users(username, password, salt) VALUES(?,?,?)";
+            // SQL statement for creating new user
+            String sql = "INSERT INTO users(username, password, salt) VALUES(?,?,?)";
 
-        try {
-            String salt = Hashing.sha256().hashString((System.currentTimeMillis() + "WillekeurigeString"), StandardCharsets.UTF_8).toString();
-            String hashedPassw = hash(password, salt);
             try {
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, username);
-                pstmt.setString(2, hashedPassw);
-                pstmt.setString(3, salt);
-                pstmt.executeUpdate();
-            } catch (SQLException sqle) {
-                sqle.printStackTrace();
+                String salt = Hashing.sha256().hashString((System.currentTimeMillis() + "WillekeurigeString"), StandardCharsets.UTF_8).toString();
+                String hashedPassw = hash(password, salt);
+                try {
+                    PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+                    pstmt.setString(1, username);
+                    pstmt.setString(2, hashedPassw);
+                    pstmt.setString(3, salt);
+                    pstmt.executeUpdate(conn);
+
+                    //Toevoegen aan deltalist
+                    deltaList.add(new Transaction(pstmt));
+
+                    //Nieuwe users moeten direct gepusht worden naar alle servers
+                    pushToSlaves(pstmt);
+
+                } catch (SQLException sqle) {
+                    sqle.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        else{
+            master.createNewUser(username, password);
         }
     }
 
     public String createToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        if (checkCredentials(username, password)) {
-            String sql = "UPDATE users SET token = ? , token_timestamp = ? WHERE username = ?;";
+        if(master == null) {
+            if (checkCredentials(username, password)) {
+                String sql = "UPDATE users SET token = ? , token_timestamp = ? WHERE username = ?;";
 
-            String token = hash(password + "MemoryGame" + System.currentTimeMillis());
-            try {
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, token);
-                pstmt.setLong(2, System.currentTimeMillis());
-                pstmt.setString(3, username);
-                pstmt.executeUpdate();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-            return token;
+                String token = hash(password + "MemoryGame" + System.currentTimeMillis());
+                try {
+                    PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+                    pstmt.setString(1, hash(token));
+                    pstmt.setLong(2, System.currentTimeMillis());
+                    pstmt.setString(3, username);
+                    pstmt.executeUpdate(conn);
 
-        } else throw new InvalidCredentialsException();
+                    //Toevoegen aan deltalist
+                    deltaList.add(new Transaction(pstmt));
+                    //Tokens moeten direct gepusht worden naar alle servers
+                    pushToSlaves(pstmt);
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+                return token;
+
+            } else throw new InvalidCredentialsException();
+        }
+        else{
+            return master.createToken(username, password);
+        }
     }
 
     public boolean checkCredentials(String username, String password) throws RemoteException {
@@ -102,12 +128,11 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
-        //TODO: tokens hashen
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, username);
-            pstmt.setString(2, token);
+            pstmt.setString(2, hash(token));
             ResultSet rs = pstmt.executeQuery();
             long currentTime = System.currentTimeMillis();
             while (rs.next()) {
@@ -160,23 +185,31 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
     public void insertPhoto(int id) throws RemoteException {
-        //System.out.println(System.getProperty("user.dir"));
-        byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
+        if(master == null) {
+            //System.out.println(System.getProperty("user.dir"));
+            byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
 
-        String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
+            String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
 
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            try {
+                PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
 
-            // set parameters
-            pstmt.setBytes(1, picture);
-            pstmt.setInt(2, 1);
+                // set parameters
+                pstmt.setBytes(1, picture);
+                pstmt.setInt(2, 1);
 
-            //execute query
-            pstmt.executeUpdate();
+                //execute query
+                pstmt.executeUpdate(conn);
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+                //Toevoegen aan deltalist
+                deltaList.add(new Transaction(pstmt));
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        else{
+            master.insertPhoto(id);
         }
     }
 
@@ -202,4 +235,36 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
         return bos != null ? bos.toByteArray() : null;
     }
+
+    public void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException {
+        try {
+            pstmt.executeUpdate(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pushToSlaves(PreparedStatementWrapper pstmt) {
+        for (DatabaseInterface slave : slaves) {
+            try {
+                slave.executeSQL(pstmt);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public DatabaseInterface getMaster() throws RemoteException{
+        return master;
+    }
+
+    public void setMaster(DatabaseInterface master) throws RemoteException{
+        this.master = master;
+    }
+
+    public void addSlave(DatabaseInterface slave) throws RemoteException {
+        slaves.add(slave);
+    }
+
+
 }

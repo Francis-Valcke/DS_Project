@@ -8,9 +8,6 @@ import interfaces.DispatcherInterface;
 import interfaces.LobbyInterface;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.RemoteServer;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -26,7 +23,8 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         }
     }
 
-    private List<DatabaseServer> databaseServers = new LinkedList<>();
+    private List<DatabaseInterface> databaseServers = new LinkedList<>();
+    private DatabaseInterface masterDB;
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
 
@@ -37,15 +35,19 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return instance;
     }
 
-    public void registerDatabaseServer(String name, int port) throws RemoteException {
+    public void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
         try {
-            //Verbinden met de RMI van de database
-            Registry registry = LocateRegistry.getRegistry(RemoteServer.getClientHost(), port);
-            DatabaseInterface databaseImp = (DatabaseInterface) registry.lookup("database_service");
-            DatabaseServer newServer = new DatabaseServer(name, RemoteServer.getClientHost(), port, databaseImp);
+            //1ste DB als masterDB instellen bij de rest
+            if (databaseServers.size() < 1) masterDB = db;
+            else {
+                db.setMaster(masterDB);
+                masterDB.addSlave(db);
+            }
             //Nieuwe database toevoegen aan pool
-            databaseServers.add(newServer);
-            System.out.println("INFO: new database server registered: " + name + " [" + newServer.getIp() + ":" + newServer.getPort() + "]");
+            databaseServers.add(db);
+
+            System.out.println("INFO: new database server registered");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +72,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             //Notify waiting users that a new server is available
             notifyAll();
 
-            return databaseServers.get(0).getDatabaseImp();
+            return databaseServers.get(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,15 +81,15 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
 
 
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
-        databaseServers.get(0).getDatabaseImp().createNewUser(username, password);
+        masterDB.createNewUser(username, password);
     }
 
     public String requestNewToken(String username, String password) throws RemoteException, InvalidCredentialsException {
-        return databaseServers.get(0).getDatabaseImp().createToken(username, password);
+        return masterDB.createToken(username, password);
     }
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
-        return databaseServers.get(0).getDatabaseImp().isTokenValid(username, token);
+        return masterDB.isTokenValid(username, token);
     }
 
     public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
@@ -166,19 +168,19 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return lobbies;
     }
 
-    public List<DatabaseServer> getDatabaseServers() {
-        return databaseServers;
-    }
-
-    public void setDatabaseServers(List<DatabaseServer> databaseServers) {
-        this.databaseServers = databaseServers;
-    }
-
     public List<ApplicationServerInterface> getApplicationServers() {
         return applicationServers;
     }
 
     public void setApplicationServers(List<ApplicationServerInterface> applicationServers) {
         this.applicationServers = applicationServers;
+    }
+
+    public List<DatabaseInterface> getDatabaseServers() {
+        return databaseServers;
+    }
+
+    public DatabaseInterface getMasterDB() {
+        return masterDB;
     }
 }
