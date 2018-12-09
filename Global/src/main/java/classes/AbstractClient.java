@@ -157,9 +157,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         ApplicationServerInterface server = dispatch.getApplicationServer();
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
-
         lobby = appLogin.clientLogin(username, token);
-
         dispatch.addUser(server, username);
     }
 

@@ -2,6 +2,7 @@ package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Map;
 
 public interface VirtualClientServerInterface extends Remote {
 
@@ -11,4 +12,6 @@ public interface VirtualClientServerInterface extends Remote {
     String getAddress() throws RemoteException;
 
     String getPort() throws RemoteException;
+
+    Map<String, ClientInterface> getConnectedClients() throws RemoteException;;
 }

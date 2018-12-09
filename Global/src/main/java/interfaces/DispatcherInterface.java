@@ -24,6 +24,9 @@ public interface DispatcherInterface extends Remote {
 
     public ApplicationServerInterface getApplicationServer() throws RemoteException;
 
+    //Load balance the mobile users over the available servers
+    VirtualClientServerInterface getVirtualClientServer() throws RemoteException;
+
     public void broadCastLobby(LobbyInterface lobby) throws RemoteException;
 
     ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException;

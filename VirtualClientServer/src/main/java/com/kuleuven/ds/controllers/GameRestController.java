@@ -1,5 +1,6 @@
 package com.kuleuven.ds.controllers;
 
+import classes.AbstractClient;
 import classes.Coordinate;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +35,7 @@ public class GameRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             client.leaveGame();
             responseMessage = new ResponseMessage(OK, "Left the game successfully");
         } catch (UserNotLoggedInException | NotInGameException e) {
@@ -53,7 +54,7 @@ public class GameRestController {
 
         VirtualClient client = null;
         try {
-            client = clientServer.getClient(token);
+            client = ((VirtualClient) clientServer.getClient(token));
             client.readyUp();
             responseMessage = new ResponseMessage(OK, "Player set to ready.");
 
@@ -72,7 +73,7 @@ public class GameRestController {
         ResponseMessage responseMessage = null;
 
         try {
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             Object o = ((VirtualGameController) client.getGameController()).getActions(from);
             responseMessage = new ResponseMessage(OK, "Game data:", o);
         } catch (UserNotLoggedInException e) {
@@ -90,7 +91,7 @@ public class GameRestController {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             Coordinate c = mapper.readValue(string, Coordinate.class);
             Object value = client.recordMove(c);
             responseMessage = new ResponseMessage(OK, "Move has been processed", value);

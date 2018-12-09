@@ -22,10 +22,11 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     }
 
     private HashMultimap<ApplicationServerInterface, String> connectedUsers = HashMultimap.create();
-    private List<DatabaseInterface> databaseServers = new LinkedList<>();
     private DatabaseInterface masterDB;
+    private List<DatabaseInterface> databaseServers = new LinkedList<>();
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
+    private List<VirtualClientServerInterface> virtualClientServers = new LinkedList<>();
 
     public Dispatcher() throws RemoteException {
     }
@@ -83,7 +84,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     @Override
     public synchronized void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException {
         System.out.println("INFO: New application server registered: " + server.getName() + " [" + server.getAddress() + ":" + server.getPort() + "]");
-
+        virtualClientServers.add(server);
     }
 
 
@@ -139,6 +140,22 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         }
     }
 
+    //Load balance the mobile users over the available servers
+    @Override
+    public VirtualClientServerInterface getVirtualClientServer(){
+        Optional<VirtualClientServerInterface> server = virtualClientServers.stream()
+                .min(Comparator.comparingInt(o -> {
+                    try {
+                        return o.getConnectedClients().size();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        return 0;
+                    }
+                }));
+
+        return server.get();
+    }
+
     @Override
     public synchronized void broadCastLobby(LobbyInterface lobby) throws RemoteException {
         for (ApplicationServerInterface applicationServer : applicationServers) {
@@ -180,6 +197,8 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     public DatabaseInterface getMasterDB() {
         return masterDB;
     }
+
+
 
     @Override
     public boolean isConnected(String username) {

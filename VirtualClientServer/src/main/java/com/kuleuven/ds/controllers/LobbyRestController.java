@@ -1,5 +1,6 @@
 package com.kuleuven.ds.controllers;
 
+import classes.AbstractClient;
 import classes.GameInfo;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +34,7 @@ public class LobbyRestController {
             int y = actualObj.get("y").asInt();
             int maxPlayers = actualObj.get("maxPlayers").asInt();
 
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             client.makeGame(name, x, y, maxPlayers, 0);
 
             GameInfo game = client.getGame().getGameInfo();
@@ -53,7 +54,7 @@ public class LobbyRestController {
         ResponseMessage responseMessage = null;
         try {
 
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             client.joinGame(gameId);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Game joined successfully", game);
@@ -73,7 +74,7 @@ public class LobbyRestController {
 
         try {
 
-            VirtualClient client = clientServer.getClient(token);
+            VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             client.spectateGame(gameId);
             GameInfo game = client.getGame().getGameInfo();
             responseMessage = new ResponseMessage(OK, "Spectating game successfully", game);
@@ -95,7 +96,7 @@ public class LobbyRestController {
 
         VirtualClient client = null;
         try {
-            client = clientServer.getClient(token);
+            client = ((VirtualClient) clientServer.getClient(token));
             Object o = client.getLobby().getLiveGames();
             responseMessage = new ResponseMessage(OK, "Live games:", o);
         } catch (UserNotLoggedInException e) {

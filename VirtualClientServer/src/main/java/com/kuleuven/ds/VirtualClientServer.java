@@ -2,6 +2,7 @@ package com.kuleuven.ds;
 
 import exceptions.AlreadyPresentException;
 import exceptions.UserNotLoggedInException;
+import interfaces.ClientInterface;
 import interfaces.DispatcherInterface;
 import interfaces.VirtualClientServerInterface;
 
@@ -43,7 +44,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
     private String name;
     private String address;
     private String port;
-    private Map<String, VirtualClient> clients = new HashMap<>();
+    private Map<String, ClientInterface> connectedClients = new HashMap<>();
 
     /*
      * Constructors
@@ -60,7 +61,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         this.name = serverName;
         this.address = address;
         this.port = port;
-        this.clients = new HashMap<>();
+        this.connectedClients = new HashMap<String, ClientInterface>();
 
         try {
             //First get the dispatcher reference
@@ -75,28 +76,32 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         System.out.println("INFO: Successfully registered with dispatcher.");
     }
 
-    public VirtualClient removeClient(String token) throws UserNotLoggedInException {
-        VirtualClient client = getClient(token);
-        clients.remove(token);
+    public ClientInterface removeClient(String token) throws UserNotLoggedInException {
+        ClientInterface client = getClient(token);
+        connectedClients.remove(token);
         return client;
+    }
+
+    public void addClient(VirtualClient client) throws RemoteException {
+        connectedClients.put(client.getToken(), client);
     }
 
     public VirtualClient newClient(String username, String token) throws AlreadyPresentException, RemoteException {
         if (isLoggedIn(token)) throw new AlreadyPresentException();
         VirtualClient client = new VirtualClient(username, token);
-        clients.put(token, client);
+        connectedClients.put(token, client);
         return client;
     }
 
-    public VirtualClient getClient(String token) throws UserNotLoggedInException {
+    public ClientInterface getClient(String token) throws UserNotLoggedInException {
         if (!isLoggedIn(token)) {
             throw new UserNotLoggedInException();
         }
-        return clients.get(token);
+        return connectedClients.get(token);
     }
 
     public boolean isLoggedIn(String token) {
-        return clients.containsKey(token);
+        return connectedClients.containsKey(token);
     }
 
     /*
@@ -137,4 +142,14 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
     public void setPort(String port) {
         this.port = port;
     }
+
+    @Override
+    public Map<String, ClientInterface> getConnectedClients() {
+        return connectedClients;
+    }
+
+    public void setConnectedClients(Map<String, ClientInterface> connectedClients) {
+        this.connectedClients = connectedClients;
+    }
 }
+

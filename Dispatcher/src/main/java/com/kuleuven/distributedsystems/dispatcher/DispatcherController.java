@@ -3,8 +3,14 @@ package com.kuleuven.distributedsystems.dispatcher;
 import classes.ResponseMessage;
 import classes.ResponseType;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.JsonObject;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
+import interfaces.VirtualClientServerInterface;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,8 +59,8 @@ public class DispatcherController {
     public ResponseMessage isTokenValid(@RequestParam(value = "username") String username, @RequestParam(value = "token") String token) {
         ResponseMessage responseMessage = null;
         try {
-            dispatcher.isTokenValid(username, token);
-            responseMessage = new ResponseMessage(ResponseType.OK, "Token is valid.");
+            boolean result = dispatcher.isTokenValid(username, token);
+            responseMessage = new ResponseMessage(ResponseType.OK, "Status of token checked successfully.", result);
         } catch (RemoteException e) {
             responseMessage = new ResponseMessage(ResponseType.NOK, "Internal server error!");
             e.printStackTrace();
@@ -66,8 +72,11 @@ public class DispatcherController {
     public ResponseMessage getApplicationServer() throws RemoteException, JsonProcessingException {
         ResponseMessage responseMessage = null;
 
-        ApplicationServer appServer = new ApplicationServer(dispatcher.getApplicationServer());
-        responseMessage = new ResponseMessage(ResponseType.OK, "Application servers available.", appServer);
+        VirtualClientServerInterface server = dispatcher.getVirtualClientServer();
+
+        VirtualClientServer object = new VirtualClientServer(server.getName(), server.getAddress(), server.getPort());
+
+        responseMessage = new ResponseMessage(ResponseType.OK, "Application servers available.", object);
 
         return responseMessage;
     }

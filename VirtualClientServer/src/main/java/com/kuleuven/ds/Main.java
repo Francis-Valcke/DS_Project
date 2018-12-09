@@ -29,7 +29,7 @@ public class Main {
         System.setProperty("server.port", String.valueOf(port));
         SpringApplication.run(Main.class, args);
 
-        VirtualClientServer.getInstance().init(serverName, port, address);
+        VirtualClientServer.getInstance().init(serverName, address, port);
     }
 
 }
