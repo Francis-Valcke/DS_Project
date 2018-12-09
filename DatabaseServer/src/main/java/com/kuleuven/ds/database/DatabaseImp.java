@@ -221,6 +221,21 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
+    public ThemeInfo getTheme(int id) throws RemoteException {
+        String sql = "SELECT * FROM themes WHERE id = ?";
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new ThemeInfo(rs.getInt(1), rs.getString(2), rs.getInt(3));
+            }
+        } catch (SQLException sqe) {
+            System.out.println(sqe);
+        }
+        return null;
+    }
+
     public List<GameInfo> getAllGames() throws RemoteException {
         try {
             String sql = "SELECT * FROM games";
@@ -253,7 +268,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             pstmt.setInt(8, gi.getWidth());
             pstmt.setInt(9, gi.getHeight());
 
-            pstmt.executeQuery(conn);
+            pstmt.executeUpdate(conn);
 
             //TODO: doorsturen naar andere serveronis
 
@@ -264,12 +279,26 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     }
 
+    public void removeGame(GameInfo gi) throws RemoteException {
+        try {
+            String sql = "DELETE FROM games WHERE id = ?";
+            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+            pstmt.setString(1, gi.getId());
+
+            pstmt.executeUpdate(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void clearGames() {
         try {
             String sql = "DELETE FROM games";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
             pstmt.executeUpdate(conn);
+
+            //TODO: doorsturen naar andere
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -304,9 +333,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public void newTheme() {
-        String sql = "INSERT INTO themes(id, name, size) VALUES(?,?,?)";
-    }
 
     //TIJDELIJK, om files op te zetten naar byte arrays
     private byte[] readFile(String file) {

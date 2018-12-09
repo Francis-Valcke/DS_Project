@@ -2,6 +2,7 @@ package interfaces;
 
 import classes.GameInfo;
 import classes.PreparedStatementWrapper;
+import classes.ThemeInfo;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 
@@ -35,4 +36,12 @@ public interface DatabaseInterface extends Remote {
 
     List<GameInfo> getAllGames() throws RemoteException;
 
+    List<ThemeInfo> getThemes() throws RemoteException;
+
+    void addGame(GameInfo gi) throws RemoteException;
+
+    void removeGame(GameInfo gi) throws RemoteException;
+
+    ThemeInfo getTheme(int id) throws RemoteException;
 }
+
