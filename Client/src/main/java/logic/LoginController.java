@@ -1,5 +1,6 @@
 package logic;
 
+import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import interfaces.ApplicationServerInterface;
 import interfaces.DispatcherInterface;
@@ -65,9 +66,9 @@ public class LoginController {
             AlertBox.display("Connection problems", "Cannot contact dispatcher");
             re.printStackTrace();
         } catch (InvalidCredentialsException ice) {
-            //ice.printStackTrace();
             AlertBox.display("Login not successful.", "Username and/or password are wrong.");
-            //TODO: error op scherm laten verschijnen;
+        } catch (AlreadyPresentException e) {
+            AlertBox.display("Login not successful.", e.getMessage());
         }
 
     }

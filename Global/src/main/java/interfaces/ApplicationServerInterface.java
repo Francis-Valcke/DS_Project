@@ -39,12 +39,6 @@ public interface ApplicationServerInterface extends Remote {
 
     void setBackupServer(ApplicationServerInterface backupServer) throws RemoteException;
 
-    boolean isFull() throws RemoteException;
-
-    List<ClientInterface> getConnectedClients() throws RemoteException;
-
-    void addConnectedClient(ClientInterface client) throws RemoteException;
-
     void updateLobby(LobbyInterface lobby) throws RemoteException;
 
     Set<LobbyInterface> getAllLobbies() throws RemoteException;
@@ -52,8 +46,6 @@ public interface ApplicationServerInterface extends Remote {
     int getFreeSlots() throws RemoteException;
 
     boolean canFit(int slots) throws RemoteException;
-
-    void disconnect(ClientInterface client) throws RemoteException;
 
     void setAllLobbies(Set<LobbyInterface> lobbies) throws RemoteException;
 }

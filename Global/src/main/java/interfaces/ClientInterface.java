@@ -2,6 +2,7 @@ package interfaces;
 
 import classes.Coordinate;
 import classes.PlayerInfo;
+import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.LeftGameException;
 
@@ -25,17 +26,17 @@ public interface ClientInterface extends Remote {
 
     void updateInfoLabel(String s) throws RemoteException;
 
-    void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException;
+    void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void transferTo(String serverName) throws RemoteException, InvalidCredentialsException;
+    void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void disconnect() throws RemoteException;
+    void disconnect(boolean invalidate) throws RemoteException;
 
-    void connect() throws RemoteException, InvalidCredentialsException;
+    void connect() throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void connect(String serverName) throws RemoteException, InvalidCredentialsException;
+    void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException;
+    void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     String getUsername() throws RemoteException;
 

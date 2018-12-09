@@ -29,4 +29,10 @@ public interface DispatcherInterface extends Remote {
     ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException;
 
     Set<LobbyInterface> requestAllLobbies() throws RemoteException;
+
+    boolean isConnected(String username) throws RemoteException;
+
+    void addUser(ApplicationServerInterface appServer, String username) throws RemoteException;
+
+    void removeUser(ApplicationServerInterface appServer, String username) throws RemoteException;
 }

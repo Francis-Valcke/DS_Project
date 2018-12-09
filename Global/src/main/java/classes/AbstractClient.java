@@ -14,6 +14,10 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     //Remote Objects
     protected GameInterface game;
     protected DispatcherInterface dispatch;
+
+
+    protected AppLoginInterface appLogin;
+    protected AppLoginInterface backupAppLogin;
     protected LobbyInterface lobby;
     protected LobbyInterface backupLobby;
 
@@ -32,7 +36,12 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
      * */
 
     public boolean isDifferentServer(String hostName) throws RemoteException {
-        return !lobby.getApplicationServer().getName().equals(hostName);
+        try {
+            return !lobby.getApplicationServer().getName().equals(hostName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void makeGame(String name, int width, int height, int max_players, int theme_id) throws AlreadyPresentException, InvalidSizeException, RemoteException, InvalidCredentialsException {
@@ -123,48 +132,59 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     }
 
     @Override
-    public void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException {
-        disconnect();
+    public void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        disconnect(false);
         connect(server);
     }
 
     @Override
-    public void transferTo(String serverName) throws RemoteException, InvalidCredentialsException {
-        disconnect();
+    public void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        disconnect(false);
         connect(serverName);
     }
 
     @Override
-    public void disconnect() throws RemoteException {
-        lobby.getApplicationServer().disconnect(this);
-        backupLobby.getApplicationServer().disconnect(this);
+    public void disconnect(boolean invalidate) throws RemoteException {
+        appLogin.clientLogout(this, invalidate);
+        lobby = null;
+        backupLobby = null;
+        appLogin = null;
+        backupAppLogin = null;
     }
 
     @Override
     //Let the dispatcher choose which server
-    public void connect() throws RemoteException, InvalidCredentialsException {
+    public void connect() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         ApplicationServerInterface server = dispatch.getApplicationServer();
-        server.addConnectedClient(this);
-        lobby = server.getAppLogin().clientLogin(username, token);
-        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
+        appLogin = server.getAppLogin();
+        backupAppLogin = server.getBackupServer().getAppLogin();
+
+        lobby = appLogin.clientLogin(username, token);
+
+        dispatch.addUser(server, username);
     }
 
     @Override
     //Ask the dispatcher for a specific server
-    public void connect(String serverName) throws RemoteException, InvalidCredentialsException {
+    public void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         ApplicationServerInterface server = dispatch.getApplicationServerByName(serverName);
-        server.addConnectedClient(this);
-        lobby = server.getAppLogin().clientLogin(username, token);
-        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
+        appLogin = server.getAppLogin();
+        backupAppLogin = server.getBackupServer().getAppLogin();
+
+        lobby = appLogin.clientLogin(username, token);
+
+        dispatch.addUser(server, username);
     }
 
     @Override
-    public void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException {
-        server.addConnectedClient(this);
-        lobby = server.getAppLogin().clientLogin(username, token);
-        backupLobby = server.getBackupServer().getAppLogin().clientLogin(username, token);
-    }
+    public void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        appLogin = server.getAppLogin();
+        backupAppLogin = server.getBackupServer().getAppLogin();
 
+        lobby = appLogin.clientLogin(username, token);
+
+        dispatch.addUser(server, username);
+    }
 
     /*
      * Implemented Getters & Setters

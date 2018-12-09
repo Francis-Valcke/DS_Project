@@ -1,12 +1,15 @@
 package logic;
 
 import interfaces.GameControllerInterface;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 public class SceneController {
 
@@ -98,6 +101,14 @@ public class SceneController {
             stage.setTitle("Lobby");
             stage.setResizable(true);
             stage.setScene(scene);
+            stage.setOnCloseRequest(event -> {
+                try {
+                    Client.getInstance().disconnect(true);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                SceneController.getInstance().showLoginScene();
+            });
             stage.show();
 
             prevStage.close();

@@ -1,10 +1,8 @@
 package com.kuleuven.distributedsystems.applicationserver;
 
+import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
-import interfaces.AppLoginInterface;
-import interfaces.DatabaseInterface;
-import interfaces.DispatcherInterface;
-import interfaces.LobbyInterface;
+import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -21,6 +19,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         }
     }
 
+    private ApplicationServerInterface applicationServer;
     private LobbyInterface lobby;
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
@@ -32,18 +31,28 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         return instance;
     }
 
-    public AppLogin init(Lobby lobby, DatabaseInterface db, DispatcherInterface dispatch) {
+    @Override
+    public void init(DispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) {
         this.lobby = lobby;
         this.db = db;
         this.dispatch = dispatch;
-        return this;
+        this.applicationServer = appServer;
     }
 
-    public LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException {
+    @Override
+    public LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         if (db.isTokenValid(username, token)) {
-            return lobby;
+            if(!dispatch.isConnected(username))
+                return lobby;
+            else throw new AlreadyPresentException("The user is already logged in");
         }
         throw new InvalidCredentialsException("Wrong credentials.");
+    }
+
+    @Override
+    public void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException {
+        if (invalidate) db.inValidateToken(client.getUsername());
+        dispatch.removeUser(applicationServer, client.getUsername());
     }
 
     public LobbyInterface getLobby() {

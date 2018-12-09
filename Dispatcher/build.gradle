@@ -25,6 +25,7 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile('com.google.guava:guava:27.0-jre')
     compile project(':Global')
     testCompile("junit:junit")
 }

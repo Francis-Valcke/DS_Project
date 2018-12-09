@@ -129,21 +129,6 @@ public class ApplicationServer implements ApplicationServerInterface {
     }
 
     @Override
-    public boolean isFull() throws RemoteException {
-        return false;
-    }
-
-    @Override
-    public List<ClientInterface> getConnectedClients() throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public void addConnectedClient(ClientInterface client) {
-
-    }
-
-    @Override
     public void updateLobby(LobbyInterface lobby) throws RemoteException {
 
     }
@@ -161,11 +146,6 @@ public class ApplicationServer implements ApplicationServerInterface {
     @Override
     public boolean canFit(int slots) throws RemoteException {
         return false;
-    }
-
-    @Override
-    public void disconnect(ClientInterface client) throws RemoteException {
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package logic;
 
+import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.ApplicationServerInterface;
@@ -8,6 +9,7 @@ import interfaces.LobbyInterface;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import ui.AlertBox;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -48,8 +50,17 @@ public class RegisterController {
 
             SceneController.getInstance().showLobbyScene();
 
-        } catch (RemoteException | NotBoundException | UserAlreadyExistsException | InvalidCredentialsException e) {
+        } catch (RemoteException | NotBoundException e) {
+            AlertBox.display("Connection problems", "Cannot contact dispatcher");
+
             e.printStackTrace();
+        } catch (UserAlreadyExistsException e) {
+            e.printStackTrace();
+        } catch (InvalidCredentialsException e) {
+            AlertBox.display("Login not successful.", "Username and/or password are wrong.");
+        } catch (AlreadyPresentException e) {
+            AlertBox.display("Login not successful.", e.getMessage());
+
         }
     }
 

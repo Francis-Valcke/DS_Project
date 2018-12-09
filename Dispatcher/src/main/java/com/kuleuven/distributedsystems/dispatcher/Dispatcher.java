@@ -1,5 +1,6 @@
 package com.kuleuven.distributedsystems.dispatcher;
 
+import com.google.common.collect.HashMultimap;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.ApplicationServerInterface;
@@ -23,6 +24,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         }
     }
 
+    private HashMultimap<ApplicationServerInterface, String> connectedUsers = HashMultimap.create();
     private List<DatabaseInterface> databaseServers = new LinkedList<>();
     private DatabaseInterface masterDB;
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
@@ -96,20 +98,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
 
         //Return een appServer met minst connected players (poging tot load balancing)
         Optional<ApplicationServerInterface> oServer = applicationServers.stream()
-                .min(new Comparator<ApplicationServerInterface>() {
-                    @Override
-                    public int compare(ApplicationServerInterface o1, ApplicationServerInterface o2) {
-                        int result = 0;
-
-                        try {
-                            result = o1.getConnectedClients().size() - o2.getConnectedClients().size();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-
-                        return result;
-                    }
-                });
+                .min(Comparator.comparingInt(o -> connectedUsers.get(o).size()));
 
         return oServer.get();
     }
@@ -117,14 +106,14 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     public synchronized ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException {
         Optional<ApplicationServerInterface> oServer = applicationServers.stream()
                 .filter(s -> {
-            boolean result = false;
-            try {
-                result = s.canFit(slots);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }).findFirst();
+                    boolean result = false;
+                    try {
+                        result = s.canFit(slots);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    return result;
+                }).findFirst();
 
         if (oServer.isPresent()) return oServer.get();
         else {
@@ -133,7 +122,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             int serverCount = applicationServers.size();
             Main.startApplicationServers(2);
             //Wachten tot ze alletwee zijn opgestart
-            while (applicationServers.size() != serverCount+2) {
+            while (applicationServers.size() != serverCount + 2) {
                 try {
                     wait();
                 } catch (InterruptedException e) {
@@ -154,7 +143,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     public ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException {
         ApplicationServerInterface appServer = null;
         for (ApplicationServerInterface applicationServer : applicationServers) {
-            if (applicationServer.getName().equals(name)){
+            if (applicationServer.getName().equals(name)) {
                 appServer = applicationServer;
             }
         }
@@ -184,5 +173,20 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
 
     public DatabaseInterface getMasterDB() {
         return masterDB;
+    }
+
+    @Override
+    public boolean isConnected(String username) {
+        return connectedUsers.values().stream().anyMatch(s -> s.equals(username));
+    }
+
+    @Override
+    public void addUser(ApplicationServerInterface appServer, String username) {
+        connectedUsers.put(appServer, username);
+    }
+
+    @Override
+    public void removeUser(ApplicationServerInterface appServer, String username) {
+        connectedUsers.remove(appServer, username);
     }
 }

@@ -37,7 +37,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private Set<LobbyInterface> allLobbies;
     private ApplicationServerInterface backupServer;
     private DispatcherInterface dispatcher;
-    private List<ClientInterface> connectedClients;
 
     private ApplicationServer() throws RemoteException {
     }
@@ -53,7 +52,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         this.restPort = restPort;
         this.dispatcherPort = dispatcherPort;
         this.dispatcherIp = dispatcherIp;
-        connectedClients = new ArrayList<>();
 
         allLobbies = new HashSet<>();
         lobby = Lobby.getInstance();
@@ -89,21 +87,11 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
             allLobbies.addAll(dispatcher.requestAllLobbies());
 
             //Maak login klaar voor gebruik
-            appLogin.setDispatch(dispatcher);
-            appLogin.setDb(db);
-            appLogin.setLobby(lobby);
+            appLogin.init(dispatcher, this, db, lobby);
 
         } catch (NotBoundException | RemoteException e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean isFull() {
-        return connectedClients.size() >= SERVER_CAPACITY;
-    }
-
-    public void addConnectedClient(ClientInterface client) {
-        connectedClients.add(client);
     }
 
     @Override
@@ -116,11 +104,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         return freeSlots - slots >= 0;
     }
 
-    public void disconnect(ClientInterface client) throws RemoteException {
-        System.out.println("Client " + client.getUsername() + " has disconnected.");
-        connectedClients.remove(client);
-    }
-
     /*
      * Getters & Setters
      * */
@@ -128,15 +111,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public Set<LobbyInterface> getAllLobbies() throws RemoteException {
         return allLobbies;
-    }
-
-    @Override
-    public List<ClientInterface> getConnectedClients() {
-        return connectedClients;
-    }
-
-    public void setConnectedClients(List<ClientInterface> connectedClients) {
-        this.connectedClients = connectedClients;
     }
 
     @Override

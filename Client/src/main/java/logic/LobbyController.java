@@ -59,6 +59,8 @@ public class LobbyController implements Initializable {
                 spectateGame();
             } catch (RemoteException | InvalidCredentialsException e1) {
                 e1.printStackTrace();
+            } catch (AlreadyPresentException e1) {
+                e1.printStackTrace();
             }
         });
 
@@ -84,7 +86,7 @@ public class LobbyController implements Initializable {
         client.joinGame(selected.getId());
     }
 
-    public void spectateGame() throws RemoteException, InvalidCredentialsException {
+    public void spectateGame() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
         if (client.isDifferentServer(selected.getHostName())) {
             //The client needs to be transferred to the right application server
