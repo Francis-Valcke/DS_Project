@@ -12,4 +12,16 @@ public class ThemeInfo implements Serializable {
         this.size = size;
         this.name = name;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -1,6 +1,7 @@
 package com.kuleuven.distributedsystems.applicationserver;
 
 import classes.GameInfo;
+import classes.ThemeInfo;
 import exceptions.*;
 import interfaces.*;
 
@@ -47,16 +48,19 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     }
 
     public GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface client, int theme_id)
-            throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
+            throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException {
 
         return makeNewGame(createID(), name, x, y, max_players, client, theme_id, false);
     }
 
     public GameInterface makeNewGame(String id, String name, int x, int y, int max_players, ClientInterface client, int theme_id, boolean backup)
-            throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException {
+            throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException {
 
         if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
+        }
+        if (db.getTheme(theme_id).getSize() < x * y / 2) {
+            throw new ThemeNotLargeEnoughException();
         }
 
         GameInterface newGameInterface = null;
@@ -82,7 +86,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
                 liveGames.put(id, newGame);
                 System.out.println("INFO: new game initialised [id:" + id + "]");
                 ((ApplicationServer) applicationServer).reduceFreeSlots(max_players);
-                dispatch.broadCastLobby(this);
+                db.addGame(newGame.getGameInfo());
+                //dispatch.broadCastLobby(this);
             } else {
                 backupLiveGames.put(id, newGame);
             }
@@ -149,7 +154,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     public void terminateGame(Game game) throws RemoteException {
         liveGames.remove(game.getId());
-        dispatch.broadCastLobby(this);
+        db.removeGame(game.getGameInfo());
+        //dispatch.broadCastLobby(this);
         ((ApplicationServer)applicationServer).addFreeSlots(game.getMax_players());
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
     }
@@ -177,6 +183,15 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         }
         return false;
 
+    }
+
+    public List<ThemeInfo> getThemes() {
+        try {
+            return db.getThemes();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Game getGame(String gameId) throws NoSuchGameExistsException {

@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface LobbyInterface extends Remote {
 
-    GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id) throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException;
+    GameInterface makeNewGame(String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id) throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException;
 
-    GameInterface makeNewGame(String id, String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id, boolean backup) throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException;
+    GameInterface makeNewGame(String id, String name, int x, int y, int max_players, ClientInterface firstPlayer, int theme_id, boolean backup) throws RemoteException, InvalidSizeException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException;
 
     GameInterface joinGame(String gameId, ClientInterface newPlayer) throws GameFullException, GameNotFoundException, GameStartedException, RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
