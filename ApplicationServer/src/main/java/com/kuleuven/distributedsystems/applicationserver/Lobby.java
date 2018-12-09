@@ -155,7 +155,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     }
 
     public List<byte[]> getTheme(int id) throws RemoteException {
-        return db.getTheme(id);
+        return db.getPictures(id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package interfaces;
 
+import classes.GameInfo;
 import classes.PreparedStatementWrapper;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
@@ -18,7 +19,7 @@ public interface DatabaseInterface extends Remote {
 
     public boolean isTokenValid(String username, String token) throws RemoteException;
 
-    public List<byte[]> getTheme(int id) throws RemoteException;
+    public List<byte[]> getPictures(int id) throws RemoteException;
 
     public void insertPhoto(int id) throws RemoteException;
 
@@ -28,6 +29,10 @@ public interface DatabaseInterface extends Remote {
 
     void addSlave(DatabaseInterface slave) throws RemoteException;
 
-    public void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException;
+    void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException;
+
+    void inValidateToken(String username) throws RemoteException;
+
+    List<GameInfo> getAllGames() throws RemoteException;
 
 }
