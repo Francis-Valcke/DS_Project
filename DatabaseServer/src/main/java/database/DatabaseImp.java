@@ -20,7 +20,6 @@ import java.util.List;
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
     private DatabaseInterface master; //==null betekent dat deze de master is
     private Connection conn;
-    private List<Transaction> deltaList = new ArrayList<>();
     private List<DatabaseInterface> peers = new ArrayList<>();
     int gamesMade = 0;
 
@@ -60,9 +59,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                     pstmt.setString(3, salt);
                     pstmt.executeUpdate(conn);
 
-                    //Toevoegen aan deltalist
-                    deltaList.add(new Transaction(pstmt));
-
                     //Nieuwe users moeten direct gepusht worden naar alle servers
                     pushToPeers(pstmt);
 
@@ -90,8 +86,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                     pstmt.setString(3, username);
                     pstmt.executeUpdate(conn);
 
-                    //Toevoegen aan deltalist
-                    deltaList.add(new Transaction(pstmt));
                     //Tokens moeten direct gepusht worden naar alle servers
                     pushToPeers(pstmt);
                 } catch (SQLException se) {
@@ -336,8 +330,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                 //execute query
                 pstmt.executeUpdate(conn);
 
-                //Toevoegen aan deltalist
-                deltaList.add(new Transaction(pstmt));
+                pushToPeers(pstmt);
 
             } catch (SQLException e) {
                 System.out.println(e.getMessage());

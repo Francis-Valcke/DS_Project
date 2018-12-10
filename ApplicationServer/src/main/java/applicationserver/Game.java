@@ -61,7 +61,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
         //Als de huidige game geen backup is dan moeten we een backup game creeeren op de backup server
         if (!backup){
-            backupGame = lobby.getApplicationServer().getBackupServer().getLobby().makeNewGame(id, name, x_size, y_size, max_players, client, theme_id, true);
+            backupGame = ApplicationServer.getInstance().getBackupServer().getLobby().makeNewGame(id, name, x_size, y_size, max_players, client, theme_id, true);
         }
 
     }
@@ -363,7 +363,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     }
 
     public GameInfo getGameInfo() throws RemoteException {
-        return new GameInfo(lobby.getApplicationServer().getName(), name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
+        return new GameInfo(lobby.getName(), name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
     }
 
     public ArrayList<Player> getAllPlayers() {

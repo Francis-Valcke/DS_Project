@@ -7,9 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
@@ -36,7 +34,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private DatabaseInterface db;
     private AppLoginInterface appLogin;
     private LobbyInterface lobby;
-    private Set<LobbyInterface> allLobbies;
     private ApplicationServerInterface backupServer;
     private DispatcherInterface dispatcher;
 
@@ -55,9 +52,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         this.dispatcherPort = dispatcherPort;
         this.dispatcherIp = dispatcherIp;
 
-        allLobbies = new HashSet<>();
         lobby = Lobby.getInstance();
-        allLobbies.add(lobby);
 
         startLogin();
         System.out.println("INFO: up and running on port: " + port);
@@ -86,7 +81,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
 
             //Maak de lobby klaar voor gebruik
             ((Lobby)lobby).init(this, db, dispatcher);
-            allLobbies.addAll(dispatcher.requestAllLobbies());
 
             //Maak login klaar voor gebruik
             appLogin.init(dispatcher, this, db, lobby);
@@ -96,12 +90,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         }
     }
 
-    @Override
-    public void updateLobby(LobbyInterface lobbyInterface) throws RemoteException {
-        allLobbies.remove(lobbyInterface);
-        allLobbies.add(lobbyInterface);
-    }
-
     public boolean canFit(int slots) {
         return freeSlots - slots >= 0;
     }
@@ -109,11 +97,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     /*
      * Getters & Setters
      * */
-
-    @Override
-    public Set<LobbyInterface> getAllLobbies() throws RemoteException {
-        return allLobbies;
-    }
 
     @Override
     public String getName() {
@@ -198,10 +181,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public void setLobby(LobbyInterface lobby) {
         this.lobby = lobby;
-    }
-
-    public void setAllLobbies(Set<LobbyInterface> allLobbies) {
-        this.allLobbies = allLobbies;
     }
 
     @Override

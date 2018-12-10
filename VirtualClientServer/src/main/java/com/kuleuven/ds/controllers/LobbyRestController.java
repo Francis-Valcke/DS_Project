@@ -1,6 +1,5 @@
 package com.kuleuven.ds.controllers;
 
-import classes.AbstractClient;
 import classes.GameInfo;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,15 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuleuven.ds.VirtualClient;
 import com.kuleuven.ds.VirtualClientServer;
 import exceptions.*;
-import interfaces.ClientInterface;
-import interfaces.LobbyInterface;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static classes.ResponseType.NOK;
 import static classes.ResponseType.OK;
@@ -102,11 +97,8 @@ public class LobbyRestController {
         try {
             client = ((VirtualClient) clientServer.getClient(token));
 
-            Set<LobbyInterface> lobbies = clientServer.getDispatcher().requestAllLobbies();
-            List<GameInfo> liveGames = new ArrayList<>();
-            for (LobbyInterface lobby : lobbies) {
-                liveGames.addAll(lobby.getLiveGames());
-            }
+            //TODO: Jeroen heeft aangepast
+            List<GameInfo> liveGames = client.getLobby().getLiveGames();
 
             responseMessage = new ResponseMessage(OK, "Live games:", liveGames);
         } catch (UserNotLoggedInException e) {

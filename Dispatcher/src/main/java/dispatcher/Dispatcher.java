@@ -3,11 +3,17 @@ package dispatcher;
 import com.google.common.collect.HashMultimap;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
-import interfaces.*;
+import interfaces.ApplicationServerInterface;
+import interfaces.DatabaseInterface;
+import interfaces.DispatcherInterface;
+import interfaces.VirtualClientServerInterface;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class Dispatcher extends UnicastRemoteObject implements DispatcherInterface {
 
@@ -36,6 +42,8 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return instance;
     }
 
+    //TODO: appservers deregistreren
+
     @Override
     public synchronized void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
         try {
@@ -45,6 +53,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
                 db.setMaster(masterDB);
             }
             for (DatabaseInterface dbi : databaseServers) {
+                db.addPeer(dbi);
                 dbi.addPeer(db);
             }
             //Nieuwe database toevoegen aan pool
@@ -174,13 +183,6 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return server.get();
     }
 
-    @Override
-    public synchronized void broadCastLobby(LobbyInterface lobby) throws RemoteException {
-        for (ApplicationServerInterface applicationServer : applicationServers) {
-            applicationServer.updateLobby(lobby);
-        }
-    }
-
     public ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException {
         ApplicationServerInterface appServer = null;
         for (ApplicationServerInterface applicationServer : applicationServers) {
@@ -189,15 +191,6 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             }
         }
         return appServer;
-    }
-
-    //This method only gets called when a lobby is registered.
-    public Set<LobbyInterface> requestAllLobbies() throws RemoteException {
-        Set<LobbyInterface> lobbies = new HashSet<>();
-        for (ApplicationServerInterface applicationServer : applicationServers) {
-            lobbies.add(applicationServer.getLobby());
-        }
-        return lobbies;
     }
 
     public List<ApplicationServerInterface> getApplicationServers() {

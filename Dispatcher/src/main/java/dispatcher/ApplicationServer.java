@@ -7,7 +7,6 @@ import interfaces.DatabaseInterface;
 import interfaces.LobbyInterface;
 
 import java.rmi.RemoteException;
-import java.util.Set;
 
 @JsonSerialize(using = ApplicationServerSerializer.class)
 public class ApplicationServer implements ApplicationServerInterface {
@@ -131,16 +130,6 @@ public class ApplicationServer implements ApplicationServerInterface {
     }
 
     @Override
-    public void updateLobby(LobbyInterface lobby) throws RemoteException {
-
-    }
-
-    @Override
-    public Set<LobbyInterface> getAllLobbies() throws RemoteException {
-        return null;
-    }
-
-    @Override
     public int getFreeSlots() throws RemoteException {
         return 0;
     }
@@ -148,10 +137,5 @@ public class ApplicationServer implements ApplicationServerInterface {
     @Override
     public boolean canFit(int slots) throws RemoteException {
         return false;
-    }
-
-    @Override
-    public void setAllLobbies(Set<LobbyInterface> lobbies) throws RemoteException {
-
     }
 }

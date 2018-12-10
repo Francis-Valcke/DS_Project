@@ -19,10 +19,9 @@ public interface LobbyInterface extends Remote {
 
     GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException;
 
-    public List<byte[]> getTheme(int id) throws RemoteException;
-
-    ApplicationServerInterface getApplicationServer() throws RemoteException;
+    List<byte[]> getTheme(int id) throws RemoteException;
 
     GameInterface getGameById(String gameId) throws RemoteException, NoSuchGameExistsException;
 
+    String getName() throws RemoteException;
 }

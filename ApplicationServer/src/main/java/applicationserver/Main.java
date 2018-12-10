@@ -40,6 +40,7 @@ public class Main {
 
         ApplicationServer server = ApplicationServer.getInstance();
         server.init(server_name, ip, port, restPort, DISPATCH_IP, DISPATCH_PORT);
+        Lobby.getInstance().setName(server_name);
 
     }
 

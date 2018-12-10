@@ -3,11 +3,9 @@ package classes;
 import exceptions.*;
 import interfaces.*;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class AbstractClient extends UnicastRemoteObject implements ClientInterface {
 
@@ -36,7 +34,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
     public boolean isDifferentServer(String hostName) throws RemoteException {
         try {
-            return !lobby.getApplicationServer().getName().equals(hostName);
+            return !lobby.getName().equals(hostName);
         } catch (Exception e) {
             e.printStackTrace();
         }

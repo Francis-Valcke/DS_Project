@@ -3,7 +3,6 @@ package logic;
 
 import classes.GameInfo;
 import exceptions.*;
-import interfaces.LobbyInterface;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,8 +13,8 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class LobbyController implements Initializable {
@@ -64,7 +63,7 @@ public class LobbyController implements Initializable {
         });
 
         try {
-            serverName.setText(client.getLobby().getApplicationServer().getName());
+            serverName.setText(client.getLobby().getName());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -90,11 +89,7 @@ public class LobbyController implements Initializable {
         try {
 
             gameslist.getItems().clear();
-            ArrayList<GameInfo> games = new ArrayList<>();
-
-            for (LobbyInterface lobby : client.getLobby().getApplicationServer().getAllLobbies()) {
-                games.addAll(lobby.getLiveGames());
-            }
+            List<GameInfo> games = client.getLobby().getLiveGames();
 
             for (GameInfo gi : games) {
                 Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : "") + " " + gi.getHostName());

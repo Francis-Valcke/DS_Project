@@ -2,8 +2,6 @@ package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Set;
 
 public interface ApplicationServerInterface extends Remote {
 
@@ -39,13 +37,8 @@ public interface ApplicationServerInterface extends Remote {
 
     void setBackupServer(ApplicationServerInterface backupServer) throws RemoteException;
 
-    void updateLobby(LobbyInterface lobby) throws RemoteException;
-
-    Set<LobbyInterface> getAllLobbies() throws RemoteException;
-
     int getFreeSlots() throws RemoteException;
 
     boolean canFit(int slots) throws RemoteException;
 
-    void setAllLobbies(Set<LobbyInterface> lobbies) throws RemoteException;
 }

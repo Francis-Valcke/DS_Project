@@ -31,6 +31,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     private ApplicationServerInterface applicationServer;
     private DatabaseInterface db;
     private DispatcherInterface dispatch;
+    private String name;
 
     private Lobby() throws RemoteException {
     }
@@ -168,11 +169,6 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     }
 
     @Override
-    public ApplicationServerInterface getApplicationServer() throws RemoteException {
-        return applicationServer;
-    }
-
-    @Override
     public Game getGameById(String gameId) throws RemoteException, NoSuchGameExistsException {
         if (!liveGames.containsKey(gameId)) throw new NoSuchGameExistsException();
         return liveGames.get(gameId);
@@ -210,5 +206,13 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), applicationServer);
+    }
+
+    public String getName() throws RemoteException {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
