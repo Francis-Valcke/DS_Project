@@ -1,6 +1,7 @@
-package com.kuleuven.ds.actions;
+package virtualclientserver.actions;
 
-import static com.kuleuven.ds.actions.ActionType.INITIALISE;
+
+import static virtualclientserver.actions.ActionType.INITIALISE;
 
 public class InitialiseAction extends Action {
 

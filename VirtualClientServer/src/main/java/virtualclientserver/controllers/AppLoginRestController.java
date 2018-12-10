@@ -1,15 +1,15 @@
-package com.kuleuven.ds.controllers;
+package virtualclientserver.controllers;
 
 import classes.AbstractClient;
 import classes.ResponseMessage;
-import com.kuleuven.ds.VirtualClient;
-import com.kuleuven.ds.VirtualClientServer;
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserNotLoggedInException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import virtualclientserver.VirtualClient;
+import virtualclientserver.VirtualClientServer;
 
 import java.rmi.RemoteException;
 

@@ -1,11 +1,12 @@
-package com.kuleuven.ds;
+package virtualclientserver;
 
 import classes.Coordinate;
 import classes.PlayerInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.ds.actions.*;
 import interfaces.GameControllerInterface;
+import virtualclientserver.actions.Action;
+import virtualclientserver.actions.*;
 
 import java.util.ArrayList;
 import java.util.List;

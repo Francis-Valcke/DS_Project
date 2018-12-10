@@ -1,13 +1,13 @@
-package com.kuleuven.ds.controllers;
+package virtualclientserver.controllers;
 
 import classes.GameInfo;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.ds.VirtualClient;
-import com.kuleuven.ds.VirtualClientServer;
 import exceptions.*;
 import org.springframework.web.bind.annotation.*;
+import virtualclientserver.VirtualClient;
+import virtualclientserver.VirtualClientServer;
 
 import java.io.IOException;
 import java.rmi.RemoteException;

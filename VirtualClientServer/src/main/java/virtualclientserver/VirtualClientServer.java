@@ -1,4 +1,4 @@
-package com.kuleuven.ds;
+package virtualclientserver;
 
 import exceptions.AlreadyPresentException;
 import exceptions.UserNotLoggedInException;

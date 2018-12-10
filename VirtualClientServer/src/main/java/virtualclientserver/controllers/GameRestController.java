@@ -1,18 +1,18 @@
-package com.kuleuven.ds.controllers;
+package virtualclientserver.controllers;
 
 import classes.AbstractClient;
 import classes.Coordinate;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kuleuven.ds.VirtualClient;
-import com.kuleuven.ds.VirtualClientServer;
-import com.kuleuven.ds.VirtualGameController;
 import exceptions.InvalidMoveException;
 import exceptions.NotInGameException;
 import exceptions.NotYourTurnException;
 import exceptions.UserNotLoggedInException;
 import org.springframework.web.bind.annotation.*;
+import virtualclientserver.VirtualClient;
+import virtualclientserver.VirtualClientServer;
+import virtualclientserver.VirtualGameController;
 
 import java.io.IOException;
 import java.rmi.RemoteException;

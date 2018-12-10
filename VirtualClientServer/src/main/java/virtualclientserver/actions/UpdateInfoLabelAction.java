@@ -1,4 +1,4 @@
-package com.kuleuven.ds.actions;
+package virtualclientserver.actions;
 
 public class UpdateInfoLabelAction extends Action {
 
