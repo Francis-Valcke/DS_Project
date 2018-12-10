@@ -148,12 +148,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return game;
     }
 
-    public List<GameInfo> getLiveGames() throws RemoteException {
-        List<GameInfo> liveGames = db.getAllGames();
-        for (Game g : this.liveGames.values()) {
-            liveGames.add(g.getGameInfo());
-        }
-        return liveGames;
+    public List<GameInfo> getAllLiveGames() throws RemoteException {
+        return db.getAllGames();
     }
 
     public void terminateGame(Game game) throws RemoteException {

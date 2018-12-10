@@ -15,7 +15,7 @@ public interface LobbyInterface extends Remote {
 
     GameInterface joinGame(String gameId, ClientInterface newPlayer) throws GameFullException, GameNotFoundException, GameStartedException, RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    List<GameInfo> getLiveGames() throws RemoteException;
+    List<GameInfo> getAllLiveGames() throws RemoteException;
 
     GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException;
 

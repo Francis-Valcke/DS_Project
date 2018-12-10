@@ -89,7 +89,7 @@ public class LobbyController implements Initializable {
         try {
 
             gameslist.getItems().clear();
-            List<GameInfo> games = client.getLobby().getLiveGames();
+            List<GameInfo> games = client.getLobby().getAllLiveGames();
 
             for (GameInfo gi : games) {
                 Label label = new Label(gi.getName() + "\t" + "(" + gi.getNumberOfPlayersJoined() + "/" + gi.getMaxPlayers() + ") " + (gi.isStarted() ? "(started)" : "") + " " + gi.getHostName());

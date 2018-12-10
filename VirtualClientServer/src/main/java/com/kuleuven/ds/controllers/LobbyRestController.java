@@ -98,7 +98,7 @@ public class LobbyRestController {
             client = ((VirtualClient) clientServer.getClient(token));
 
             //TODO: Jeroen heeft aangepast
-            List<GameInfo> liveGames = client.getLobby().getLiveGames();
+            List<GameInfo> liveGames = client.getLobby().getAllLiveGames();
 
             responseMessage = new ResponseMessage(OK, "Live games:", liveGames);
         } catch (UserNotLoggedInException e) {
