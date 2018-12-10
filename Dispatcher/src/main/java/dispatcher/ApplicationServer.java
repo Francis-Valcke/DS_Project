@@ -1,10 +1,12 @@
-package com.kuleuven.distributedsystems.dispatcher;
+package dispatcher;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import interfaces.*;
+import interfaces.AppLoginInterface;
+import interfaces.ApplicationServerInterface;
+import interfaces.DatabaseInterface;
+import interfaces.LobbyInterface;
 
 import java.rmi.RemoteException;
-import java.util.List;
 import java.util.Set;
 
 @JsonSerialize(using = ApplicationServerSerializer.class)

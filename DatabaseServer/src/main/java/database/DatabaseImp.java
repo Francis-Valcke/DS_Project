@@ -1,4 +1,4 @@
-package com.kuleuven.ds.database;
+package database;
 
 import classes.GameInfo;
 import classes.PreparedStatementWrapper;
@@ -279,6 +279,20 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     }
 
+    public void updateGameInfo(GameInfo gi) throws RemoteException {
+        try {
+            String sql = "UPDATE games SET players_joined = ?, started = ?";
+            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+            pstmt.setInt(3, gi.getNumberOfPlayersJoined());
+            pstmt.setBoolean(5, gi.isStarted());
+
+            pstmt.executeUpdate(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void removeGame(GameInfo gi) throws RemoteException {
         try {
             String sql = "DELETE FROM games WHERE id = ?";
@@ -381,6 +395,10 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     public void addSlave(DatabaseInterface slave) throws RemoteException {
         slaves.add(slave);
+    }
+
+    public void removeSlave(DatabaseInterface slave) throws RemoteException {
+        slaves.remove(slave);
     }
 
 

@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.applicationserver;
+package applicationserver;
 
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;

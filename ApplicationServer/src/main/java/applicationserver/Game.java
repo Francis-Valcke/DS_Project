@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.applicationserver;
+package applicationserver;
 
 import classes.Coordinate;
 import classes.Field;
@@ -114,7 +114,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     }
 
     public synchronized void readyUp(ClientInterface client) throws RemoteException {
-        //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Player op ready zetten
+        //com.kuleuven.distributedsystems.applicationserver.Player op ready zetten
         for (Player p : playerQueue) {
             if (p.getGameclient().isSameClient(client)) p.setReady(true);
         }
@@ -127,7 +127,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
                 break;
             }
         }
-        //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Game starten als alle spelers klaar zijn
+        //com.kuleuven.distributedsystems.applicationserver.Game starten als alle spelers klaar zijn
         if (allPlayersReady) startGame();
         pushPlayerlist();
 
@@ -164,7 +164,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
                 }
             }
         }
-        //com.kuleuven.distributedsystems.com.kuleuven.distributedsystems.applicationserver.Game uit de live_games list halen
+        //com.kuleuven.distributedsystems.applicationserver.Game uit de live_games list halen
         pushInfoLabel("Game finished");
         try {
             lobby.terminateGame(this);

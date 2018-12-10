@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Dispatcher" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="Dispatcher_main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.kuleuven.distributedsystems.dispatcher.Main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="dispatcher.Main" />
     <option name="PROGRAM_PARAMETERS" value="Dispatch 1000 1500 jars" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">

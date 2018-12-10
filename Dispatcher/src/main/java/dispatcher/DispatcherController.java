@@ -1,16 +1,11 @@
-package com.kuleuven.distributedsystems.dispatcher;
+package dispatcher;
 
 import classes.ResponseMessage;
 import classes.ResponseType;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.JsonObject;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.VirtualClientServerInterface;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;

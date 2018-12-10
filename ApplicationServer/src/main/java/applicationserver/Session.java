@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.applicationserver;
+package applicationserver;
 
 import interfaces.ClientInterface;
 import interfaces.GameInterface;

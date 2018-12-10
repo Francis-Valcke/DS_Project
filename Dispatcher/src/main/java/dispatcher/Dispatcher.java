@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.dispatcher;
+package dispatcher;
 
 import com.google.common.collect.HashMultimap;
 import exceptions.InvalidCredentialsException;

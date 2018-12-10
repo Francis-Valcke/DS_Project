@@ -1,4 +1,4 @@
-package com.kuleuven.ds.database;
+package database;
 
 import interfaces.DispatcherInterface;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.kuleuven.ds.database;
+package database;
 
 import classes.PreparedStatementWrapper;
 

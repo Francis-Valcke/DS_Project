@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.dispatcher;
+package dispatcher;
 
 public class VirtualClientServer {
 

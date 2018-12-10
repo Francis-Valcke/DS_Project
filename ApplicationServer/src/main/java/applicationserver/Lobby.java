@@ -1,4 +1,4 @@
-package com.kuleuven.distributedsystems.applicationserver;
+package applicationserver;
 
 import classes.GameInfo;
 import classes.ThemeInfo;
@@ -7,7 +7,10 @@ import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
@@ -144,8 +147,8 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return game;
     }
 
-    public ArrayList<GameInfo> getLiveGames() throws RemoteException {
-        ArrayList<GameInfo> liveGames = new ArrayList<>();
+    public List<GameInfo> getLiveGames() throws RemoteException {
+        List<GameInfo> liveGames = db.getAllGames();
         for (Game g : this.liveGames.values()) {
             liveGames.add(g.getGameInfo());
         }
@@ -194,10 +197,6 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return null;
     }
 
-    public Game getGame(String gameId) throws NoSuchGameExistsException {
-        if (!liveGames.containsKey(gameId)) throw new NoSuchGameExistsException();
-        return liveGames.get(gameId);
-    }
 
     @Override
     public boolean equals(Object o) {

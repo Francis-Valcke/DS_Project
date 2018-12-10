@@ -28,8 +28,6 @@ public interface DatabaseInterface extends Remote {
 
     public void setMaster(DatabaseInterface master) throws RemoteException;
 
-    void addSlave(DatabaseInterface slave) throws RemoteException;
-
     void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException;
 
     void inValidateToken(String username) throws RemoteException;
@@ -43,5 +41,11 @@ public interface DatabaseInterface extends Remote {
     void removeGame(GameInfo gi) throws RemoteException;
 
     ThemeInfo getTheme(int id) throws RemoteException;
+
+    void addSlave(DatabaseInterface slave) throws RemoteException;
+
+    void removeSlave(DatabaseInterface slave) throws RemoteException;
+
+
 }
 
