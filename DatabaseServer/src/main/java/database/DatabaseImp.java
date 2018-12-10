@@ -21,7 +21,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     private DatabaseInterface master; //==null betekent dat deze de master is
     private Connection conn;
     private List<Transaction> deltaList = new ArrayList<>();
-    private List<DatabaseInterface> slaves = new ArrayList<>();
+    private List<DatabaseInterface> peers = new ArrayList<>();
     int gamesMade = 0;
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
@@ -64,7 +64,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                     deltaList.add(new Transaction(pstmt));
 
                     //Nieuwe users moeten direct gepusht worden naar alle servers
-                    pushToSlaves(pstmt);
+                    pushToPeers(pstmt);
 
                 } catch (SQLException sqle) {
                     sqle.printStackTrace();
@@ -93,7 +93,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
                     //Toevoegen aan deltalist
                     deltaList.add(new Transaction(pstmt));
                     //Tokens moeten direct gepusht worden naar alle servers
-                    pushToSlaves(pstmt);
+                    pushToPeers(pstmt);
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
@@ -139,7 +139,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
                 pstmt.executeUpdate(conn);
 
-                pushToSlaves(pstmt);
+                pushToPeers(pstmt);
             } catch (SQLException sqle) {
                 System.out.println(sqle);
             }
@@ -270,8 +270,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
             pstmt.executeUpdate(conn);
 
-            //TODO: doorsturen naar andere serveronis
-
+            pushToPeers(pstmt);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -287,6 +286,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             pstmt.setBoolean(5, gi.isStarted());
 
             pstmt.executeUpdate(conn);
+            pushToPeers(pstmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -300,6 +300,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             pstmt.setString(1, gi.getId());
 
             pstmt.executeUpdate(conn);
+            pushToPeers(pstmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -312,7 +313,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
             pstmt.executeUpdate(conn);
 
-            //TODO: doorsturen naar andere
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -375,8 +375,8 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public void pushToSlaves(PreparedStatementWrapper pstmt) {
-        for (DatabaseInterface slave : slaves) {
+    public void pushToPeers(PreparedStatementWrapper pstmt) {
+        for (DatabaseInterface slave : peers) {
             try {
                 slave.executeSQL(pstmt);
             } catch (RemoteException e) {
@@ -393,12 +393,12 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         this.master = master;
     }
 
-    public void addSlave(DatabaseInterface slave) throws RemoteException {
-        slaves.add(slave);
+    public void addPeer(DatabaseInterface slave) throws RemoteException {
+        peers.add(slave);
     }
 
-    public void removeSlave(DatabaseInterface slave) throws RemoteException {
-        slaves.remove(slave);
+    public void removePeer(DatabaseInterface slave) throws RemoteException {
+        peers.remove(slave);
     }
 
 

@@ -22,6 +22,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     }
 
     private HashMultimap<ApplicationServerInterface, String> connectedUsers = HashMultimap.create();
+    private HashMultimap<DatabaseInterface, ApplicationServerInterface> databaseApplicationMap = HashMultimap.create();
     private DatabaseInterface masterDB;
     private List<DatabaseInterface> databaseServers = new LinkedList<>();
     private List<ApplicationServerInterface> applicationServers = new LinkedList<>();
@@ -42,7 +43,9 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             if (databaseServers.size() < 1) masterDB = db;
             else {
                 db.setMaster(masterDB);
-                masterDB.addSlave(db);
+            }
+            for (DatabaseInterface dbi : databaseServers) {
+                dbi.addPeer(db);
             }
             //Nieuwe database toevoegen aan pool
             databaseServers.add(db);
@@ -55,13 +58,13 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     }
 
     @Override
-    public synchronized DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException {
+    public synchronized DatabaseInterface registerApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
         try {
 
-            applicationServers.add(server);
-            System.out.println("INFO: New application server registered: " + server.getName() + " [" + server.getIp() + ":" + server.getPort() + "]");
+            applicationServers.add(appServer);
+            System.out.println("INFO: New application server registered: " + appServer.getName() + " [" + appServer.getIp() + ":" + appServer.getPort() + "]");
             //Voeg de appserver toe aan de unpaired server lijst
-            unPairedServers.add(server);
+            unPairedServers.add(appServer);
             //Als er 2 servers aanwezig zijn in de unpaired list kunnen we ze paren aan elkaar
             if (unPairedServers.size() == 2) {
                 ApplicationServerInterface a = unPairedServers.remove(0);
@@ -74,11 +77,26 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             //Notify waiting users that a new server is available
             notifyAll();
 
-            return databaseServers.get(0);
+            DatabaseInterface db = getDatabaseWithLowestLoad();
+            databaseApplicationMap.put(db, appServer);
+
+            return db;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public DatabaseInterface getDatabaseWithLowestLoad() {
+        int minConnectedAppServers = Integer.MAX_VALUE;
+        DatabaseInterface dbWithLowestLoad = null;
+        for (DatabaseInterface db : databaseServers) {
+            if (databaseApplicationMap.get(db).size() < minConnectedAppServers) {
+                minConnectedAppServers = databaseApplicationMap.get(db).size();
+                dbWithLowestLoad = db;
+            }
+        }
+        return dbWithLowestLoad;
     }
 
     @Override

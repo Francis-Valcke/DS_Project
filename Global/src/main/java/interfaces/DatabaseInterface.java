@@ -42,9 +42,9 @@ public interface DatabaseInterface extends Remote {
 
     ThemeInfo getTheme(int id) throws RemoteException;
 
-    void addSlave(DatabaseInterface slave) throws RemoteException;
+    void addPeer(DatabaseInterface slave) throws RemoteException;
 
-    void removeSlave(DatabaseInterface slave) throws RemoteException;
+    void removePeer(DatabaseInterface slave) throws RemoteException;
 
 
 }
