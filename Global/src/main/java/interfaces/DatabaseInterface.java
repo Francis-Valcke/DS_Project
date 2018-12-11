@@ -46,6 +46,8 @@ public interface DatabaseInterface extends Remote {
 
     void removePeer(DatabaseInterface slave) throws RemoteException;
 
+    void updateGameInfo(GameInfo gi) throws RemoteException;
+
 
 }
 
