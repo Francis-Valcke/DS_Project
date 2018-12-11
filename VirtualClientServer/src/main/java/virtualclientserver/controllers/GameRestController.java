@@ -93,7 +93,9 @@ public class GameRestController {
             ObjectMapper mapper = new ObjectMapper();
             VirtualClient client = ((VirtualClient) clientServer.getClient(token));
             Coordinate c = mapper.readValue(string, Coordinate.class);
+
             Object value = client.recordMove(c);
+
             responseMessage = new ResponseMessage(OK, "Move has been processed", value);
         } catch (UserNotLoggedInException | InvalidMoveException | NotYourTurnException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());

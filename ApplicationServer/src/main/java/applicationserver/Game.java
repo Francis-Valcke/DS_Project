@@ -297,6 +297,11 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     //TODO: methode schrijven om flips te pushen
 
+    @Override
+    public int getValueOf(Coordinate coordinate){
+        return board.get(coordinate).getValue();
+    }
+
 
     public String getId() {
         return id;

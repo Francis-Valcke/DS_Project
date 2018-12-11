@@ -20,6 +20,8 @@ public interface GameInterface extends Remote {
 
     public int getWidth() throws RemoteException;
 
+    int getValueOf(Coordinate coordinate) throws RemoteException;
+
     public boolean isStarted() throws RemoteException;
 
     public GameInfo getGameInfo() throws RemoteException;

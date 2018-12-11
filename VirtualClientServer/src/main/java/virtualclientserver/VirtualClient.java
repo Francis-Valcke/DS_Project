@@ -63,9 +63,7 @@ public class VirtualClient extends AbstractClient {
         nextMove = c;
         moves.add(c);
         notifyAll();
-
-        //TODO: FIX
-        return null;
+        return game.getValueOf(c);
     }
 
     private boolean isMoveValid(Coordinate c) throws RemoteException {
