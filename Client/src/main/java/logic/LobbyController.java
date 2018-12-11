@@ -2,17 +2,17 @@ package logic;
 
 
 import classes.GameInfo;
+import classes.ThemeInfo;
 import exceptions.*;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,8 +36,12 @@ public class LobbyController implements Initializable {
     Button spectatebutton;
     @FXML
     Text serverName;
+    @FXML
+    ChoiceBox themeselector;
 
     HashMap<Label, GameInfo> labelMap = new HashMap<>();
+
+    HashMap<String, Integer> themeIdMap = new HashMap<>();
 
     Client client = Client.getInstance();
 
@@ -67,12 +71,24 @@ public class LobbyController implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        try {
+            List<String> themelabels = new ArrayList<>();
+            for (ThemeInfo theme : client.getLobby().getThemes()) {
+                themelabels.add(theme.getName());
+                themeIdMap.put(theme.getName(), theme.getId());
+            }
+            themeselector.setItems(FXCollections.observableArrayList(themelabels));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+
 
         client.setLobbyController(this);
     }
 
     public void makeGame() throws AlreadyPresentException {
-        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), 1);
+        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), themeIdMap.get((String) themeselector.getValue()));
     }
 
     public void joinGame() throws AlreadyPresentException, RemoteException, InvalidCredentialsException, GameFullException, GameStartedException, NoSuchGameExistsException, GameNotFoundException {

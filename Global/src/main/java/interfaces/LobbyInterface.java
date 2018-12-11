@@ -1,6 +1,7 @@
 package interfaces;
 
 import classes.GameInfo;
+import classes.ThemeInfo;
 import exceptions.*;
 
 import java.rmi.Remote;
@@ -24,4 +25,6 @@ public interface LobbyInterface extends Remote {
     GameInterface getGameById(String gameId) throws RemoteException, NoSuchGameExistsException;
 
     String getName() throws RemoteException;
+
+    List<ThemeInfo> getThemes() throws RemoteException;
 }
