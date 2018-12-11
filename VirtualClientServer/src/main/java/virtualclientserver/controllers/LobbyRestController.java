@@ -92,14 +92,11 @@ public class LobbyRestController {
     @RequestMapping(value = "getLiveGames", produces = "application/json")
     public ResponseMessage getLiveGames(@RequestParam String token) throws RemoteException {
         ResponseMessage responseMessage = null;
-        //TODO: Dit nog veranderen naar de goeie methode die jern ga implementeren
         VirtualClient client = null;
         try {
             client = ((VirtualClient) clientServer.getClient(token));
 
-            //TODO: Jeroen heeft aangepast
             List<GameInfo> liveGames = client.getLobby().getAllLiveGames();
-
             responseMessage = new ResponseMessage(OK, "Live games:", liveGames);
         } catch (UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
