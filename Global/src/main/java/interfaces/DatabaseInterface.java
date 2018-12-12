@@ -48,6 +48,8 @@ public interface DatabaseInterface extends Remote {
 
     void updateGameInfo(GameInfo gi) throws RemoteException;
 
+    byte[] getPicture(int theme_id, int picture_index) throws RemoteException;
+
 
 }
 

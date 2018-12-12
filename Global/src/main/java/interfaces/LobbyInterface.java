@@ -20,11 +20,13 @@ public interface LobbyInterface extends Remote {
 
     GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException;
 
-    List<byte[]> getTheme(int id) throws RemoteException;
+    List<byte[]> getPictures(int id) throws RemoteException;
 
     GameInterface getGameById(String gameId) throws RemoteException, NoSuchGameExistsException;
 
     String getName() throws RemoteException;
 
     List<ThemeInfo> getThemes() throws RemoteException;
+
+    byte[] getPicture(int themeId, int pictureIndex) throws RemoteException;
 }

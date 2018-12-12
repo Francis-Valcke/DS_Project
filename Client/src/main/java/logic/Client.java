@@ -3,16 +3,13 @@ package logic;
 import classes.AbstractClient;
 import classes.Coordinate;
 import classes.GameInfo;
-import classes.PlayerInfo;
 import exceptions.*;
-import interfaces.*;
 import ui.AlertBox;
 import ui.Tile;
 
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.List;
 
@@ -116,7 +113,7 @@ public class Client extends AbstractClient {
             return new Theme(theme_id);
         } else {
             try {
-                List<byte[]> images = lobby.getTheme(theme_id);
+                List<byte[]> images = lobby.getPictures(theme_id);
                 Theme.saveNewTheme(theme_id, images);
                 return new Theme(theme_id);
             } catch (RemoteException e) {

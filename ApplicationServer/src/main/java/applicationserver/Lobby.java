@@ -161,8 +161,12 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
     }
 
-    public List<byte[]> getTheme(int id) throws RemoteException {
-        return db.getPictures(id);
+    public List<byte[]> getPictures(int themeId) throws RemoteException {
+        return db.getPictures(themeId);
+    }
+
+    public byte[] getPicture(int themeId, int pictureIndex) throws RemoteException {
+        return db.getPicture(themeId, pictureIndex);
     }
 
     @Override

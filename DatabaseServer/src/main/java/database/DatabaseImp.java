@@ -199,6 +199,32 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
+    public byte[] getPicture(int theme_id, int picture_index) throws RemoteException{
+        try{
+            String sql1 = "SELECT start_id FROM themes WHERE theme_id = ?";
+            PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+            pstmt1.setInt(1, theme_id);
+            ResultSet rs1 = pstmt1.executeQuery();
+            if(rs1.next()) {
+                int index = rs1.getInt("start_id");
+                String sql2 = "SELECT picture FROM pictures WHERE id=?";
+                PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+                pstmt2.setInt(1, index+picture_index);
+                ResultSet rs2 = pstmt2.executeQuery();
+
+                if(rs2.next()){
+                    InputStream is = rs2.getBinaryStream("picture");
+                    return IOUtils.toByteArray(is);
+                }
+            }
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public List<ThemeInfo> getThemes() throws RemoteException {
         String sql = "SELECT * FROM themes";
         try {
