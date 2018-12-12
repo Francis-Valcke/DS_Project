@@ -276,8 +276,8 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         try {
             String sql = "UPDATE games SET players_joined = ?, started = ?";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
-            pstmt.setInt(3, gi.getNumberOfPlayersJoined());
-            pstmt.setBoolean(5, gi.isStarted());
+            pstmt.setInt(1, gi.getNumberOfPlayersJoined());
+            pstmt.setBoolean(2, gi.isStarted());
 
             pstmt.executeUpdate(conn);
             pushToPeers(pstmt);
