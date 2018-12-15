@@ -420,5 +420,8 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         peers.remove(slave);
     }
 
+    public void ping() throws RemoteException {
+    }
+
 
 }

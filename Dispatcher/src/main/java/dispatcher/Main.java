@@ -27,7 +27,8 @@ public class Main {
     private static final int appRestPortOffset = 100;
     private static String serverName;
     private static String pathToJars;
-    private static int port;
+    private static int clientPort;
+    private static int serverPort;
     private static int restPort;
     private static int dbPortCounter;
     private static int appPortCounter;
@@ -37,18 +38,20 @@ public class Main {
     public static void main(String[] args) {
         if (args.length != 0) {
             serverName = args[0];
-            port = Integer.parseInt(args[1]);
+            clientPort = Integer.parseInt(args[1]);
+            serverPort = clientPort + 1;
             restPort = Integer.parseInt(args[2]);
             pathToJars = args[3];
         } else {
             serverName = "Dispatcher";
-            port = 1000;
+            clientPort = 1000;
+            serverPort = clientPort + 1;
             restPort = 1500;
             pathToJars = "build/jars";
         }
 
         System.setProperty("server.port", String.valueOf(restPort));
-        Dispatcher dispatcher = startDispatcher(port);
+        startDispatcher();
         SpringApplication.run(Main.class, args);
 
         /*
@@ -62,7 +65,7 @@ public class Main {
     public static void startDatabaseServers(int amount) {
         for (int i = 0; i < amount; i++) {
             int serverCount = dbPortCounter;
-            int newPort = port + dbPortOffset + dbPortCounter++;
+            int newPort = clientPort + dbPortOffset + dbPortCounter++;
             System.out.println("Starting new DB server with port " + newPort);
             try {
                 System.out.println("Looking for jar at " + pathToJars + "/DatabaseServer-0.1.0.jar %cd%/DBServer" + serverCount + ".db " + newPort);
@@ -76,7 +79,7 @@ public class Main {
     public static void startApplicationServers(int amount) {
         for (int i = 0; i < amount; i++) {
             int serverCount = appPortCounter;
-            int newPort = port + appPortOffset + appPortCounter++;
+            int newPort = clientPort + appPortOffset + appPortCounter++;
             int newRestPort = restPort + appRestPortOffset + appRestPortCounter++;
             System.out.println("Starting new APP server with port " + newPort + " and API port " + newRestPort);
             try {
@@ -86,17 +89,20 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
     }
 
 
-    public static Dispatcher startDispatcher(int port) {
+    public static Dispatcher startDispatcher() {
         try {
-            Dispatcher dispatcher = Dispatcher.getInstance();
-            Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("dispatcher_service", dispatcher);
-            System.out.println("INFO: up and running on port: " + port);
-            return dispatcher;
+            ClientDispatcher clientDispatcher = ClientDispatcher.getInstance();
+            Registry clientRegistry = LocateRegistry.createRegistry(clientPort);
+            clientRegistry.rebind("client_dispatcher_service", clientDispatcher);
+            ServerDispatcher serverDispatcher = ServerDispatcher.getInstance();
+            Registry serverRegistry = LocateRegistry.createRegistry(serverPort);
+            serverRegistry.rebind("server_dispatcher_service", serverDispatcher);
+
+
+            System.out.println("INFO: up and running on port: " + clientPort + "&" + serverPort);
         } catch (RemoteException re) {
             re.printStackTrace();
         }

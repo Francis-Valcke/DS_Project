@@ -30,7 +30,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     private ApplicationServerInterface applicationServer;
     private DatabaseInterface db;
-    private DispatcherInterface dispatch;
+    private ServerDispatcherInterface dispatch;
     private String name;
 
     private Lobby() throws RemoteException {
@@ -44,7 +44,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return instance;
     }
 
-    public Lobby init(ApplicationServerInterface applicationServer, DatabaseInterface db, DispatcherInterface dispatch) {
+    public Lobby init(ApplicationServerInterface applicationServer, DatabaseInterface db, ServerDispatcherInterface dispatch) {
         this.applicationServer = applicationServer;
         this.db = db;
         this.dispatch = dispatch;

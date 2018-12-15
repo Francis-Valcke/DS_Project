@@ -3,9 +3,7 @@ package logic;
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
-import interfaces.ApplicationServerInterface;
-import interfaces.DispatcherInterface;
-import interfaces.LobbyInterface;
+import interfaces.ClientDispatcherInterface;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -34,7 +32,7 @@ public class RegisterController {
             String password = input_password.getText();
 
             Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            DispatcherInterface dispatch = (DispatcherInterface) registry.lookup("dispatcher_service");
+            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup("client_dispatcher_service");
 
             dispatch.registerNewUser(username, password);
 
@@ -42,7 +40,6 @@ public class RegisterController {
 
 
             Client client = Client.getInstance();
-            client.setDispatch(dispatch);
             client.setUsername(username);
             client.setToken(token);
 

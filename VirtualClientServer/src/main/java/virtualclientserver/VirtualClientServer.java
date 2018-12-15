@@ -3,7 +3,7 @@ package virtualclientserver;
 import exceptions.AlreadyPresentException;
 import exceptions.UserNotLoggedInException;
 import interfaces.ClientInterface;
-import interfaces.DispatcherInterface;
+import interfaces.ServerDispatcherInterface;
 import interfaces.VirtualClientServerInterface;
 
 import java.rmi.NotBoundException;
@@ -38,7 +38,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
      * */
 
     //Remote objects
-    DispatcherInterface dispatcher;
+    ServerDispatcherInterface dispatcher;
 
     //Local objects
     private String name;
@@ -66,7 +66,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         try {
             //First get the dispatcher reference
             Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            dispatcher = (DispatcherInterface) registry.lookup("dispatcher_service");
+            dispatcher = (ServerDispatcherInterface) registry.lookup("dispatcher_service");
             //Then register this server with the dispatcher
             dispatcher.registerVirtualClientServer(this);
         } catch (RemoteException | NotBoundException e) {
@@ -108,11 +108,11 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
      * Getters & Setters
      * */
 
-    public DispatcherInterface getDispatcher() {
+    public ServerDispatcherInterface getDispatcher() {
         return dispatcher;
     }
 
-    public void setDispatcher(DispatcherInterface dispatcher) {
+    public void setDispatcher(ServerDispatcherInterface dispatcher) {
         this.dispatcher = dispatcher;
     }
 

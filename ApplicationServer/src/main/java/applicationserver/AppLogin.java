@@ -22,7 +22,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
     private ApplicationServerInterface applicationServer;
     private LobbyInterface lobby;
     private DatabaseInterface db;
-    private DispatcherInterface dispatch;
+    private ServerDispatcherInterface dispatch;
 
     private AppLogin() throws RemoteException {
     }
@@ -32,7 +32,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
     }
 
     @Override
-    public void init(DispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) {
+    public void init(ServerDispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) {
         this.lobby = lobby;
         this.db = db;
         this.dispatch = dispatch;
@@ -42,8 +42,10 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
     @Override
     public LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         if (db.isTokenValid(username, token)) {
-            if(!dispatch.isConnected(username))
+            if (!dispatch.isConnected(username)) {
+                dispatch.addUser(applicationServer, username);
                 return lobby;
+            }
             else throw new AlreadyPresentException("The user is already logged in");
         }
         throw new InvalidCredentialsException("Wrong credentials.");
@@ -76,11 +78,11 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         this.db = db;
     }
 
-    public DispatcherInterface getDispatch() {
+    public ServerDispatcherInterface getDispatch() {
         return dispatch;
     }
 
-    public void setDispatch(DispatcherInterface dispatch) {
+    public void setDispatch(ServerDispatcherInterface dispatch) {
         this.dispatch = dispatch;
     }
 }

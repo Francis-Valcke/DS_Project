@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 public class Main {
 
     public static final String DISPATCH_IP = "localhost";
-    public static final int DISPATCH_PORT = 1000;
+    public static final int DISPATCH_PORT = 1001;
 
     public static String ip;
     public static int restPort;

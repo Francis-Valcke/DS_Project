@@ -11,7 +11,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
     //Remote Objects
     protected GameInterface game;
-    protected DispatcherInterface dispatch;
+    protected ClientDispatcherInterface dispatch;
 
     protected AppLoginInterface appLogin;
     protected AppLoginInterface backupAppLogin;
@@ -163,7 +163,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
         lobby = appLogin.clientLogin(username, token);
-        dispatch.addUser(server, username);
     }
 
     @Override
@@ -175,7 +174,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
         lobby = appLogin.clientLogin(username, token);
 
-        dispatch.addUser(server, username);
     }
 
     @Override
@@ -185,7 +183,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
         lobby = appLogin.clientLogin(username, token);
 
-        dispatch.addUser(server, username);
     }
 
     /*
@@ -234,11 +231,11 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         this.game = game;
     }
 
-    public DispatcherInterface getDispatch() {
+    public ClientDispatcherInterface getDispatch() {
         return dispatch;
     }
 
-    public void setDispatch(DispatcherInterface dispatch) {
+    public void setDispatch(ClientDispatcherInterface dispatch) {
         this.dispatch = dispatch;
     }
 

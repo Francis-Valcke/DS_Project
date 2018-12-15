@@ -50,6 +50,8 @@ public interface DatabaseInterface extends Remote {
 
     byte[] getPicture(int theme_id, int picture_index) throws RemoteException;
 
+    void ping() throws RemoteException;
+
 
 }
 

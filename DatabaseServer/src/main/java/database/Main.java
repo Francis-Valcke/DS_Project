@@ -1,6 +1,6 @@
 package database;
 
-import interfaces.DispatcherInterface;
+import interfaces.ServerDispatcherInterface;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.rmi.NotBoundException;
@@ -12,11 +12,11 @@ import java.rmi.registry.Registry;
 public class Main {
 
     private static final String DISPATCH_IP = "localhost";
-    private static final int DISPATCH_PORT = 1000;
+    private static final int DISPATCH_PORT = 1001;
     private static String dbFilePath;
     private static int serverPort;
 
-    private static DispatcherInterface dispatcherImp;
+    private static ServerDispatcherInterface dispatcherImp;
     private static DatabaseImp databaseImp;
 
     /**
@@ -45,12 +45,12 @@ public class Main {
         }*/
     }
 
-    public static DispatcherInterface registerDispatcher() {
+    public static ServerDispatcherInterface registerDispatcher() {
 
         //Registreren bij dispatcher
         try {
             Registry registry = LocateRegistry.getRegistry(DISPATCH_IP, DISPATCH_PORT);
-            DispatcherInterface dispatcherImp = (DispatcherInterface) registry.lookup("dispatcher_service");
+            ServerDispatcherInterface dispatcherImp = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
             dispatcherImp.registerDatabaseServer(databaseImp);
             return dispatcherImp;
         } catch (NotBoundException | RemoteException e) {

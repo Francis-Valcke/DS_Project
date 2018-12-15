@@ -1,17 +1,21 @@
 package virtualclientserver.controllers;
 
-import classes.AbstractClient;
 import classes.ResponseMessage;
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
 import exceptions.UserNotLoggedInException;
+import interfaces.ClientDispatcherInterface;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import virtualclientserver.Main;
 import virtualclientserver.VirtualClient;
 import virtualclientserver.VirtualClientServer;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 import static classes.ResponseType.NOK;
 import static classes.ResponseType.OK;
@@ -29,14 +33,18 @@ public class AppLoginRestController {
         try {
 
             VirtualClient client = new VirtualClient(username, token);
-            client.setDispatch(server.getDispatcher());
+
+            Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
+            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup("client_dispatcher_service");
+
+            client.setDispatch(dispatch);
             client.connect();
             server.getConnectedClients().put(token, client);
 
             responseMessage = new ResponseMessage(OK, "Logged in.");
         } catch (AlreadyPresentException | InvalidCredentialsException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
-        } catch (RemoteException e) {
+        } catch (RemoteException | NotBoundException e) {
             responseMessage = new ResponseMessage(NOK, "A fatal error occurred.");
             e.printStackTrace();
         }

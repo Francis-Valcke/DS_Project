@@ -35,7 +35,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private AppLoginInterface appLogin;
     private LobbyInterface lobby;
     private ApplicationServerInterface backupServer;
-    private DispatcherInterface dispatcher;
+    private ServerDispatcherInterface dispatcher;
 
     private ApplicationServer() throws RemoteException {
     }
@@ -75,7 +75,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public void registerWithDispatcher() {
         try {
             Registry registry = LocateRegistry.getRegistry(dispatcherIp, dispatcherPort);
-            dispatcher = (DispatcherInterface) registry.lookup("dispatcher_service");
+            dispatcher = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
             //We krijgen een link naar de databank terug die deze server zal gebruiken
             db = dispatcher.registerApplicationServer((ApplicationServerInterface) this);
 

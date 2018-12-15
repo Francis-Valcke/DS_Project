@@ -5,27 +5,17 @@ import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.ApplicationServerInterface;
 import interfaces.DatabaseInterface;
-import interfaces.DispatcherInterface;
 import interfaces.VirtualClientServerInterface;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class Dispatcher extends UnicastRemoteObject implements DispatcherInterface {
+public class Dispatcher {
 
-    private static Dispatcher instance;
-
-    static {
-        try {
-            instance = new Dispatcher();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+    private static Dispatcher instance = new Dispatcher();
 
     private HashMultimap<ApplicationServerInterface, String> connectedUsers = HashMultimap.create();
     private HashMultimap<DatabaseInterface, ApplicationServerInterface> databaseApplicationMap = HashMultimap.create();
@@ -35,7 +25,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     private List<ApplicationServerInterface> unPairedServers = new LinkedList<>();
     private List<VirtualClientServerInterface> virtualClientServers = new LinkedList<>();
 
-    public Dispatcher() throws RemoteException {
+    private Dispatcher() {
     }
 
     public static Dispatcher getInstance() {
@@ -44,9 +34,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
 
     //TODO: appservers deregistreren
 
-    @Override
     public synchronized void registerDatabaseServer(DatabaseInterface db) throws RemoteException {
-        try {
             //1ste DB als masterDB instellen bij de rest
             if (databaseServers.size() < 1) masterDB = db;
             else {
@@ -60,55 +48,60 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
             databaseServers.add(db);
 
             System.out.println("INFO: new database server registered");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    @Override
     public synchronized DatabaseInterface registerApplicationServer(ApplicationServerInterface appServer) throws RemoteException {
-        try {
-
-            applicationServers.add(appServer);
-            System.out.println("INFO: New application server registered: " + appServer.getName() + " [" + appServer.getIp() + ":" + appServer.getPort() + "]");
-            //Voeg de appserver toe aan de unpaired server lijst
-            unPairedServers.add(appServer);
-            //Als er 2 servers aanwezig zijn in de unpaired list kunnen we ze paren aan elkaar
-            if (unPairedServers.size() == 2) {
-                ApplicationServerInterface a = unPairedServers.remove(0);
-                ApplicationServerInterface b = unPairedServers.remove(0);
-                a.setBackupServer(b);
-                System.out.println("Server " + b.getName() + " is a backup server of server " + a.getName());
-                b.setBackupServer(a);
-                System.out.println("Server " + a.getName() + " is a backup server of server " + b.getName());
-            }
-            //Notify waiting users that a new server is available
-            notifyAll();
-
-            DatabaseInterface db = getDatabaseWithLowestLoad();
-            databaseApplicationMap.put(db, appServer);
-
-            return db;
-        } catch (Exception e) {
-            e.printStackTrace();
+        applicationServers.add(appServer);
+        System.out.println("INFO: New application server registered: " + appServer.getName() + " [" + appServer.getIp() + ":" + appServer.getPort() + "]");
+        //Voeg de appserver toe aan de unpaired server lijst
+        unPairedServers.add(appServer);
+        //Als er 2 servers aanwezig zijn in de unpaired list kunnen we ze paren aan elkaar
+        if (unPairedServers.size() == 2) {
+            ApplicationServerInterface a = unPairedServers.remove(0);
+            ApplicationServerInterface b = unPairedServers.remove(0);
+            a.setBackupServer(b);
+            System.out.println("Server " + b.getName() + " is a backup server of server " + a.getName());
+            b.setBackupServer(a);
+            System.out.println("Server " + a.getName() + " is a backup server of server " + b.getName());
         }
-        return null;
+        //Notify waiting users that a new server is available
+        notifyAll();
+
+        DatabaseInterface db = getDatabaseWithLowestLoad();
+        databaseApplicationMap.put(db, appServer);
+
+        return db;
     }
+
+    /*public synchronized void deregisterApplicationServer(String name) throws RemoteException{
+        for(ApplicationServerInterface appServer : applicationServers){
+            if(appServer.getName() == name){
+                applicationServers.remove(appServer);
+                break;
+            }
+        }
+        applicationServers.remove();
+    }*/
 
     public DatabaseInterface getDatabaseWithLowestLoad() {
         int minConnectedAppServers = Integer.MAX_VALUE;
         DatabaseInterface dbWithLowestLoad = null;
         for (DatabaseInterface db : databaseServers) {
-            if (databaseApplicationMap.get(db).size() < minConnectedAppServers) {
-                minConnectedAppServers = databaseApplicationMap.get(db).size();
-                dbWithLowestLoad = db;
+            try {
+                //Checken als DB beschikbaar is
+                db.ping();
+                if (databaseApplicationMap.get(db).size() < minConnectedAppServers) {
+                    minConnectedAppServers = databaseApplicationMap.get(db).size();
+                    dbWithLowestLoad = db;
+                }
+            } catch (RemoteException e) {
+                databaseServers.remove(db);
             }
+
         }
         return dbWithLowestLoad;
     }
 
-    @Override
     public synchronized void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException {
         System.out.println("INFO: New application server registered: " + server.getName() + " [" + server.getAddress() + ":" + server.getPort() + "]");
         virtualClientServers.add(server);
@@ -168,8 +161,7 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
     }
 
     //Load balance the mobile users over the available servers
-    @Override
-    public VirtualClientServerInterface getVirtualClientServer(){
+    public VirtualClientServerInterface getVirtualClientServer() {
         Optional<VirtualClientServerInterface> server = virtualClientServers.stream()
                 .min(Comparator.comparingInt(o -> {
                     try {
@@ -209,19 +201,14 @@ public class Dispatcher extends UnicastRemoteObject implements DispatcherInterfa
         return masterDB;
     }
 
-
-
-    @Override
     public boolean isConnected(String username) {
         return connectedUsers.values().stream().anyMatch(s -> s.equals(username));
     }
 
-    @Override
     public void addUser(ApplicationServerInterface appServer, String username) {
         connectedUsers.put(appServer, username);
     }
 
-    @Override
     public void removeUser(ApplicationServerInterface appServer, String username) {
         connectedUsers.remove(appServer, username);
     }

@@ -9,13 +9,13 @@ import java.rmi.RemoteException;
 
 public interface AppLoginInterface extends Remote {
 
-    void init(DispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) throws RemoteException;
+    void init(ServerDispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) throws RemoteException;
 
     LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     void setDb(DatabaseInterface db) throws RemoteException;
 
-    void setDispatch(DispatcherInterface dispatcherInterface) throws RemoteException;
+    void setDispatch(ServerDispatcherInterface dispatcherInterface) throws RemoteException;
 
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
 

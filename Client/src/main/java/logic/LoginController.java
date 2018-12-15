@@ -2,9 +2,7 @@ package logic;
 
 import exceptions.AlreadyPresentException;
 import exceptions.InvalidCredentialsException;
-import interfaces.ApplicationServerInterface;
-import interfaces.DispatcherInterface;
-import interfaces.LobbyInterface;
+import interfaces.ClientDispatcherInterface;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,7 +38,7 @@ public class LoginController {
 
             //Dispatcher opzoeken
             registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            DispatcherInterface dispatch = (DispatcherInterface) registry.lookup("dispatcher_service");
+            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup("dispatcher_service");
 
             //Token opvragen
             String token = "";
