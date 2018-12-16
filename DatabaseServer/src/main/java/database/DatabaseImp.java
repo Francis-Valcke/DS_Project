@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterface {
@@ -22,6 +23,9 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     private Connection conn;
     private List<DatabaseInterface> peers = new ArrayList<>();
     int gamesMade = 0;
+    private static final long LIVE_GAME_CACHE_TTL = 5000; //5 seconden
+    private List<GameInfo> liveGamesCache;
+    private long gamesCacheTimeStamp;
 
     public DatabaseImp(String dbFilePath) throws RemoteException {
 
@@ -222,7 +226,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-
     public List<ThemeInfo> getThemes() {
         String sql = "SELECT * FROM themes";
         try {
@@ -254,22 +257,29 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-    public List<GameInfo> getAllGames() {
-        try {
-            String sql = "SELECT * FROM games";
-            PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
-            ResultSet rs = pstmt.executeQuery(conn);
-            List<GameInfo> toReturn = new ArrayList<>();
-            while (rs.next()) {
-                toReturn.add(new GameInfo(rs.getString(6), rs.getString(2), rs.getString(1),
-                        rs.getInt(8), rs.getInt(9), rs.getInt(4), rs.getInt(3),
-                        rs.getBoolean(5), rs.getInt(7)));
+    public synchronized List<GameInfo> getAllGames() {
+
+        long now = System.currentTimeMillis();
+        if (now > gamesCacheTimeStamp + LIVE_GAME_CACHE_TTL || liveGamesCache == null) {
+            //De cache moet gerefreshed worden
+            try {
+                String sql = "SELECT * FROM games";
+                PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
+                ResultSet rs = pstmt.executeQuery(conn);
+                List<GameInfo> toReturn = new ArrayList<>();
+                while (rs.next()) {
+                    toReturn.add(new GameInfo(rs.getString(6), rs.getString(2), rs.getString(1),
+                            rs.getInt(8), rs.getInt(9), rs.getInt(4), rs.getInt(3),
+                            rs.getBoolean(5), rs.getInt(7)));
+                }
+                liveGamesCache = toReturn;
+                gamesCacheTimeStamp = System.currentTimeMillis();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return toReturn;
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return null;
+
+        return liveGamesCache;
     }
 
     public void addGame(GameInfo gi) {
@@ -335,7 +345,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             e.printStackTrace();
         }
     }
-
 
     //TIJDELIJK, om files op te zetten naar byte arrays
     private byte[] readFile(String file) {
