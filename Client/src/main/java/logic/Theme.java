@@ -12,10 +12,11 @@ public class Theme {
     int id;
     List<Image> images = new ArrayList<>();
 
-    public Theme(int id) {
+    public Theme(int id, int size) {
         this.id = id;
         File themeDirectory = new File("Client/src/main/resources/themes/" + id);
         for (File picture : themeDirectory.listFiles()) {
+            if (images.size() == size) break;
             images.add(new Image("file:" + picture.getPath()));
         }
     }

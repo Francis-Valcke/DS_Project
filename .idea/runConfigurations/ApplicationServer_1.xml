@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ApplicationServer 1" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="ApplicationServer_main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="applicationserver.Main" />
+    <option name="PROGRAM_PARAMETERS" value="App_Beta 1251 1651" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

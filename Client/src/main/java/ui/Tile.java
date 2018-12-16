@@ -37,7 +37,7 @@ public class Tile extends StackPane {
         frontRectangle.heightProperty().bind(this.heightProperty().subtract(20));
         frontRectangle.maxWidth(Double.MAX_VALUE);
         frontRectangle.maxHeight(Double.MAX_VALUE);
-        frontRectangle.setFill(Color.ORANGE);
+        frontRectangle.setFill(Color.DARKGREY);
         frontRectangle.setStroke(Color.BLACK);
 
         backRectangle = new Rectangle();
@@ -45,7 +45,7 @@ public class Tile extends StackPane {
         backRectangle.heightProperty().bind(this.heightProperty().subtract(20));
         backRectangle.maxWidth(Double.MAX_VALUE);
         backRectangle.maxHeight(Double.MAX_VALUE);
-        backRectangle.setFill(Color.ORANGE);
+        backRectangle.setFill(Color.DARKGREY);
         backRectangle.setStroke(Color.BLACK);
 
 

@@ -46,6 +46,7 @@ public class RegisterController {
             Client client = Client.getInstance();
             client.setUsername(username);
             client.setToken(token);
+            client.setDispatch(dispatch);
 
             client.connect();
 
