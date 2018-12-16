@@ -95,6 +95,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
      * Getters & Setters
      * */
 
+
     @Override
     public String getName() {
         return name;

@@ -110,6 +110,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
         if (allPlayers.isEmpty()){
             lobby.terminateGame(this);
+            ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
         }
     }
 
@@ -168,6 +169,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         pushInfoLabel("Game finished");
         try {
             lobby.terminateGame(this);
+            ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

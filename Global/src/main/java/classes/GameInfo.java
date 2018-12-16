@@ -28,6 +28,42 @@ public class GameInfo implements Serializable {
         this.theme_id = theme_id;
     }
 
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public void setNumberOfPlayersJoined(int numberOfPlayersJoined) {
+        this.numberOfPlayersJoined = numberOfPlayersJoined;
+    }
+
+    public void setTheme_id(int theme_id) {
+        this.theme_id = theme_id;
+    }
+
     public String getHostName() {
         return hostName;
     }

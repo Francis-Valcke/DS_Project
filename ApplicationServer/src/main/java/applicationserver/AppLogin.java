@@ -6,6 +6,8 @@ import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
 
@@ -24,11 +26,18 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
     private DatabaseInterface db;
     private ServerDispatcherInterface dispatch;
 
+    private List<ClientInterface> connectedClients = new LinkedList<>();
+
+
     private AppLogin() throws RemoteException {
     }
 
     public static AppLogin getInstance() {
         return instance;
+    }
+
+    public List<ClientInterface> getConnectedClients() {
+        return connectedClients;
     }
 
     public void init(ServerDispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) {
@@ -38,10 +47,11 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         this.applicationServer = appServer;
     }
 
-    public LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
-        if (db.isTokenValid(username, token)) {
-            if (!dispatch.isConnected(username)) {
-                dispatch.addUser(applicationServer, username);
+    public LobbyInterface clientLogin(ClientInterface client) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+        if (db.isTokenValid(client.getUsername(), client.getToken())) {
+            if (!dispatch.isConnected(client.getUsername())) {
+                dispatch.addUser(applicationServer, client.getUsername());
+                connectedClients.add(client);
                 return lobby;
             }
             else throw new AlreadyPresentException("The user is already logged in");
@@ -52,6 +62,7 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
     public void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException {
         if (invalidate) db.inValidateToken(client.getUsername());
         dispatch.removeUser(applicationServer, client.getUsername());
+        connectedClients.remove(client);
     }
 
 }

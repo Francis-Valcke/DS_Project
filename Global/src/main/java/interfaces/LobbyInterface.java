@@ -92,4 +92,6 @@ public interface LobbyInterface extends Remote {
      * @throws RemoteException
      */
     byte[] getPicture(int themeId, int pictureIndex) throws RemoteException;
+
+    void terminateGame(GameInterface game) throws RemoteException;
 }

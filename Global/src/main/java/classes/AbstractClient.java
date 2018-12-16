@@ -159,7 +159,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         ApplicationServerInterface server = dispatch.getApplicationServer();
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
-        lobby = appLogin.clientLogin(username, token);
+        lobby = appLogin.clientLogin(this);
     }
 
     //Ask the dispatcher for a specific server
@@ -167,17 +167,13 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         ApplicationServerInterface server = dispatch.getApplicationServerByName(serverName);
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
-
-        lobby = appLogin.clientLogin(username, token);
-
+        lobby = appLogin.clientLogin(this);
     }
 
     private void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
-
-        lobby = appLogin.clientLogin(username, token);
-
+        lobby = appLogin.clientLogin(this);
     }
 
     /*

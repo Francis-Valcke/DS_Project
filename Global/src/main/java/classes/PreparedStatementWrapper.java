@@ -19,6 +19,21 @@ public class PreparedStatementWrapper implements Serializable {
         this.parameters = new HashMap<>();
     }
 
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public Map<Integer, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<Integer, Object> parameters) {
+        this.parameters = parameters;
+    }
 
     public void setString(int index, String x) {
         parameters.put(index, x);

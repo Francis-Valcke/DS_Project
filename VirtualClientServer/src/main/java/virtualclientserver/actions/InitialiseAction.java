@@ -27,4 +27,16 @@ public class InitialiseAction extends Action {
     public boolean isSpectating() {
         return spectating;
     }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setSpectating(boolean spectating) {
+        this.spectating = spectating;
+    }
 }

@@ -16,4 +16,8 @@ public class UpdatePlayerInfoAction extends Action {
     public List<PlayerInfo> getPlayerInfoList() {
         return playerInfoList;
     }
+
+    public void setPlayerInfoList(List<PlayerInfo> playerInfoList) {
+        this.playerInfoList = playerInfoList;
+    }
 }

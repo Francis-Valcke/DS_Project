@@ -55,5 +55,15 @@ public interface ServerDispatcherInterface extends Remote {
      */
     ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException;
 
+    /**
+     * Markeer het paar als ontoegankelijk als voorbereiding op af sluiten.
+     *
+     * @param server
+     * @return
+     * @throws RemoteException
+     */
+    boolean markApplicationServerPairUnavailable(ApplicationServerInterface server) throws RemoteException;
+
+    ApplicationServerInterface getApplicationServer() throws RemoteException;
 }
 

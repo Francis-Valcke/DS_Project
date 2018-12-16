@@ -6,6 +6,7 @@ import exceptions.InvalidCredentialsException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * Deze interface implementeert alle methodes die Client kan uitvoeren om in te loggen
@@ -25,5 +26,7 @@ public interface AppLoginInterface extends Remote {
     LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
+
+    List<ClientInterface> getConnectedClients() throws RemoteException;
 
 }
