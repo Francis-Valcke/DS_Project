@@ -74,4 +74,11 @@ public interface ApplicationServerInterface extends Remote {
      */
     boolean canFit(int slots) throws RemoteException;
 
+    /**
+     * Test als de application server reageert
+     *
+     * @throws RemoteException
+     */
+    void ping() throws RemoteException;
+
 }

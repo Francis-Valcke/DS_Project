@@ -159,4 +159,8 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public int hashCode() {
         return Objects.hash(super.hashCode(), name, ip, port, restPort);
     }
+
+    public void ping() {
+
+    }
 }

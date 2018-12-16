@@ -95,7 +95,7 @@ public class Dispatcher {
                     dbWithLowestLoad = db;
                 }
             } catch (RemoteException e) {
-                databaseServers.remove(db);
+                System.out.println("Lost connection to a DB");
             }
 
         }
