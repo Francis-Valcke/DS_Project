@@ -31,7 +31,6 @@ public class Main {
         System.setProperty("server.port", String.valueOf(restPort));
         SpringApplication.run(Main.class, args);
 
-
         try {
             ip = Inet4Address.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {

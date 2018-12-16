@@ -17,7 +17,7 @@ public interface ApplicationServerInterface extends Remote {
     String getName() throws RemoteException;
 
     /**
-     * Geeft het IP terug van de application server
+     * Geeft het IP terug van de application server.
      *
      * @return IP
      * @throws RemoteException
@@ -25,7 +25,7 @@ public interface ApplicationServerInterface extends Remote {
     String getIp() throws RemoteException;
 
     /**
-     * Geeft de poort terug van de application server
+     * Geeft de poort terug van de application server.
      *
      * @return poort
      * @throws RemoteException
