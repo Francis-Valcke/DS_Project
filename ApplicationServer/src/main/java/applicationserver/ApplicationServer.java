@@ -63,8 +63,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         System.out.println("INFO: connection made to database and dispatch");
     }
 
-    @Override
-    public void startLogin() {
+    private void startLogin() {
         try {
             appLogin = AppLogin.getInstance();
             Registry registry = LocateRegistry.createRegistry(port);
@@ -74,13 +73,12 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         }
     }
 
-    @Override
-    public void registerWithDispatcher() {
+    private void registerWithDispatcher() {
         try {
             Registry registry = LocateRegistry.getRegistry(dispatcherIp, dispatcherPort);
             dispatcher = (ServerDispatcherInterface) registry.lookup(SERVER_DISPATCHER_SERVICE);
             //We krijgen een link naar de databank terug die deze server zal gebruiken
-            db = dispatcher.registerApplicationServer((ApplicationServerInterface) this);
+            db = dispatcher.registerApplicationServer(this);
 
             //Maak de lobby klaar voor gebruik
             ((Lobby)lobby).init(this, db, dispatcher);
@@ -106,64 +104,15 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String getIp() {
         return ip;
     }
 
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     @Override
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    @Override
-    public int getRestPort() {
-        return restPort;
-    }
-
-    public void setRestPort(int restPort) {
-        this.restPort = restPort;
-    }
-
-    @Override
-    public int getDispatcherPort() {
-        return dispatcherPort;
-    }
-
-    public void setDispatcherPort(int dispatcherPort) {
-        this.dispatcherPort = dispatcherPort;
-    }
-
-    @Override
-    public String getDispatcherIp() {
-        return dispatcherIp;
-    }
-
-    public void setDispatcherIp(String dispatcherIp) {
-        this.dispatcherIp = dispatcherIp;
-    }
-
-    @Override
-    public DatabaseInterface getDb() {
-        return db;
-    }
-
-    @Override
-    public void setDb(DatabaseInterface db) {
-        this.db = db;
     }
 
     @Override
@@ -172,18 +121,8 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     }
 
     @Override
-    public void setAppLogin(AppLoginInterface appLogin) {
-        this.appLogin = appLogin;
-    }
-
-    @Override
     public LobbyInterface getLobby() {
         return lobby;
-    }
-
-    @Override
-    public void setLobby(LobbyInterface lobby) {
-        this.lobby = lobby;
     }
 
     @Override
@@ -194,14 +133,6 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     @Override
     public void setBackupServer(ApplicationServerInterface backupServer) {
         this.backupServer = backupServer;
-    }
-
-    public int getFreeSlots() {
-        return freeSlots;
-    }
-
-    public void setFreeSlots(int slots) {
-        freeSlots = slots;
     }
 
     public void reduceFreeSlots(int slots) {

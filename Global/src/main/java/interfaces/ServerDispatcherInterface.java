@@ -8,21 +8,23 @@ import java.rmi.RemoteException;
  */
 public interface ServerDispatcherInterface extends Remote {
 
+    void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
     /**
      * Registreer een nieuwe database server
      *
      * @param dbi databaseinterface van database
      * @throws RemoteException
      */
-    public void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
+    void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
 
+    DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
     /**
      * Registreer een nieuwe application server
      * @param server applicationserverinterface
      * @return de database die de applicationserver moet gebruiken
      * @throws RemoteException
      */
-    public DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
+    DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
 
     void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException;
 

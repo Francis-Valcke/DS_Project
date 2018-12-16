@@ -99,7 +99,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public boolean checkCredentials(String username, String password) throws RemoteException {
+    private boolean checkCredentials(String username, String password) {
         if (!userExists(username)) {
             return false;
         }
@@ -111,9 +111,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
             //binnengekomen paswoord hashen met de salt uit de DB
             password = hash(password, rs.getString("salt"));
             //checken als beide hashen overeenkomen
-            if (password.equals(rs.getString("password"))) {
-                return true;
-            } else return false;
+            return password.equals(rs.getString("password"));
         } catch (SQLException se) {
             se.printStackTrace();
             return false;
@@ -142,7 +140,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public boolean isTokenValid(String username, String token) throws RemoteException {
+    public boolean isTokenValid(String username, String token) {
         String sql = "SELECT token_timestamp FROM users WHERE username = ? AND token = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -178,7 +176,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return false;
     }
 
-    public List<byte[]> getPictures(int theme_id) throws RemoteException {
+    public List<byte[]> getPictures(int theme_id) {
         String sql = "SELECT picture FROM pictures WHERE theme_id=?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -199,9 +197,9 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-    public byte[] getPicture(int theme_id, int picture_index) throws RemoteException{
+    public byte[] getPicture(int theme_id, int picture_index) {
         try{
-            String sql1 = "SELECT start_id FROM themes WHERE theme_id = ?";
+            String sql1 = "SELECT start_id FROM themes WHERE id = ?";
             PreparedStatement pstmt1 = conn.prepareStatement(sql1);
             pstmt1.setInt(1, theme_id);
             ResultSet rs1 = pstmt1.executeQuery();
@@ -225,7 +223,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
 
-    public List<ThemeInfo> getThemes() throws RemoteException {
+    public List<ThemeInfo> getThemes() {
         String sql = "SELECT * FROM themes";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -241,7 +239,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-    public ThemeInfo getTheme(int id) throws RemoteException {
+    public ThemeInfo getTheme(int id) {
         String sql = "SELECT * FROM themes WHERE id = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -256,7 +254,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-    public List<GameInfo> getAllGames() throws RemoteException {
+    public List<GameInfo> getAllGames() {
         try {
             String sql = "SELECT * FROM games";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
@@ -274,7 +272,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return null;
     }
 
-    public void addGame(GameInfo gi) throws RemoteException {
+    public void addGame(GameInfo gi) {
         try {
             String sql = "INSERT INTO games(id, name, players_joined, max_players, started, hostname, theme_id, width, height) VALUES(?,?,?,?,?,?,?,?,?)";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
@@ -298,7 +296,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     }
 
-    public void updateGameInfo(GameInfo gi) throws RemoteException {
+    public void updateGameInfo(GameInfo gi) {
         try {
             String sql = "UPDATE games SET players_joined = ?, started = ?";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
@@ -313,7 +311,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
 
-    public void removeGame(GameInfo gi) throws RemoteException {
+    public void removeGame(GameInfo gi) {
         try {
             String sql = "DELETE FROM games WHERE id = ?";
             PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
@@ -339,34 +337,6 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
     }
 
 
-    public void insertPhoto(int id) throws RemoteException {
-        if (master == null) {
-            //System.out.println(System.getProperty("user.dir"));
-            byte[] picture = readFile(ClassLoader.getSystemClassLoader().getResource("sugimori/" + id + ".png").getPath());
-
-            String sql = "INSERT INTO pictures(picture, theme_id) VALUES(?,?)";
-
-            try {
-                PreparedStatementWrapper pstmt = new PreparedStatementWrapper(sql);
-
-                // set parameters
-                pstmt.setBytes(1, picture);
-                pstmt.setInt(2, 1);
-
-                //execute query
-                pstmt.executeUpdate(conn);
-
-                pushToPeers(pstmt);
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
-            master.insertPhoto(id);
-        }
-    }
-
-
     //TIJDELIJK, om files op te zetten naar byte arrays
     private byte[] readFile(String file) {
         ByteArrayOutputStream bos = null;
@@ -386,7 +356,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         return bos != null ? bos.toByteArray() : null;
     }
 
-    public void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException {
+    public void executeSQL(PreparedStatementWrapper pstmt) {
         try {
             pstmt.executeUpdate(conn);
         } catch (SQLException e) {
@@ -404,23 +374,15 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
         }
     }
 
-    public DatabaseInterface getMaster() throws RemoteException {
-        return master;
-    }
-
-    public void setMaster(DatabaseInterface master) throws RemoteException {
+    public void setMaster(DatabaseInterface master) {
         this.master = master;
     }
 
-    public void addPeer(DatabaseInterface slave) throws RemoteException {
+    public void addPeer(DatabaseInterface slave) {
         peers.add(slave);
     }
 
-    public void removePeer(DatabaseInterface slave) throws RemoteException {
-        peers.remove(slave);
-    }
-
-    public void ping() throws RemoteException {
+    public void ping() {
     }
 
 

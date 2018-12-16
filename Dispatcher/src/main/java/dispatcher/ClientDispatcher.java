@@ -5,7 +5,6 @@ import exceptions.InvalidCredentialsException;
 import exceptions.UserAlreadyExistsException;
 import interfaces.ApplicationServerInterface;
 import interfaces.ClientDispatcherInterface;
-import interfaces.VirtualClientServerInterface;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -49,17 +48,8 @@ public class ClientDispatcher extends UnicastRemoteObject implements ClientDispa
         return dispatch.getApplicationServer();
     }
 
-    //Load balance the mobile users over the available servers
-    public VirtualClientServerInterface getVirtualClientServer() throws RemoteException {
-        return dispatch.getVirtualClientServer();
-    }
-
     public ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException {
         return dispatch.getApplicationServerByName(name);
-    }
-
-    public ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException {
-        return dispatch.getApplicationServerByFreeSlots(slots);
     }
 
 }

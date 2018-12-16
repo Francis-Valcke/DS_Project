@@ -23,14 +23,6 @@ public class SceneController {
         return instance;
     }
 
-    public Stage getPrevStage() {
-        return prevStage;
-    }
-
-    public void setPrevStage(Stage prevStage) {
-        this.prevStage = prevStage;
-    }
-
     public void showRegisterScene() {
         try {
             Stage stage = new Stage();

@@ -47,9 +47,6 @@ public interface ClientDispatcherInterface extends Remote {
      */
     ApplicationServerInterface getApplicationServer() throws RemoteException;
 
-    //Load balance the mobile users over the available servers
-    VirtualClientServerInterface getVirtualClientServer() throws RemoteException;
-
     /**
      * Request een specifieke application server (wordt gebruikt bij transfer)
      * @param name hostname van de server

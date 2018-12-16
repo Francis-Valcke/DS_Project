@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="DBServer0" uuid="bec777e0-20ca-440d-9f15-c69afe30765e">
+    <data-source source="LOCAL" name="DBServer0" uuid="c4e60731-7806-4c3e-b988-a9128da2e55d">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\Documents\GIT\DS_Project\DatabaseServer\DBServer0.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\Development\DS_Project_gradle\jars\DBServer0.db</jdbc-url>
       <driver-properties>
         <property name="enable_load_extension" value="true" />
       </driver-properties>
@@ -17,15 +17,6 @@
           <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.25.1/sqlite-jdbc-3.25.1.jar</url>
         </library>
       </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="DBServer0.db" uuid="5580a336-47a7-4715-8a1f-1f3212fa0e92">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/jars/DBServer0.db</jdbc-url>
-      <driver-properties>
-        <property name="enable_load_extension" value="true" />
-      </driver-properties>
     </data-source>
   </component>
 </project>

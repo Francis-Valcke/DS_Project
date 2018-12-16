@@ -40,15 +40,15 @@ public class ServerDispatcher extends UnicastRemoteObject implements ServerDispa
         dispatch.registerVirtualClientServer(server);
     }
 
-    public boolean isConnected(String username) throws RemoteException {
+    public boolean isConnected(String username) {
         return dispatch.isConnected(username);
     }
 
-    public void addUser(ApplicationServerInterface appServer, String username) throws RemoteException {
+    public void addUser(ApplicationServerInterface appServer, String username) {
         dispatch.addUser(appServer, username);
     }
 
-    public void removeUser(ApplicationServerInterface appServer, String username) throws RemoteException {
+    public void removeUser(ApplicationServerInterface appServer, String username) {
         dispatch.removeUser(appServer, username);
     }
 
@@ -58,14 +58,6 @@ public class ServerDispatcher extends UnicastRemoteObject implements ServerDispa
 
     public boolean isTokenValid(String username, String token) throws RemoteException {
         return dispatch.isTokenValid(username, token);
-    }
-
-    public ApplicationServerInterface getApplicationServer() throws RemoteException {
-        return dispatch.getApplicationServer();
-    }
-
-    public ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException {
-        return dispatch.getApplicationServerByName(name);
     }
 
 

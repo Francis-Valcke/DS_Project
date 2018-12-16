@@ -37,14 +37,6 @@ public class VirtualGameController implements GameControllerInterface {
         actions = new ArrayList<>();
     }
 
-    public void init(VirtualClient client, int height, int width, boolean spectating) {
-        this.client = client;
-        this.height = height;
-        this.width = width;
-        this.spectatorMode = spectating;
-        actions.add(new InitialiseAction(width, height, spectating));
-    }
-
     public void showTile(Coordinate c, int integer) {
         actions.add(new ShowTileAction(c, integer));
     }
@@ -70,14 +62,7 @@ public class VirtualGameController implements GameControllerInterface {
         actions.add(new YourTurnAction(yourTurn));
     }
 
-    public String getActionsJson(int from) throws JsonProcessingException {
-        List<Action> toSend = actions.subList(from, actions.size());
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(toSend);
-        return json;
-    }
-
-    public List<Action> getActions(int from) throws JsonProcessingException {
+    public List<Action> getActions(int from) {
         return actions.subList(from, actions.size());
     }
 
@@ -85,59 +70,8 @@ public class VirtualGameController implements GameControllerInterface {
      * Getters & Setters
      * */
 
-    public ArrayList<Action> getActions() {
-        return actions;
-    }
-
-    public void setActions(ArrayList<Action> actions) {
-        this.actions = actions;
-    }
-
-    public VirtualClient getClient() {
-        return client;
-    }
-
-    public void setClient(VirtualClient client) {
-        this.client = client;
-    }
-
-    public boolean isGameStarted() {
-        return gameStarted;
-    }
-
-    public void setGameStarted(boolean gameStarted) {
-        this.gameStarted = gameStarted;
-    }
-
-    public boolean isSpectatorMode() {
-        return spectatorMode;
-    }
-
-    public void setSpectatorMode(boolean spectatorMode) {
-        this.spectatorMode = spectatorMode;
-    }
-
     public boolean isYourTurn() {
         return yourTurn;
     }
 
-    public void setYourTurn(boolean yourTurn) {
-        this.yourTurn = yourTurn;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
 }

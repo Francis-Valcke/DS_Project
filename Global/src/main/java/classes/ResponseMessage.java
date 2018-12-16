@@ -19,15 +19,4 @@ public class ResponseMessage implements Serializable {
         this.payload = payload;
     }
 
-    public ResponseType getStatus() {
-        return status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public Object getPayload() {
-        return payload;
-    }
 }

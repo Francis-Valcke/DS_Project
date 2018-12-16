@@ -22,8 +22,6 @@ public interface LobbyInterface extends Remote {
 
     List<byte[]> getPictures(int id) throws RemoteException;
 
-    GameInterface getGameById(String gameId) throws RemoteException, NoSuchGameExistsException;
-
     String getName() throws RemoteException;
 
     List<ThemeInfo> getThemes() throws RemoteException;

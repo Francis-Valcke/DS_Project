@@ -120,7 +120,7 @@ public class Dispatcher {
         return masterDB.isTokenValid(username, token);
     }
 
-    public synchronized ApplicationServerInterface getApplicationServer() throws RemoteException {
+    public synchronized ApplicationServerInterface getApplicationServer() {
         System.out.println("INFO: new client connected");
 
         //Return een appServer met minst connected players (poging tot load balancing)
@@ -130,7 +130,7 @@ public class Dispatcher {
         return oServer.get();
     }
 
-    public synchronized ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException {
+    public synchronized ApplicationServerInterface getApplicationServerByFreeSlots(int slots) {
         Optional<ApplicationServerInterface> oServer = applicationServers.stream()
                 .filter(s -> {
                     boolean result = false;
@@ -183,22 +183,6 @@ public class Dispatcher {
             }
         }
         return appServer;
-    }
-
-    public List<ApplicationServerInterface> getApplicationServers() {
-        return applicationServers;
-    }
-
-    public void setApplicationServers(List<ApplicationServerInterface> applicationServers) {
-        this.applicationServers = applicationServers;
-    }
-
-    public List<DatabaseInterface> getDatabaseServers() {
-        return databaseServers;
-    }
-
-    public DatabaseInterface getMasterDB() {
-        return masterDB;
     }
 
     public boolean isConnected(String username) {

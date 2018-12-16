@@ -68,28 +68,12 @@ public interface ClientInterface extends Remote {
     void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     /**
-     * Geeft aan dat de client met een andere application server moet verbinden
-     * @param serverName hostname van nieuwe server
-     * @throws RemoteException
-     * @throws InvalidCredentialsException wordt gegooid indien de credentials niet kloppen
-     * @throws AlreadyPresentException wordt gegooid indien de gebruiker als op deze server aanwezig is
-     */
-    void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void disconnect(boolean invalidate) throws RemoteException;
-
-    void connect() throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    /**
      * Vraag username op van client
      * @return username
      * @throws RemoteException
      */
     String getUsername() throws RemoteException;
+
 
     /**
      * Vraag token op van client
@@ -98,11 +82,4 @@ public interface ClientInterface extends Remote {
      */
     String getToken() throws RemoteException;
 
-    void setGameController(GameControllerInterface gameController) throws RemoteException;
-
-    GameControllerInterface getGameController() throws RemoteException;
-
-    AppLoginInterface getAppLogin() throws RemoteException;
-
-    void setAppLogin(AppLoginInterface appLogin) throws RemoteException;
 }

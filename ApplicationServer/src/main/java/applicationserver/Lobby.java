@@ -136,7 +136,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         } else throw new GameFullException();
     }
 
-    public GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, RemoteException, GameNotFoundException {
+    public GameInterface spectateGame(String gameId, ClientInterface client) throws InvalidCredentialsException, GameNotFoundException {
         if (!isValidPlayer(client)) {
             throw new InvalidCredentialsException();
         }
@@ -169,12 +169,6 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return db.getPicture(themeId, pictureIndex);
     }
 
-    @Override
-    public Game getGameById(String gameId) throws RemoteException, NoSuchGameExistsException {
-        if (!liveGames.containsKey(gameId)) throw new NoSuchGameExistsException();
-        return liveGames.get(gameId);
-    }
-
     public boolean isValidPlayer(ClientInterface client) {
         try {
             return dispatch.isTokenValid(client.getUsername(), client.getToken());
@@ -185,7 +179,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     }
 
-    public List<ThemeInfo> getThemes() throws RemoteException {
+    public List<ThemeInfo> getThemes() {
         try {
             return db.getThemes();
         } catch (RemoteException e) {
@@ -209,7 +203,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return Objects.hash(super.hashCode(), applicationServer);
     }
 
-    public String getName() throws RemoteException {
+    public String getName() {
         return name;
     }
 

@@ -64,7 +64,7 @@ public class DispatcherController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getVirtualClientServer")
-    public ResponseMessage getApplicationServer() throws RemoteException, JsonProcessingException {
+    public ResponseMessage getApplicationServer() throws RemoteException {
         ResponseMessage responseMessage = null;
 
         VirtualClientServerInterface server = dispatcher.getVirtualClientServer();

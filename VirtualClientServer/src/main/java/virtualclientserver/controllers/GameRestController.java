@@ -78,7 +78,7 @@ public class GameRestController {
             responseMessage = new ResponseMessage(OK, "Game data:", o);
         } catch (UserNotLoggedInException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
-        } catch (JsonProcessingException | RemoteException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
 

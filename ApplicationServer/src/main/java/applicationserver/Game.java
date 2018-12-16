@@ -249,7 +249,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
     }
 
-    public List<PlayerInfo> getPlayerlist() throws RemoteException {
+    public List<PlayerInfo> getPlayerlist() {
         List<PlayerInfo> playerInfoList = new ArrayList<>();
         for (Player p : playerQueue) {
             playerInfoList.add(p.convertToPlayerInfo());
@@ -257,7 +257,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return playerInfoList;
     }
 
-    public HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException {
+    public HashMap<Coordinate, Integer> getFlippedFields() {
         HashMap<Coordinate, Integer> toReturn = new HashMap<>();
         for (Coordinate c : board.keySet()) {
             if (board.get(c).isFlipped()) {
@@ -267,7 +267,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return toReturn;
     }
 
-    public int getThemeId() throws RemoteException {
+    public int getThemeId() {
         return theme_id;
     }
 
@@ -307,56 +307,16 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Map<Coordinate, Field> getBoard() {
-        return board;
-    }
-
-    public void setBoard(Map<Coordinate, Field> board) {
-        this.board = board;
-    }
-
     public Queue<Player> getPlayerQueue() {
         return playerQueue;
-    }
-
-    public void setPlayerQueue(Queue<Player> playerQueue) {
-        this.playerQueue = playerQueue;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getMax_players() {
         return max_players;
     }
 
-    public void setMax_players(int max_players) {
-        this.max_players = max_players;
-    }
-
-    public Player getCurrent_player() {
-        return current_player;
-    }
-
-    public void setCurrent_player(Player current_player) {
-        this.current_player = current_player;
-    }
-
-    public boolean isStarted() throws RemoteException {
+    public boolean isStarted() {
         return started;
-    }
-
-    public void setStarted(boolean started) {
-        this.started = started;
     }
 
     public int getWidth() {
@@ -369,54 +329,6 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
     public GameInfo getGameInfo() throws RemoteException {
         return new GameInfo(lobby.getName(), name, id, x_size, y_size, max_players, playerQueue.size(), started, theme_id);
-    }
-
-    public ArrayList<Player> getAllPlayers() {
-        return allPlayers;
-    }
-
-    public void setAllPlayers(ArrayList<Player> allPlayers) {
-        this.allPlayers = allPlayers;
-    }
-
-    public Set<Player> getSpectators() {
-        return spectators;
-    }
-
-    public void setSpectators(Set<Player> spectators) {
-        this.spectators = spectators;
-    }
-
-    public int getX_size() {
-        return x_size;
-    }
-
-    public void setX_size(int x_size) {
-        this.x_size = x_size;
-    }
-
-    public int getY_size() {
-        return y_size;
-    }
-
-    public void setY_size(int y_size) {
-        this.y_size = y_size;
-    }
-
-    public Thread getGameThread() {
-        return gameThread;
-    }
-
-    public void setGameThread(Thread gameThread) {
-        this.gameThread = gameThread;
-    }
-
-    public Lobby getLobby() {
-        return lobby;
-    }
-
-    public void setLobby(Lobby lobby) {
-        this.lobby = lobby;
     }
 
     public boolean allFieldsFlipped() {
