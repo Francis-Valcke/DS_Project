@@ -124,10 +124,6 @@ public class Client extends AbstractClient {
     }
 
 
-    public LobbyController getLobbyController() {
-        return lobbyController;
-    }
-
     public void setLobbyController(LobbyController lobbyController) {
         this.lobbyController = lobbyController;
     }

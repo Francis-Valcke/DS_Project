@@ -32,7 +32,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
      * Logic from this class
      * */
 
-    public boolean isDifferentServer(String hostName) throws RemoteException {
+    public boolean isDifferentServer(String hostName) {
         try {
             return !lobby.getName().equals(hostName);
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     }
 
     @Override
-    public void updatePlayerInfo(List<PlayerInfo> playerInfoList) throws RemoteException {
+    public void updatePlayerInfo(List<PlayerInfo> playerInfoList) {
         try {
             gameController.updatePlayerList(playerInfoList);
         } catch (NullPointerException e) {
@@ -111,12 +111,12 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     }
 
     @Override
-    public void hideTile(Coordinate c, int delay) throws RemoteException {
+    public void hideTile(Coordinate c, int delay) {
         gameController.hideTile(c, delay);
     }
 
     @Override
-    public void showTile(Coordinate c, int value) throws RemoteException {
+    public void showTile(Coordinate c, int value) {
         gameController.showTile(c, value);
     }
 
@@ -126,12 +126,12 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
     }
 
     @Override
-    public void setGameStarted() throws RemoteException {
+    public void setGameStarted() {
         gameController.startGame();
     }
 
     @Override
-    public void updateInfoLabel(String s) throws RemoteException {
+    public void updateInfoLabel(String s) {
         gameController.updateInfoLabel(s);
     }
 
@@ -141,13 +141,11 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         connect(server);
     }
 
-    @Override
-    public void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    private void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         disconnect(false);
         connect(serverName);
     }
 
-    @Override
     public void disconnect(boolean invalidate) throws RemoteException {
         appLogin.clientLogout(this, invalidate);
         lobby = null;
@@ -156,7 +154,6 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         backupAppLogin = null;
     }
 
-    @Override
     //Let the dispatcher choose which server
     public void connect() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         ApplicationServerInterface server = dispatch.getApplicationServer();
@@ -165,9 +162,8 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         lobby = appLogin.clientLogin(username, token);
     }
 
-    @Override
     //Ask the dispatcher for a specific server
-    public void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    private void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         ApplicationServerInterface server = dispatch.getApplicationServerByName(serverName);
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
@@ -176,8 +172,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
 
     }
 
-    @Override
-    public void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+    private void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
         appLogin = server.getAppLogin();
         backupAppLogin = server.getBackupServer().getAppLogin();
 
@@ -190,33 +185,21 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
      * */
 
     @Override
-    public String getUsername() throws RemoteException {
+    public String getUsername() {
         return username;
     }
 
     @Override
-    public String getToken() throws RemoteException {
+    public String getToken() {
         return token;
     }
 
-    @Override
     public void setGameController(GameControllerInterface gameController) throws RemoteException {
         this.gameController = gameController;
     }
 
-    @Override
     public GameControllerInterface getGameController() throws RemoteException {
         return gameController;
-    }
-
-    @Override
-    public AppLoginInterface getAppLogin() {
-        return appLogin;
-    }
-
-    @Override
-    public void setAppLogin(AppLoginInterface appLogin) {
-        this.appLogin = appLogin;
     }
 
     /*
@@ -227,24 +210,12 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         return game;
     }
 
-    public void setGame(GameInterface game) {
-        this.game = game;
-    }
-
-    public ClientDispatcherInterface getDispatch() {
-        return dispatch;
-    }
-
     public void setDispatch(ClientDispatcherInterface dispatch) {
         this.dispatch = dispatch;
     }
 
     public LobbyInterface getLobby() {
         return lobby;
-    }
-
-    public void setLobby(LobbyInterface lobby) {
-        this.lobby = lobby;
     }
 
     public void setUsername(String username) {
@@ -255,29 +226,9 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         this.token = token;
     }
 
-    public Coordinate getNextMove() {
-        return nextMove;
-    }
-
     public synchronized void setNextMove(Coordinate nextMove) {
         this.nextMove = nextMove;
         notifyAll();
-    }
-
-    public boolean isInGame() {
-        return inGame;
-    }
-
-    public void setInGame(boolean inGame) {
-        this.inGame = inGame;
-    }
-
-    public LobbyInterface getBackupLobby() {
-        return backupLobby;
-    }
-
-    public void setBackupLobby(LobbyInterface backupLobby) {
-        this.backupLobby = backupLobby;
     }
 
     /*

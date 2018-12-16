@@ -13,11 +13,4 @@ public class ShowTileAction extends Action {
         this.value = value;
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public int getValue() {
-        return value;
-    }
 }

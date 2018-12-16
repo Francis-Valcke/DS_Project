@@ -12,21 +12,15 @@ import java.util.List;
 
 public interface DatabaseInterface extends Remote {
 
-    public void createNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException;
+    void createNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException;
 
-    public String createToken(String username, String password) throws RemoteException, InvalidCredentialsException;
+    String createToken(String username, String password) throws RemoteException, InvalidCredentialsException;
 
-    public boolean checkCredentials(String username, String password) throws RemoteException;
+    boolean isTokenValid(String username, String token) throws RemoteException;
 
-    public boolean isTokenValid(String username, String token) throws RemoteException;
+    List<byte[]> getPictures(int id) throws RemoteException;
 
-    public List<byte[]> getPictures(int id) throws RemoteException;
-
-    public void insertPhoto(int id) throws RemoteException;
-
-    public DatabaseInterface getMaster() throws RemoteException;
-
-    public void setMaster(DatabaseInterface master) throws RemoteException;
+    void setMaster(DatabaseInterface master) throws RemoteException;
 
     void executeSQL(PreparedStatementWrapper pstmt) throws RemoteException;
 
@@ -43,8 +37,6 @@ public interface DatabaseInterface extends Remote {
     ThemeInfo getTheme(int id) throws RemoteException;
 
     void addPeer(DatabaseInterface slave) throws RemoteException;
-
-    void removePeer(DatabaseInterface slave) throws RemoteException;
 
     void updateGameInfo(GameInfo gi) throws RemoteException;
 

@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Dispatch + 2 Clients" type="Multirun" factoryName="Multirun" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
-    <runConfiguration name="Dispatcher Standalone" type="Spring Boot" />
-    <runConfiguration name="Client1" type="Spring Boot" />
-    <runConfiguration name="Client2" type="Spring Boot" />
-    <method v="2" />
-  </configuration>
-</component>

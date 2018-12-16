@@ -71,8 +71,7 @@ public class VirtualClient extends AbstractClient {
         int y = game.getHeight();
         if (c.getX() < 0 || c.getX() >= x) return false;
         if (c.getY() < 0 || c.getY() >= y) return false;
-        if (moves.contains(c)) return false;
-        return true;
+        return !moves.contains(c);
     }
 
 }

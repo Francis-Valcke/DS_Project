@@ -12,23 +12,21 @@ import java.util.List;
 
 public interface GameInterface extends Remote {
 
-    public void readyUp(ClientInterface client) throws RemoteException;
+    void readyUp(ClientInterface client) throws RemoteException;
 
-    public void leaveGame(ClientInterface client) throws RemoteException;
+    void leaveGame(ClientInterface client) throws RemoteException;
 
-    public int getHeight() throws RemoteException;
+    int getHeight() throws RemoteException;
 
-    public int getWidth() throws RemoteException;
+    int getWidth() throws RemoteException;
 
     int getValueOf(Coordinate coordinate) throws RemoteException;
 
-    public boolean isStarted() throws RemoteException;
+    GameInfo getGameInfo() throws RemoteException;
 
-    public GameInfo getGameInfo() throws RemoteException;
+    List<PlayerInfo> getPlayerlist() throws RemoteException;
 
-    public List<PlayerInfo> getPlayerlist() throws RemoteException;
+    HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException;
 
-    public HashMap<Coordinate, Integer> getFlippedFields() throws RemoteException;
-
-    public int getThemeId() throws RemoteException;
+    int getThemeId() throws RemoteException;
 }

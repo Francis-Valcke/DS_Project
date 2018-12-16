@@ -5,9 +5,9 @@ import java.rmi.RemoteException;
 
 public interface ServerDispatcherInterface extends Remote {
 
-    public void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
+    void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
 
-    public DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
+    DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
 
     void registerVirtualClientServer(VirtualClientServerInterface server) throws RemoteException;
 
@@ -21,8 +21,5 @@ public interface ServerDispatcherInterface extends Remote {
 
     ApplicationServerInterface getApplicationServerByFreeSlots(int slots) throws RemoteException;
 
-    ApplicationServerInterface getApplicationServer() throws RemoteException;
-
-    ApplicationServerInterface getApplicationServerByName(String name) throws RemoteException;
 }
 

@@ -13,11 +13,6 @@ public interface AppLoginInterface extends Remote {
 
     LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void setDb(DatabaseInterface db) throws RemoteException;
-
-    void setDispatch(ServerDispatcherInterface dispatcherInterface) throws RemoteException;
-
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
 
-    void setLobby(LobbyInterface lobbyInterface) throws RemoteException;
 }

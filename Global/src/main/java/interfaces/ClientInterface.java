@@ -28,25 +28,8 @@ public interface ClientInterface extends Remote {
 
     void transferTo(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
-    void transferTo(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void disconnect(boolean invalidate) throws RemoteException;
-
-    void connect() throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void connect(String serverName) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
-    void connect(ApplicationServerInterface server) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
-
     String getUsername() throws RemoteException;
 
     String getToken() throws RemoteException;
 
-    void setGameController(GameControllerInterface gameController) throws RemoteException;
-
-    GameControllerInterface getGameController() throws RemoteException;
-
-    AppLoginInterface getAppLogin() throws RemoteException;
-
-    void setAppLogin(AppLoginInterface appLogin) throws RemoteException;
 }

@@ -80,23 +80,6 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         System.out.println("INFO: Successfully registered with dispatcher.");
     }
 
-    public ClientInterface removeClient(String token) throws UserNotLoggedInException {
-        ClientInterface client = getClient(token);
-        connectedClients.remove(token);
-        return client;
-    }
-
-    public void addClient(VirtualClient client) throws RemoteException {
-        connectedClients.put(client.getToken(), client);
-    }
-
-    public VirtualClient newClient(String username, String token) throws AlreadyPresentException, RemoteException {
-        if (isLoggedIn(token)) throw new AlreadyPresentException();
-        VirtualClient client = new VirtualClient(username, token);
-        connectedClients.put(token, client);
-        return client;
-    }
-
     public ClientInterface getClient(String token) throws UserNotLoggedInException {
         if (!isLoggedIn(token)) {
             throw new UserNotLoggedInException();
@@ -112,21 +95,9 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
      * Getters & Setters
      * */
 
-    public ServerDispatcherInterface getDispatcher() {
-        return dispatcher;
-    }
-
-    public void setDispatcher(ServerDispatcherInterface dispatcher) {
-        this.dispatcher = dispatcher;
-    }
-
     @Override
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -134,17 +105,9 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     @Override
     public String getPort() {
         return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 
     @Override
@@ -152,8 +115,5 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         return connectedClients;
     }
 
-    public void setConnectedClients(Map<String, ClientInterface> connectedClients) {
-        this.connectedClients = connectedClients;
-    }
 }
 

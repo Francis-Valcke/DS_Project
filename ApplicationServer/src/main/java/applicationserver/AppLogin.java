@@ -57,32 +57,4 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         dispatch.removeUser(applicationServer, client.getUsername());
     }
 
-    public LobbyInterface getLobby() {
-        return lobby;
-    }
-
-    @Override
-    public void setLobby(LobbyInterface lobbyInterface) {
-        this.lobby = lobbyInterface;
-    }
-
-    public void setLobby(Lobby lobby) {
-        this.lobby = lobby;
-    }
-
-    public DatabaseInterface getDb() {
-        return db;
-    }
-
-    public void setDb(DatabaseInterface db) {
-        this.db = db;
-    }
-
-    public ServerDispatcherInterface getDispatch() {
-        return dispatch;
-    }
-
-    public void setDispatch(ServerDispatcherInterface dispatch) {
-        this.dispatch = dispatch;
-    }
 }

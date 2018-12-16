@@ -50,7 +50,7 @@ public class LobbyController implements Initializable {
         joinbutton.setOnAction(e -> {
             try {
                 joinGame();
-            } catch (AlreadyPresentException | InvalidCredentialsException | GameFullException | GameStartedException | NoSuchGameExistsException | GameNotFoundException e1) {
+            } catch (AlreadyPresentException | NoSuchGameExistsException e1) {
                 System.out.println(e1.getMessage());
             } catch (RemoteException e1) {
                 e1.printStackTrace();
@@ -59,7 +59,7 @@ public class LobbyController implements Initializable {
         spectatebutton.setOnAction(e -> {
             try {
                 spectateGame();
-            } catch (RemoteException | InvalidCredentialsException | GameNotFoundException e1) {
+            } catch (RemoteException e1) {
                 e1.printStackTrace();
             } catch (AlreadyPresentException e1) {
                 e1.printStackTrace();
@@ -88,15 +88,15 @@ public class LobbyController implements Initializable {
     }
 
     public void makeGame() throws AlreadyPresentException {
-        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), themeIdMap.get((String) themeselector.getValue()));
+        client.makeGame(name.getText(), Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), Integer.parseInt(playercount.getText()), themeIdMap.get(themeselector.getValue()));
     }
 
-    public void joinGame() throws AlreadyPresentException, RemoteException, InvalidCredentialsException, GameFullException, GameStartedException, NoSuchGameExistsException, GameNotFoundException {
+    public void joinGame() throws AlreadyPresentException, RemoteException, NoSuchGameExistsException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
         client.joinGame(selected);
     }
 
-    public void spectateGame() throws RemoteException, InvalidCredentialsException, AlreadyPresentException, GameNotFoundException {
+    public void spectateGame() throws RemoteException, AlreadyPresentException {
         GameInfo selected = labelMap.get(gameslist.getSelectionModel().getSelectedItem());
         client.spectateGame(selected);
     }
