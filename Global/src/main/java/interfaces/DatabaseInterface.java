@@ -10,6 +10,10 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * Deze interface implementeert alle methodes die door de application server of dispatcher
+ * kunnen uitgevoerd worden
+ */
 public interface DatabaseInterface extends Remote {
 
     /**
@@ -134,7 +138,5 @@ public interface DatabaseInterface extends Remote {
      * @throws RemoteException
      */
     void ping() throws RemoteException;
-
-
 }
 

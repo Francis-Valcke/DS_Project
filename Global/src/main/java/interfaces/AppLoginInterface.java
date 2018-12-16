@@ -13,20 +13,37 @@ import java.util.List;
  */
 public interface AppLoginInterface extends Remote {
 
+
+    List<ClientInterface> getConnectedClients() throws RemoteException;
+
+    void init(ServerDispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) throws RemoteException;
+
     /**
-     * Logt een client in
+     * Logt een client inloggen
      *
-     * @param username
-     * @param token
+     * @param client
      * @return Geeft de lobby terug
      * @throws RemoteException
      * @throws InvalidCredentialsException wordt gegooid als het paswoord en/of username niet kloppen
      * @throws AlreadyPresentException     wordt gegooid als een speler als is ingelogd
      */
-    LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
+    LobbyInterface clientLogin(ClientInterface client) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
+    /**
+     * logt een client uit
+     *
+     * @param client     uit te loggen client
+     * @param invalidate boolean om token te invalideren
+     * @throws RemoteException
+     */
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
 
-    List<ClientInterface> getConnectedClients() throws RemoteException;
+    /**
+     * Methode om te checken als de server nog online is
+     *
+     * @throws RemoteException
+     */
+    void ping() throws RemoteException;
 
 }
+
