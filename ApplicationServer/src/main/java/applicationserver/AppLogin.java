@@ -65,4 +65,9 @@ public class AppLogin extends UnicastRemoteObject implements AppLoginInterface {
         connectedClients.remove(client);
     }
 
+    @Override
+    public void ping() throws RemoteException {
+
+    }
+
 }

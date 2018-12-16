@@ -1,1 +1,0 @@
-java -jar %1/Client-0.1.0.jar
