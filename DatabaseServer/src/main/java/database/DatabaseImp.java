@@ -201,7 +201,7 @@ public class DatabaseImp extends UnicastRemoteObject implements DatabaseInterfac
 
     public byte[] getPicture(int theme_id, int picture_index) throws RemoteException{
         try{
-            String sql1 = "SELECT start_id FROM themes WHERE theme_id = ?";
+            String sql1 = "SELECT start_id FROM themes WHERE id = ?";
             PreparedStatement pstmt1 = conn.prepareStatement(sql1);
             pstmt1.setInt(1, theme_id);
             ResultSet rs1 = pstmt1.executeQuery();

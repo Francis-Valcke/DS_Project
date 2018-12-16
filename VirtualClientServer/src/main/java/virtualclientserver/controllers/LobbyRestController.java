@@ -6,11 +6,15 @@ import classes.ThemeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.*;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import virtualclientserver.VirtualClient;
 import virtualclientserver.VirtualClientServer;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -106,7 +110,7 @@ public class LobbyRestController {
         return responseMessage;
     }
 
-    @RequestMapping(value= "getThemesInfo", produces = "application/json", consumes = "application/json")
+    @RequestMapping(value= "getThemesInfo", produces = "application/json")
     public ResponseMessage getThemesInfo(@RequestParam String token) {
         ResponseMessage responseMessage = null;
         VirtualClient client = null;
@@ -124,14 +128,15 @@ public class LobbyRestController {
     }
 
     @RequestMapping(value= "getPicture")
-    public byte[] getPicture(@RequestParam String token, @RequestParam int themeId, @RequestParam int pictureId) {
+    public @ResponseBody byte[] getPicture(@RequestParam String token, @RequestParam int themeId, @RequestParam int pictureId) {
         ResponseMessage responseMessage = null;
         VirtualClient client = null;
 
         try {
             client = ((VirtualClient) clientServer.getClient(token));
 
-            return client.getLobby().getPicture(themeId, pictureId);
+            byte[] bytes = client.getLobby().getPicture(themeId, pictureId);
+            return bytes;
         } catch (UserNotLoggedInException e) {
             e.printStackTrace();
         } catch (RemoteException e) {
