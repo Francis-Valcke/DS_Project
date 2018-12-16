@@ -14,6 +14,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import static constants.DispatcherConstants.DISPATCHER_CLIENT_PORT;
+import static constants.DispatcherConstants.DISPATCHER_IP;
+import static constants.ServiceConstants.CLIENT_DISPATCHER_SERVICE;
+
 public class RegisterController {
 
     public TextField input_username;
@@ -31,8 +35,8 @@ public class RegisterController {
             String username = input_username.getText();
             String password = input_password.getText();
 
-            Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup("client_dispatcher_service");
+            Registry registry = LocateRegistry.getRegistry(DISPATCHER_IP, DISPATCHER_CLIENT_PORT);
+            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup(CLIENT_DISPATCHER_SERVICE);
 
             dispatch.registerNewUser(username, password);
 

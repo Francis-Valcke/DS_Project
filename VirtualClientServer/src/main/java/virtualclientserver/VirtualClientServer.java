@@ -14,6 +14,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static constants.DispatcherConstants.DISPATCHER_IP;
+import static constants.DispatcherConstants.DISPATCHER_SERVER_PORT;
+import static constants.ServiceConstants.SERVER_DISPATCHER_SERVICE;
+
 public class VirtualClientServer extends UnicastRemoteObject implements VirtualClientServerInterface {
 
     /*
@@ -65,8 +69,8 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
 
         try {
             //First get the dispatcher reference
-            Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            dispatcher = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
+            Registry registry = LocateRegistry.getRegistry(DISPATCHER_IP, DISPATCHER_SERVER_PORT);
+            dispatcher = (ServerDispatcherInterface) registry.lookup(SERVER_DISPATCHER_SERVICE);
             //Then register this server with the dispatcher
             dispatcher.registerVirtualClientServer(this);
         } catch (RemoteException | NotBoundException e) {

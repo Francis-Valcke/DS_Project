@@ -9,9 +9,6 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 public class Main {
 
-    public static final String DISPATCH_IP = "localhost";
-    public static final int DISPATCH_PORT = 1001;
-
     private static String serverName;
     private static String address;
     private static String port;

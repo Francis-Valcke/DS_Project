@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
+import static constants.DispatcherConstants.DISPATCHER_IP;
+import static constants.DispatcherConstants.DISPATCHER_SERVER_PORT;
+
 @SpringBootApplication
 public class Main {
-
-    public static final String DISPATCH_IP = "localhost";
-    public static final int DISPATCH_PORT = 1001;
 
     public static String ip;
     public static int restPort;
@@ -39,7 +39,7 @@ public class Main {
         }
 
         ApplicationServer server = ApplicationServer.getInstance();
-        server.init(server_name, ip, port, restPort, DISPATCH_IP, DISPATCH_PORT);
+        server.init(server_name, ip, port, restPort, DISPATCHER_IP, DISPATCHER_SERVER_PORT);
         Lobby.getInstance().setName(server_name);
 
     }

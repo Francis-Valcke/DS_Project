@@ -15,6 +15,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import static constants.DispatcherConstants.DISPATCHER_CLIENT_PORT;
+import static constants.DispatcherConstants.DISPATCHER_IP;
+import static constants.ServiceConstants.CLIENT_DISPATCHER_SERVICE;
+
 public class LoginController {
 
     @FXML
@@ -37,8 +41,8 @@ public class LoginController {
             String password = input_password.getText();
 
             //Dispatcher opzoeken
-            registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup("dispatcher_service");
+            registry = LocateRegistry.getRegistry(DISPATCHER_IP, DISPATCHER_CLIENT_PORT);
+            ClientDispatcherInterface dispatch = (ClientDispatcherInterface) registry.lookup(CLIENT_DISPATCHER_SERVICE);
 
             //Token opvragen
             String token = "";

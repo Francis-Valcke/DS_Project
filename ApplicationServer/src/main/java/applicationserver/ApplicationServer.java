@@ -9,6 +9,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Objects;
 
+import static constants.ServiceConstants.LOGIN_SERVICE;
+import static constants.ServiceConstants.SERVER_DISPATCHER_SERVICE;
+
 public class ApplicationServer extends UnicastRemoteObject implements ApplicationServerInterface {
 
     //Dit is het aantal slots dat een server kan leveren.
@@ -65,7 +68,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
         try {
             appLogin = AppLogin.getInstance();
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("login_service", appLogin);
+            registry.rebind(LOGIN_SERVICE, appLogin);
         } catch (RemoteException re) {
             re.printStackTrace();
         }
@@ -75,7 +78,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     public void registerWithDispatcher() {
         try {
             Registry registry = LocateRegistry.getRegistry(dispatcherIp, dispatcherPort);
-            dispatcher = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
+            dispatcher = (ServerDispatcherInterface) registry.lookup(SERVER_DISPATCHER_SERVICE);
             //We krijgen een link naar de databank terug die deze server zal gebruiken
             db = dispatcher.registerApplicationServer((ApplicationServerInterface) this);
 

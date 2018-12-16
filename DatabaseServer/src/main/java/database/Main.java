@@ -8,11 +8,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import static constants.DispatcherConstants.DISPATCHER_IP;
+import static constants.DispatcherConstants.DISPATCHER_SERVER_PORT;
+import static constants.ServiceConstants.SERVER_DISPATCHER_SERVICE;
+
 @SpringBootApplication
 public class Main {
 
-    private static final String DISPATCH_IP = "localhost";
-    private static final int DISPATCH_PORT = 1001;
     private static String dbFilePath;
     private static int serverPort;
 
@@ -49,8 +51,8 @@ public class Main {
 
         //Registreren bij dispatcher
         try {
-            Registry registry = LocateRegistry.getRegistry(DISPATCH_IP, DISPATCH_PORT);
-            ServerDispatcherInterface dispatcherImp = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
+            Registry registry = LocateRegistry.getRegistry(DISPATCHER_IP, DISPATCHER_SERVER_PORT);
+            ServerDispatcherInterface dispatcherImp = (ServerDispatcherInterface) registry.lookup(SERVER_DISPATCHER_SERVICE);
             dispatcherImp.registerDatabaseServer(databaseImp);
             return dispatcherImp;
         } catch (NotBoundException | RemoteException e) {

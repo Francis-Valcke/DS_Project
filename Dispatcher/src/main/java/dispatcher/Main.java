@@ -8,6 +8,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import static constants.ServiceConstants.CLIENT_DISPATCHER_SERVICE;
+import static constants.ServiceConstants.SERVER_DISPATCHER_SERVICE;
+
 /*
  * Voor het distribueren van de App servers zullen we het volgende doen:
  * Elke game op een bepaalde app server heeft een backup op een andere app server
@@ -96,10 +99,10 @@ public class Main {
         try {
             ClientDispatcher clientDispatcher = ClientDispatcher.getInstance();
             Registry clientRegistry = LocateRegistry.createRegistry(clientPort);
-            clientRegistry.rebind("client_dispatcher_service", clientDispatcher);
+            clientRegistry.rebind(CLIENT_DISPATCHER_SERVICE, clientDispatcher);
             ServerDispatcher serverDispatcher = ServerDispatcher.getInstance();
             Registry serverRegistry = LocateRegistry.createRegistry(serverPort);
-            serverRegistry.rebind("server_dispatcher_service", serverDispatcher);
+            serverRegistry.rebind(SERVER_DISPATCHER_SERVICE, serverDispatcher);
 
 
             System.out.println("INFO: up and running on port: " + clientPort + "&" + serverPort);
