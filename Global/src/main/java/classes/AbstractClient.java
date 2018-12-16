@@ -73,7 +73,11 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         inGame = false;
         notifyAll();
         //ApplicationServer laten weten
-        game.leaveGame(this);
+        try {
+            game.leaveGame(this);
+        } catch (Exception e) {
+            //nietn
+        }
         game = null;
         //Terug switchen naar de lobby
         gameController = null;

@@ -152,8 +152,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return db.getAllGames();
     }
 
-    public void terminateGame(GameInterface gameInterface) throws RemoteException {
-        Game game = ((Game) gameInterface);
+    public void terminateGame(GameInterface game) throws RemoteException {
         liveGames.remove(game.getId());
         //We kunnen dit doen omdat game id's server gebonden zijn
         backupLiveGames.remove(game.getId());

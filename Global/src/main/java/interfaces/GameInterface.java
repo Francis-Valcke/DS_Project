@@ -33,6 +33,10 @@ public interface GameInterface extends Remote {
      */
     int getHeight() throws RemoteException;
 
+    String getId() throws RemoteException;
+
+    int getMax_players() throws RemoteException;
+
     /**
      * @return breedte van speelveld
      * @throws RemoteException

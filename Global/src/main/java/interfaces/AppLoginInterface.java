@@ -16,14 +16,13 @@ public interface AppLoginInterface extends Remote {
     /**
      * Logt een client in
      *
-     * @param username
-     * @param token
+     * @param client
      * @return Geeft de lobby terug
      * @throws RemoteException
      * @throws InvalidCredentialsException wordt gegooid als het paswoord en/of username niet kloppen
      * @throws AlreadyPresentException     wordt gegooid als een speler als is ingelogd
      */
-    LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
+    LobbyInterface clientLogin(ClientInterface client) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
 

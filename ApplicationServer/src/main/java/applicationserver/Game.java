@@ -109,8 +109,16 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         pushPlayerlist();
 
         if (allPlayers.isEmpty()){
-            lobby.terminateGame(this);
-            ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
+            try {
+                ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            try {
+                lobby.terminateGame(this);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -168,11 +176,16 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         //com.kuleuven.distributedsystems.applicationserver.Game uit de live_games list halen
         pushInfoLabel("Game finished");
         try {
-            lobby.terminateGame(this);
             ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        try {
+            lobby.terminateGame(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void requestMove() throws LeftGameException {
@@ -305,6 +318,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     }
 
 
+    @Override
     public String getId() {
         return id;
     }
@@ -313,6 +327,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         return playerQueue;
     }
 
+    @Override
     public int getMax_players() {
         return max_players;
     }
