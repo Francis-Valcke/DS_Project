@@ -35,7 +35,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
     private int dispatcherPort;
     private String dispatcherIp;
     private DatabaseInterface db;
-    private AppLoginInterface appLogin;
+    private AppLogin appLogin;
     private LobbyInterface lobby;
     private ApplicationServerInterface backupServer;
     private ServerDispatcherInterface dispatcher;

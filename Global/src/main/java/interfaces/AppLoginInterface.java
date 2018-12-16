@@ -7,10 +7,21 @@ import exceptions.InvalidCredentialsException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * Deze interface implementeert alle methodes die Client kan uitvoeren om in te loggen
+ */
 public interface AppLoginInterface extends Remote {
 
-    void init(ServerDispatcherInterface dispatch, ApplicationServerInterface appServer, DatabaseInterface db, LobbyInterface lobby) throws RemoteException;
-
+    /**
+     * Logt een client in
+     *
+     * @param username
+     * @param token
+     * @return Geeft de lobby terug
+     * @throws RemoteException
+     * @throws InvalidCredentialsException wordt gegooid als het paswoord en/of username niet kloppen
+     * @throws AlreadyPresentException     wordt gegooid als een speler als is ingelogd
+     */
     LobbyInterface clientLogin(String username, String token) throws RemoteException, InvalidCredentialsException, AlreadyPresentException;
 
     void clientLogout(ClientInterface client, boolean invalidate) throws RemoteException;
