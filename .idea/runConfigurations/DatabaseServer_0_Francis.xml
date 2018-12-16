@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DatabaseServer 0 Francis" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="DatabaseServer_main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="database.Main" />
+    <option name="PROGRAM_PARAMETERS" value="D:\Development\DS_Project_gradle\jars\DBServer0.db 1100" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

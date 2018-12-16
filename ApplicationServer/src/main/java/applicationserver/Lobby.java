@@ -7,10 +7,7 @@ import interfaces.*;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
@@ -28,10 +25,12 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     private Map<String, Game> liveGames = new HashMap<>();
     private Map<String, Game> backupLiveGames = new HashMap<>();
 
+    private String name;
+
     private ApplicationServerInterface applicationServer;
     private DatabaseInterface db;
     private ServerDispatcherInterface dispatch;
-    private String name;
+
 
     private Lobby() throws RemoteException {
     }
@@ -153,12 +152,44 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return db.getAllGames();
     }
 
-    public void terminateGame(Game game) throws RemoteException {
+    public void terminateGame(GameInterface gameInterface) throws RemoteException {
+        Game game = ((Game) gameInterface);
         liveGames.remove(game.getId());
+        //We kunnen dit doen omdat game id's server gebonden zijn
+        backupLiveGames.remove(game.getId());
         db.removeGame(game.getGameInfo());
-        //dispatch.broadCastLobby(this);
         ((ApplicationServer)applicationServer).addFreeSlots(game.getMax_players());
+
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
+
+        try {
+            checkShouldShutDown();
+        } catch (InvalidCredentialsException | AlreadyPresentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkShouldShutDown() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
+
+        /*
+         * When a game completes we check if the server can be shut down
+         * */
+        if (liveGames.isEmpty() && backupLiveGames.isEmpty()) {
+
+            //Markeer het server paar als onbeschikbaar in de dispatcher
+            boolean proceed = dispatch.markApplicationServerPairUnavailable(applicationServer);
+            if (proceed) {
+                //Verhuis alle geconnecteerde clients
+                List<ClientInterface> clients = applicationServer.getAppLogin().getConnectedClients();
+
+                for (ClientInterface client : clients) {
+                    client.transferTo(dispatch.getApplicationServer());
+                }
+
+                //Sluit de servers af
+                System.exit(0);
+            }
+        }
     }
 
     public List<byte[]> getPictures(int themeId) throws RemoteException {

@@ -12,4 +12,8 @@ public class YourTurnAction extends Action {
     public boolean isYourTurn() {
         return yourTurn;
     }
+
+    public void setYourTurn(boolean yourTurn) {
+        this.yourTurn = yourTurn;
+    }
 }

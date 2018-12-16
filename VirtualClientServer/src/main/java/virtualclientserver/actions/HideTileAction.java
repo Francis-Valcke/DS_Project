@@ -20,4 +20,12 @@ public class HideTileAction extends Action {
     public int getDelay() {
         return delay;
     }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
 }

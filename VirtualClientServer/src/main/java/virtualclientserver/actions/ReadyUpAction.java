@@ -9,6 +9,10 @@ public class ReadyUpAction extends Action {
         this.ready = ready;
     }
 
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
     public boolean isReady() {
         return ready;
     }

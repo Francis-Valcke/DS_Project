@@ -23,6 +23,14 @@ public abstract class Action implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setType(ActionType type) {
+        this.type = type;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }

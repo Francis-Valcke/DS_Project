@@ -60,5 +60,15 @@ public class ServerDispatcher extends UnicastRemoteObject implements ServerDispa
         return dispatch.isTokenValid(username, token);
     }
 
+    @Override
+    public boolean markApplicationServerPairUnavailable(ApplicationServerInterface server) throws RemoteException {
+        return dispatch.markApplicationServerPairUnavailable(server);
+    }
+
+    @Override
+    public ApplicationServerInterface getApplicationServer() throws RemoteException {
+        return dispatch.getApplicationServer();
+    }
+
 
 }

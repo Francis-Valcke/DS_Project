@@ -19,4 +19,27 @@ public class ResponseMessage implements Serializable {
         this.payload = payload;
     }
 
+    public ResponseType getStatus() {
+        return status;
+    }
+
+    public void setStatus(ResponseType status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Object getPayload() {
+        return payload;
+    }
+
+    public void setPayload(Object payload) {
+        this.payload = payload;
+    }
 }

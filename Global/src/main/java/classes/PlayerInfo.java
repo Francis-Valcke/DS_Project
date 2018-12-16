@@ -13,6 +13,18 @@ public class PlayerInfo implements Serializable {
         this.score = score;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public String getUsername() {
         return username;
     }

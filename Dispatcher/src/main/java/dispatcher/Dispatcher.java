@@ -196,4 +196,15 @@ public class Dispatcher {
     public void removeUser(ApplicationServerInterface appServer, String username) {
         connectedUsers.remove(appServer, username);
     }
+
+    public synchronized boolean markApplicationServerPairUnavailable(ApplicationServerInterface server) throws RemoteException {
+
+        if (applicationServers.size() > 2) {
+            applicationServers.remove(server);
+            applicationServers.remove(server.getBackupServer());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
