@@ -9,7 +9,9 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * Deze interface implementeert alle methodes die een client kan oproepen tijdens het spelen van een spel
+ */
 public interface GameInterface extends Remote {
 
     /**

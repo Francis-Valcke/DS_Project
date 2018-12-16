@@ -8,6 +8,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * Deze interface implementeert alle methodes die een client kan uitvoeren inde lobby
+ */
 public interface LobbyInterface extends Remote {
 
     /**
@@ -93,5 +96,12 @@ public interface LobbyInterface extends Remote {
      */
     byte[] getPicture(int themeId, int pictureIndex) throws RemoteException;
 
+    /**
+     * Methode om spel stop te zetten
+     *
+     * @param game
+     * @throws RemoteException
+     */
     void terminateGame(GameInterface game) throws RemoteException;
+
 }
