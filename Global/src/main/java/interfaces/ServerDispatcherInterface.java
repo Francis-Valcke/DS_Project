@@ -8,7 +8,6 @@ import java.rmi.RemoteException;
  */
 public interface ServerDispatcherInterface extends Remote {
 
-    void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
     /**
      * Registreer een nieuwe database server
      *
@@ -17,7 +16,6 @@ public interface ServerDispatcherInterface extends Remote {
      */
     void registerDatabaseServer(DatabaseInterface dbi) throws RemoteException;
 
-    DatabaseInterface registerApplicationServer(ApplicationServerInterface server) throws RemoteException;
     /**
      * Registreer een nieuwe application server
      * @param server applicationserverinterface

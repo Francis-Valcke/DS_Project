@@ -49,7 +49,7 @@ public class Client extends AbstractClient {
     public void makeGame(String name, int width, int height, int maxPlayers, int themeId) throws AlreadyPresentException {
         try {
             super.makeGame(name, width, height, maxPlayers, themeId);
-            gameController = new GameController(height, width, false, loadTheme(themeId));
+            gameController = new GameController(height, width, false, loadTheme(themeId, width * height / 2));
             SceneController.getInstance().createGameScene(gameController);
 
         } catch (InvalidSizeException e) {
@@ -68,7 +68,7 @@ public class Client extends AbstractClient {
     public void joinGame(GameInfo gameInfo) throws AlreadyPresentException, NoSuchGameExistsException {
         try {
             super.joinGame(gameInfo);
-            gameController = new GameController(game.getHeight(), game.getWidth(), false, loadTheme(game.getThemeId()));
+            gameController = new GameController(game.getHeight(), game.getWidth(), false, loadTheme(game.getThemeId(), game.getHeight() * game.getWidth() / 2));
             SceneController.getInstance().createGameScene(gameController);
 
         } catch (GameFullException | GameNotFoundException | GameStartedException | InvalidCredentialsException e) {
@@ -82,7 +82,7 @@ public class Client extends AbstractClient {
     public void spectateGame(GameInfo gameInfo) throws AlreadyPresentException {
         try {
             super.spectateGame(gameInfo);
-            gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId()));
+            gameController = new GameController(game.getHeight(), game.getWidth(), true, loadTheme(game.getThemeId(), game.getHeight() * game.getWidth() / 2));
             SceneController.getInstance().createGameScene(gameController);
             HashMap<Coordinate, Integer> flippedFields = game.getFlippedFields();
             for (Coordinate c : flippedFields.keySet()) {
@@ -107,15 +107,15 @@ public class Client extends AbstractClient {
         }
     }
 
-    public Theme loadTheme(int theme_id) {
+    public Theme loadTheme(int theme_id, int size) {
         File themeDirectory = new File("Client/src/main/resources/themes/" + theme_id);
         if (themeDirectory.isDirectory()) {
-            return new Theme(theme_id);
+            return new Theme(theme_id, size);
         } else {
             try {
                 List<byte[]> images = lobby.getPictures(theme_id);
                 Theme.saveNewTheme(theme_id, images);
-                return new Theme(theme_id);
+                return new Theme(theme_id, size);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

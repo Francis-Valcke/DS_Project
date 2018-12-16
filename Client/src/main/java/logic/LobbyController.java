@@ -3,7 +3,8 @@ package logic;
 
 import classes.GameInfo;
 import classes.ThemeInfo;
-import exceptions.*;
+import exceptions.AlreadyPresentException;
+import exceptions.NoSuchGameExistsException;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -78,6 +79,7 @@ public class LobbyController implements Initializable {
                 themeIdMap.put(theme.getName(), theme.getId());
             }
             themeselector.setItems(FXCollections.observableArrayList(themelabels));
+            themeselector.getSelectionModel().select(0);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
