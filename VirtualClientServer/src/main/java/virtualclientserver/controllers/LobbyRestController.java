@@ -2,6 +2,7 @@ package virtualclientserver.controllers;
 
 import classes.GameInfo;
 import classes.ResponseMessage;
+import classes.ThemeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.*;
@@ -103,5 +104,39 @@ public class LobbyRestController {
         }
 
         return responseMessage;
+    }
+
+    @RequestMapping(value= "getThemesInfo", produces = "application/json", consumes = "application/json")
+    public ResponseMessage getThemesInfo(@RequestParam String token) {
+        ResponseMessage responseMessage = null;
+        VirtualClient client = null;
+        try {
+            client = ((VirtualClient) clientServer.getClient(token));
+            List<ThemeInfo> themes = client.getLobby().getThemes();
+            responseMessage = new ResponseMessage(OK, "List of themes on the server:", themes);
+        } catch (UserNotLoggedInException e) {
+            responseMessage = new ResponseMessage(NOK, e.getMessage());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return responseMessage;
+    }
+
+    @RequestMapping(value= "getPicture")
+    public byte[] getPicture(@RequestParam String token, @RequestParam int themeId, @RequestParam int pictureId) {
+        ResponseMessage responseMessage = null;
+        VirtualClient client = null;
+
+        try {
+            client = ((VirtualClient) clientServer.getClient(token));
+
+            return client.getLobby().getPicture(themeId, pictureId);
+        } catch (UserNotLoggedInException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

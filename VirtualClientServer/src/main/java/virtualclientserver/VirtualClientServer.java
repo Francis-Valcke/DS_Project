@@ -66,7 +66,7 @@ public class VirtualClientServer extends UnicastRemoteObject implements VirtualC
         try {
             //First get the dispatcher reference
             Registry registry = LocateRegistry.getRegistry(Main.DISPATCH_IP, Main.DISPATCH_PORT);
-            dispatcher = (ServerDispatcherInterface) registry.lookup("dispatcher_service");
+            dispatcher = (ServerDispatcherInterface) registry.lookup("server_dispatcher_service");
             //Then register this server with the dispatcher
             dispatcher.registerVirtualClientServer(this);
         } catch (RemoteException | NotBoundException e) {
