@@ -119,4 +119,13 @@ public class LobbyController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    public void logOut(){
+        try {
+            client.disconnect(true);
+            SceneController.getInstance().showLoginScene();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 }
