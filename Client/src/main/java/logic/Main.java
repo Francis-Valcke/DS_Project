@@ -11,8 +11,6 @@ public class Main extends Application {
     public static String password;
 
     public static void main(String[] args) {
-        username = args[0];
-        password = args[1];
         launch(args);
     }
 

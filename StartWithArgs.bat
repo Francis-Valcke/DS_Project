@@ -1,1 +1,0 @@
-start start.bat build/jars Dispatcher-0.1.0.jar Dispatcher 1000 1500

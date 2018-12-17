@@ -1,1 +1,0 @@
-java -jar %1/DatabaseServer-0.1.0.jar %2 %3 %4
