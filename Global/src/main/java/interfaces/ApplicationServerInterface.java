@@ -8,6 +8,8 @@ import java.rmi.RemoteException;
  */
 public interface ApplicationServerInterface extends Remote {
 
+    void shutDown() throws RemoteException;
+
     /**
      * Geeft de naam terug van de server. Deze wordt gebruikt ter identificatie van de lobbies en games.
      *

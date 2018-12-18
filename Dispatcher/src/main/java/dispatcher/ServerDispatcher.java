@@ -66,6 +66,11 @@ public class ServerDispatcher extends UnicastRemoteObject implements ServerDispa
     }
 
     @Override
+    public void checkShouldShutDown(ApplicationServerInterface server) throws RemoteException {
+        dispatch.checkShouldShutDown(server);
+    }
+
+    @Override
     public ApplicationServerInterface getApplicationServer() throws RemoteException {
         return dispatch.getApplicationServer();
     }

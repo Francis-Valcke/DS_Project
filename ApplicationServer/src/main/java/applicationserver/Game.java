@@ -29,6 +29,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
     private Lobby lobby;
     private boolean backup;
     private GameInterface backupGame;
+    private boolean isTerminated = false;
 
     public Game(String name, int x_size, int y_size, int max_players, String id, ClientInterface client, Lobby lobby, int theme_id, boolean backup) throws InvalidSizeException, RemoteException, InvalidCredentialsException, AlreadyPresentException, ThemeNotLargeEnoughException {
         this.name = name;
@@ -108,17 +109,23 @@ public class Game extends UnicastRemoteObject implements GameInterface {
 
         pushPlayerlist();
 
-        if (allPlayers.isEmpty()){
-            try {
-                ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            try {
-                lobby.terminateGame(this);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+        if (allPlayers.isEmpty() && !isTerminated) {
+            terminate();
+        }
+    }
+
+    private synchronized void terminate() {
+        isTerminated = true;
+        try {
+            lobby.terminateGame(this, false);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        try {
+            ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame, true);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -175,17 +182,9 @@ public class Game extends UnicastRemoteObject implements GameInterface {
         }
         //com.kuleuven.distributedsystems.applicationserver.Game uit de live_games list halen
         pushInfoLabel("Game finished");
-        try {
-            ApplicationServer.getInstance().getBackupServer().getLobby().terminateGame(backupGame);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        if (!isTerminated) {
+            terminate();
         }
-        try {
-            lobby.terminateGame(this);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void requestMove() throws LeftGameException {

@@ -1,5 +1,7 @@
 package applicationserver;
 
+import exceptions.AlreadyPresentException;
+import exceptions.InvalidCredentialsException;
 import interfaces.*;
 
 import java.rmi.NotBoundException;
@@ -7,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.Objects;
 
 import static constants.ServiceConstants.LOGIN_SERVICE;
@@ -81,7 +84,7 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
             db = dispatcher.registerApplicationServer(this);
 
             //Maak de lobby klaar voor gebruik
-            ((Lobby)lobby).init(this, db, dispatcher);
+            ((Lobby) lobby).init(this, db, dispatcher);
 
             //Maak login klaar voor gebruik
             appLogin.init(dispatcher, this, db, lobby);
@@ -93,6 +96,23 @@ public class ApplicationServer extends UnicastRemoteObject implements Applicatio
 
     public boolean canFit(int slots) {
         return freeSlots - slots >= 0;
+    }
+
+    @Override
+    public void shutDown() throws RemoteException {
+        //Verhuis alle geconnecteerde clients
+        List<ClientInterface> clients = getAppLogin().getConnectedClients();
+
+        for (ClientInterface client : clients) {
+            try {
+                client.transferTo(((Lobby) lobby).getDispatch().getApplicationServer());
+            } catch (InvalidCredentialsException | AlreadyPresentException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Sluit de servers af
+        System.exit(0);
     }
 
     /*

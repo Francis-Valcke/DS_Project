@@ -102,6 +102,6 @@ public interface LobbyInterface extends Remote {
      * @param game
      * @throws RemoteException
      */
-    void terminateGame(GameInterface game) throws RemoteException;
+    void terminateGame(GameInterface game, boolean backup) throws RemoteException;
 
 }

@@ -107,6 +107,15 @@ public class Dispatcher {
         virtualClientServers.add(server);
     }
 
+    public void checkShouldShutDown(ApplicationServerInterface server) throws RemoteException {
+        ApplicationServerInterface backup = server.getBackupServer();
+        if (server.getLobby().getAllLiveGames().isEmpty() && backup.getLobby().getAllLiveGames().isEmpty()) {
+            markApplicationServerPairUnavailable(server);
+            server.shutDown();
+            backup.shutDown();
+        }
+    }
+
 
     public void registerNewUser(String username, String password) throws RemoteException, UserAlreadyExistsException {
         masterDB.createNewUser(username, password);

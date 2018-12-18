@@ -72,7 +72,7 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         * Bij het aanmaken van een new game moet eerst gechecked worden of de gevraagde game bij de server kan.
         * Zo niet wordt een nieuwe app server opgestart
         * */
-        if (!applicationServer.canFit(max_players) && !backup){
+        if (!backup && !applicationServer.canFit(max_players)) {
             //Vraag een appserver op die wel plaats heeft voor de game.
             //De dispatcher start als nodig een nieuwe appserver op.
             ApplicationServerInterface newAppServer = dispatch.getApplicationServerByFreeSlots(max_players);
@@ -152,43 +152,17 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         return db.getAllGames();
     }
 
-    public void terminateGame(GameInterface game) throws RemoteException {
+    public void terminateGame(GameInterface game, boolean backup) throws RemoteException {
         liveGames.remove(game.getId());
         //We kunnen dit doen omdat game id's server gebonden zijn
         backupLiveGames.remove(game.getId());
         db.removeGame(game.getGameInfo());
-        ((ApplicationServer)applicationServer).addFreeSlots(game.getMax_players());
+        if (!backup)
+            ((ApplicationServer) applicationServer).addFreeSlots(game.getMax_players());
 
         System.out.println("INFO: game [id:" + game.getId() + "] was finished");
 
-        try {
-            checkShouldShutDown();
-        } catch (InvalidCredentialsException | AlreadyPresentException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void checkShouldShutDown() throws RemoteException, InvalidCredentialsException, AlreadyPresentException {
-
-        /*
-         * When a game completes we check if the server can be shut down
-         * */
-        if (liveGames.isEmpty() && backupLiveGames.isEmpty()) {
-
-            //Markeer het server paar als onbeschikbaar in de dispatcher
-            boolean proceed = dispatch.markApplicationServerPairUnavailable(applicationServer);
-            if (proceed) {
-                //Verhuis alle geconnecteerde clients
-                List<ClientInterface> clients = applicationServer.getAppLogin().getConnectedClients();
-
-                for (ClientInterface client : clients) {
-                    client.transferTo(dispatch.getApplicationServer());
-                }
-
-                //Sluit de servers af
-                System.exit(0);
-            }
-        }
+        dispatch.checkShouldShutDown(applicationServer);
     }
 
     public List<byte[]> getPictures(int themeId) throws RemoteException {
@@ -239,5 +213,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ServerDispatcherInterface getDispatch() {
+        return dispatch;
     }
 }

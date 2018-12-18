@@ -65,5 +65,7 @@ public interface ServerDispatcherInterface extends Remote {
     boolean markApplicationServerPairUnavailable(ApplicationServerInterface server) throws RemoteException;
 
     ApplicationServerInterface getApplicationServer() throws RemoteException;
+
+    void checkShouldShutDown(ApplicationServerInterface server) throws RemoteException;
 }
 

@@ -37,9 +37,10 @@ public class LobbyRestController {
             int x = actualObj.get("x").asInt();
             int y = actualObj.get("y").asInt();
             int maxPlayers = actualObj.get("maxPlayers").asInt();
+            int themeId = actualObj.get("themeId").asInt();
 
             VirtualClient client = ((VirtualClient) clientServer.getClient(token));
-            client.makeGame(name, x, y, maxPlayers, 0);
+            client.makeGame(name, x, y, maxPlayers, themeId);
 
             GameInfo game = client.getGame().getGameInfo();
 
