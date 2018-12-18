@@ -221,4 +221,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
     public DatabaseInterface getDb() {
         return db;
     }
+
+    @Override
+    public int getNumberOfLiveGames() {
+        return liveGames.size();
+    }
 }

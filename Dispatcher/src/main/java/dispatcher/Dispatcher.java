@@ -109,10 +109,24 @@ public class Dispatcher {
 
     public void checkShouldShutDown(ApplicationServerInterface server) throws RemoteException {
         ApplicationServerInterface backup = server.getBackupServer();
-        if (server.getLobby().getAllLiveGames().isEmpty() && backup.getLobby().getAllLiveGames().isEmpty()) {
+        System.out.println(server.getLobby().getAllLiveGames().size());
+        System.out.println(backup.getLobby().getAllLiveGames().size());
+
+
+        if (server.getLobby().getNumberOfLiveGames() == 0 && backup.getLobby().getNumberOfLiveGames() == 0 && applicationServers.size() > 2) {
             markApplicationServerPairUnavailable(server);
-            server.shutDown();
-            backup.shutDown();
+
+            try {
+                backup.shutDown();
+            } catch (RemoteException e) {
+                //Best practice
+            }
+
+            try {
+                server.shutDown();
+            } catch (RemoteException e) {
+                //Best practice
+            }
         }
     }
 
@@ -208,12 +222,10 @@ public class Dispatcher {
 
     public synchronized boolean markApplicationServerPairUnavailable(ApplicationServerInterface server) throws RemoteException {
 
-        if (applicationServers.size() > 2) {
-            applicationServers.remove(server);
+
+        applicationServers.remove(server);
             applicationServers.remove(server.getBackupServer());
             return true;
-        } else {
-            return false;
-        }
+
     }
 }

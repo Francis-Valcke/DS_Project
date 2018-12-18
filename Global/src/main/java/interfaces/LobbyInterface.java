@@ -104,4 +104,5 @@ public interface LobbyInterface extends Remote {
      */
     void terminateGame(GameInterface game, boolean backup) throws RemoteException;
 
+    int getNumberOfLiveGames() throws RemoteException;
 }
