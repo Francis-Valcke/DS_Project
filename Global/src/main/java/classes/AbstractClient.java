@@ -67,7 +67,7 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         game.readyUp(this);
     }
 
-    public synchronized void leaveGame() throws RemoteException, NotInGameException {
+    public synchronized void leaveGame() throws RemoteException, NotInGameException, InvalidCredentialsException, AlreadyPresentException {
         if (game == null) throw new NotInGameException();
         //Eventuele thread die vastzit in requestmove losmaken
         inGame = false;
@@ -75,9 +75,11 @@ public abstract class AbstractClient extends UnicastRemoteObject implements Clie
         //ApplicationServer laten weten
         try {
             game.leaveGame(this);
+
         } catch (Exception e) {
-            //nietn
+            System.out.println("EXCEPTION");
         }
+        transferTo(dispatch.getApplicationServerByName("App_Alpha"));
         game = null;
         //Terug switchen naar de lobby
         gameController = null;

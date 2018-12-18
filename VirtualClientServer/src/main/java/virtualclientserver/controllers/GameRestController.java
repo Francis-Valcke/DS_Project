@@ -5,10 +5,7 @@ import classes.Coordinate;
 import classes.ResponseMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.InvalidMoveException;
-import exceptions.NotInGameException;
-import exceptions.NotYourTurnException;
-import exceptions.UserNotLoggedInException;
+import exceptions.*;
 import org.springframework.web.bind.annotation.*;
 import virtualclientserver.VirtualClient;
 import virtualclientserver.VirtualClientServer;
@@ -41,6 +38,10 @@ public class GameRestController {
         } catch (UserNotLoggedInException | NotInGameException e) {
             responseMessage = new ResponseMessage(NOK, e.getMessage());
         } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (AlreadyPresentException e) {
+            e.printStackTrace();
+        } catch (InvalidCredentialsException e) {
             e.printStackTrace();
         }
 

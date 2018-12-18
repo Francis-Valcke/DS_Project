@@ -104,6 +104,10 @@ public class Client extends AbstractClient {
             SceneController.getInstance().showLobbyScene();
         } catch (IOException | NotInGameException e) {
             e.printStackTrace();
+        } catch (AlreadyPresentException e) {
+            e.printStackTrace();
+        } catch (InvalidCredentialsException e) {
+            e.printStackTrace();
         }
     }
 
