@@ -76,6 +76,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
             playerQueue.add(newPlayer);
             allPlayers.add(newPlayer);
             pushPlayerlist();
+            Lobby.getInstance().getDb().updateGameInfo(this.getGameInfo());
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -106,6 +107,7 @@ public class Game extends UnicastRemoteObject implements GameInterface {
             playerQueue.remove(toDelete);
         }
 
+        Lobby.getInstance().getDb().updateGameInfo(this.getGameInfo());
         pushPlayerlist();
 
         if (allPlayers.isEmpty()){

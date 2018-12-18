@@ -130,7 +130,6 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
         }
         if (game.getMax_players() > game.getPlayerQueue().size()) {
             game.addPlayer(client);
-            db.updateGameInfo(game.getGameInfo());
             return game;
         } else throw new GameFullException();
     }
@@ -239,5 +238,9 @@ public class Lobby extends UnicastRemoteObject implements LobbyInterface {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DatabaseInterface getDb() {
+        return db;
     }
 }
